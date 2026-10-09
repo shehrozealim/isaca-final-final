@@ -1,3 +1,5 @@
+import { copy } from '../../data/content'
+import { prepareBunkerAssets, useBunkerAssets, waitForBunkerRender } from '../../scenes/bunker/bunkerAssets'
 import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react'
 import gsap from 'gsap'
 import { createPortal } from 'react-dom'
@@ -7,7 +9,7 @@ import { toggleAudio, useAudioEnabled } from '../../architecture/audioState'
 import { createShutterTimeline } from './createShutterTimeline'
 import { useBunkerAudio } from './useBunkerAudio'
 import BunkerBackground from '../bunker/BunkerBackground'
-import { BUNKER_IMAGE, publishBunkerBackground, releaseBunkerBackground } from '../bunker/bunkerBackgroundState'
+import { publishBunkerBackground, releaseBunkerBackground } from '../bunker/bunkerBackgroundState'
 import './ShutterTransition.css'
 
 const slatExposure = [.98, 1.02, .96, 1, 1.03, .97, 1.01, .98, 1.02, .96, 1, .99, 1.03, .97, 1.01, .91]
@@ -38,6 +40,7 @@ export default function ShutterTransition() {
   const active = state.active.id === 'S02'
   const root = useRef<HTMLDivElement>(null)
   const [requested, setRequested] = useState(false)
+  const assetState = useBunkerAssets()
   const [assetsReady, setAssetsReady] = useState(false)
   const [playback, setPlayback] = useState<{ reducedMotion: boolean; mobile: boolean } | null>(null)
   const [complete, setComplete] = useState(false)
@@ -55,32 +58,28 @@ export default function ShutterTransition() {
   useEffect(() => {
     let cancelled = false
     // Decode during S00/S01; retain S01's black handoff until all surfaces exist.
-    const assets = [BUNKER_IMAGE, '/s02/shutter/shutter-metal.jpg', '/s02/shutter/frame-metal.jpg']
-    void Promise.all(assets.map(src => {
-      const image = new Image()
-      image.src = src
-      return image.decode()
-    })).then(() => {
+    void prepareBunkerAssets().then(() => {
       if (!cancelled) setAssetsReady(true)
-    }).catch((error: unknown) => {
-      if (!cancelled) console.error('S02 surface could not load', error)
-    })
+    }).catch(() => { /* The loader provides a visible retry. */ })
     return () => { cancelled = true }
   }, [])
 
   useEffect(() => {
     if (!active || !assetsReady || playback) return
     let cancelled = false
-    // Direct scene navigation also gets the same timed sequence for review.
-    // Normal entry is requested by the S01 completion event above.
-    queueMicrotask(() => {
-      if (!cancelled) {
-        if (!requested) setRequested(true)
-        setPlayback({ reducedMotion, mobile })
-      }
+    // Mount and compile the shared canvas behind the closed shutter first.
+    if (root.current) publishBunkerBackground(root.current, 'opening')
+    const ready = reducedMotion ? Promise.resolve(true) : waitForBunkerRender()
+    void ready.then(() => {
+      if (!cancelled) { if (!requested) setRequested(true); setPlayback({ reducedMotion, mobile }) }
     })
     return () => { cancelled = true }
   }, [active, assetsReady, playback, reducedMotion, mobile, requested])
+
+  useLayoutEffect(() => {
+    if (!active || playback) return
+    return lockScroll()
+  }, [active, playback, lockScroll])
 
   useEffect(() => { setPresent(visible) }, [visible, setPresent])
 
@@ -133,6 +132,12 @@ export default function ShutterTransition() {
   }, [playback, lockScroll, cue, levels, syncVolumes, stopMechanics, stop])
 
   return <>
+    {active && !playback && createPortal(<div className="bunker-loader" role="status" aria-live="polite">
+      <p>{copy("THE HUNT / ARCHIVE PREPARATION")}</p><h2>{assetState.error ? copy("The archive could not load.") : copy("Preparing the investigation.")}</h2>
+      <progress value={assetState.loaded} max={assetState.total} />
+      <span>{assetState.ready ? copy("Preparing the scene.") : copy("Loading textures and artifacts.")}</span>
+      {assetState.error && <button onClick={() => { void prepareBunkerAssets(true).then(() => setAssetsReady(true)).catch(() => {}) }}>{copy("Retry loading")}</button>}
+    </div>, document.body)}
     {createPortal(<div ref={root} className="s02-stage" data-phase={complete ? 'ready' : 'closed'} hidden={!visible} aria-hidden="true">
       <div className="s02-black" />
       <BunkerBackground />
@@ -169,8 +174,8 @@ export default function ShutterTransition() {
       <div className="s02-grain" />
     </div>, document.body)}
     {visible && createPortal(<button className={`s02-sound${complete ? '' : ' s02-sound--concealed'}`} type="button" onClick={toggleAudio}
-      aria-pressed={enabled} aria-label={enabled ? 'Mute bunker sound' : 'Enable bunker sound'}>
-      SOUND {enabled ? 'ON' : 'OFF'}
+      aria-pressed={enabled} aria-label={enabled ? copy("Mute bunker sound") : copy("Enable bunker sound")}>
+      {copy("SOUND")} {enabled ? copy("ON") : copy("OFF")}
     </button>, document.body)}
   </>
 }

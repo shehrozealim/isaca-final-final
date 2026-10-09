@@ -1,4 +1,6 @@
+import { copy } from '../../data/content'
 import * as THREE from 'three';
+import { EVIDENCE_ATLAS, paintEvidencePhoto, paintEvidenceSpread } from '../../scenes/bunker/EvidencePhotos.mjs';
 import { hackathon } from './hackathon-data.mjs';
 
 /** Supplied bundle geometry, with local journal reference textures. */
@@ -6,36 +8,27 @@ export function createOccultBook({pageCount=3, approach=3.5, event=hackathon, on
   pageCount=Math.max(2,Math.min(16,Math.floor(pageCount)||6));
   const group=new THREE.Group(), pages=[], springs=[];
   // Keep textures owned by the factory so the shared canvas can dispose them.
-  const referenceCover=new Image();referenceCover.src='/s03/textures/supplied-journal-cover.jpg';
+  const referenceCover=new Image();referenceCover.src='/s03/textures/gothic-cover.webp';
   referenceCover.onload=()=>{
     const c=leatherMap.image,x=c.getContext('2d');
     x.setTransform(1,0,0,1,0,0);
-    x.drawImage(referenceCover,18,12,referenceCover.width-42,referenceCover.height-25,0,0,c.width,c.height);leatherMap.needsUpdate=true;
+    x.drawImage(referenceCover,0,0,referenceCover.width,referenceCover.height,0,0,c.width,c.height);leatherMap.needsUpdate=true;
     // The supplied photograph already contains its metal badge.
     cover.traverse(o=>{if(['CylinderGeometry','TorusGeometry','TubeGeometry'].includes(o.geometry?.type))o.visible=false});
     onTextureReady();
   };
   const referencePages=new Image();referencePages.src='/s03/textures/supplied-aged-pages.jpg';
-  referencePages.onload=()=>{sigilMaps.forEach((t,i)=>{const x=t.image.getContext('2d');x.save();x.setTransform(1,0,0,1,0,0);x.translate(i===1?850:865,i===1?1320:1180);x.rotate(-.055);x.fillStyle='#eee1c4';x.fillRect(-12,-12,214,188);x.drawImage(referencePages,(i%2)*referencePages.width/2,0,referencePages.width/2,referencePages.height,0,0,190,153);x.fillStyle='#4e3d29';x.font='12px monospace';x.fillText('SPECIMEN / FIELD COPY',0,171);x.restore();t.needsUpdate=true});onTextureReady()};
+  referencePages.onload=()=>onTextureReady();
   group.addEventListener('removed',()=>{referenceCover.onload=null;referencePages.onload=null});
+  const gothicReference=new Image();gothicReference.src=EVIDENCE_ATLAS;
   const paperReference=new Image(), paperRecipes=[];
   paperReference.onload=()=>{for(const {map,kind,index} of paperRecipes){const replacement=texture(kind,index,false);map.image=replacement.image;map.needsUpdate=true;replacement.dispose()}onTextureReady()};paperReference.src='/s03/textures/ancient-paper.webp';
-  group.addEventListener('removed',()=>{paperReference.onload=null});
+  gothicReference.onload=()=>paperReference.onload?.();
+  group.addEventListener('removed',()=>{paperReference.onload=null;gothicReference.onload=null});
   let seed=13;const random=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296};
   const restCenter=new THREE.Vector3(0,.16,0);let tableScale=1,mobileView=false;
-  // Original field specimen drawing: ink hatching, clipped label and margin notes.
-  function drawFieldSketch(x){
-    x.save();x.translate(400,345);x.fillStyle='#ddccaa';x.fillRect(-240,-220,480,435);
-    x.strokeStyle='#40382d';x.lineWidth=2;
-    for(const sign of [-1,1]){x.save();x.scale(sign,1);for(let i=0;i<15;i++){x.beginPath();x.ellipse(95,-25,43+i*2.5,50+i*3,.45,.3,Math.PI*1.95);x.stroke()}x.restore()}
-    x.beginPath();x.moveTo(-69,-15);x.bezierCurveTo(-105,60,-66,95,-42,105);x.lineTo(-33,161);x.lineTo(33,161);x.lineTo(42,105);x.bezierCurveTo(66,95,105,60,69,-15);x.quadraticCurveTo(0,-61,-69,-15);x.stroke();
-    for(const sign of [-1,1]){x.beginPath();x.ellipse(sign*35,51,24,30,sign*.35,0,Math.PI*2);x.stroke();for(let i=0;i<12;i++){x.beginPath();x.moveTo(sign*(19+i*2),27);x.lineTo(sign*(29+i*2),71);x.stroke()}}
-    x.beginPath();x.moveTo(0,74);x.lineTo(-13,103);x.lineTo(13,103);x.closePath();x.stroke();for(let i=-3;i<=3;i++){x.beginPath();x.moveTo(i*9,121);x.lineTo(i*9,159);x.stroke()}
-    x.font='20px "Segoe Print", cursive';x.fillStyle='#5b3e2c';x.fillText('SPECIMEN 07 / UNIDENTIFIED',-210,-180);x.fillText('iron residue at the edge',-180,198);
-    x.strokeStyle='#86402e';x.beginPath();x.ellipse(0,55,125,145,-.12,.1,Math.PI*1.8);x.stroke();x.restore();
-  }
   function texture(kind,index=0,record=true){
-    const c=document.createElement('canvas');c.width=1152;c.height=1536;const x=c.getContext('2d');x.scale(1.5,1.5);
+    const c=document.createElement('canvas');c.width=1536;c.height=2048;const x=c.getContext('2d');x.scale(2,2);let freeInk=0;
     x.fillStyle=kind==='cover'?'#71482f':'#ddcba3';x.fillRect(0,0,768,1024);
     // Fine fibers rather than large uniform grain; darker aging at the margins.
     for(let i=0;i<48000;i++){const p=random();x.fillStyle=p>.5?'rgba(255,239,195,.045)':'rgba(45,23,8,.035)';x.fillRect(random()*768,random()*1024,random()*2+.3,random()*2+.3)}
@@ -58,73 +51,24 @@ export function createOccultBook({pageCount=3, approach=3.5, event=hackathon, on
     if(kind==='cover'){
 
       x.strokeStyle='#302015';x.lineWidth=3;x.strokeRect(40,40,688,944);x.strokeRect(52,52,664,920);
-      x.textAlign='center';x.fillStyle='#d1aa77';x.font='19px monospace';x.fillText('SUPERNATURAL INVESTIGATIONS',384,115);
+      x.textAlign='center';x.fillStyle='#d1aa77';x.font='19px monospace';x.fillText(copy("SUPERNATURAL INVESTIGATIONS"),384,115);
       // Physical seal is separate geometry; avoid a second printed medallion.
-      x.fillStyle='#26190f';x.shadowColor='#bb916b';x.shadowOffsetY=1;x.font='bold 86px Georgia';x.fillText(event.name,384,750);x.font='28px monospace';x.fillText('DJS ISACA / FIELD JOURNAL',384,817);x.shadowOffsetY=0;
-      x.save();x.translate(384,899);x.rotate(-.045);x.strokeStyle='#3d2118';x.strokeRect(-170,-38,340,64);x.font='23px monospace';x.fillText('BUILD / CREATE / SHIP',0,4);x.restore();
+      x.fillStyle='#26190f';x.shadowColor='#bb916b';x.shadowOffsetY=1;x.font='bold 86px Georgia';x.fillText(event.name,384,750);x.font='28px monospace';x.fillText(copy("DJS ISACA / FIELD JOURNAL"),384,817);x.shadowOffsetY=0;
+      x.save();x.translate(384,899);x.rotate(-.045);x.strokeStyle='#3d2118';x.strokeRect(-170,-38,340,64);x.font='23px monospace';x.fillText(copy("BUILD / CREATE / SHIP"),0,4);x.restore();
       for(let i=0;i<45;i++){x.strokeStyle='rgba(218,178,125,.09)';x.lineWidth=.6;x.beginPath();const px=random()*768,py=random()*1024;x.moveTo(px,py);x.lineTo(px+random()*100-50,py+random()*28);x.stroke()}
     }else if(kind==='sigil'){
-      if(index===0){
-
-      // A taped, monochrome evidence sketch gives the blank leaf a diary composition.
-      x.save();x.translate(89,148);x.rotate(-.045);x.fillStyle='rgba(40,26,13,.14)';x.fillRect(5,6,215,141);x.fillStyle='#ecdfbd';x.fillRect(0,0,215,141);x.fillStyle='#7c7566';x.fillRect(12,12,191,103);
-      x.strokeStyle='#312e28';x.lineWidth=2;x.beginPath();x.moveTo(40,105);x.lineTo(40,60);x.lineTo(101,25);x.lineTo(163,60);x.lineTo(163,105);x.moveTo(29,61);x.lineTo(101,20);x.lineTo(174,61);x.moveTo(87,105);x.lineTo(87,75);x.lineTo(115,75);x.lineTo(115,105);x.stroke();
-      x.strokeRect(54,68,18,20);x.strokeRect(131,68,18,20);x.fillStyle='#392d23';x.font='13px monospace';x.fillText('EXHIBIT 0'+(index+1)+' / FIELD SKETCH',15,130);
-      x.fillStyle='rgba(170,142,88,.45)';x.fillRect(72,-10,69,28);x.restore();
-      evidenceStamp('EVIDENCE / 0'+(index+1),536,194);
-
-      x.save();x.translate(384,495);x.scale(.68,.68);x.strokeStyle='#42392a';x.globalAlpha=.64;x.lineWidth=1.7;
-      for(const radius of [215,198,163,95]){x.beginPath();x.arc(0,0,radius,0,Math.PI*2);x.stroke();x.save();x.globalAlpha=.19;x.beginPath();x.arc(1.3,-.9,radius+.8,.2,Math.PI*1.76);x.stroke();x.restore()}
-      for(let i=0;i<48;i++){const angle=i*Math.PI/24;x.beginPath();x.moveTo(Math.cos(angle)*204,Math.sin(angle)*204);x.lineTo(Math.cos(angle)*(i%4===0?229:219),Math.sin(angle)*(i%4===0?229:219));x.stroke()}
-      if(index%3===0){x.beginPath();for(let i=0;i<6;i++){const angle=-Math.PI/2+i*4*Math.PI/5;const px=Math.cos(angle)*161,py=Math.sin(angle)*161;i?x.lineTo(px,py):x.moveTo(px,py)}x.stroke()}
-      else if(index%3===1){x.beginPath();x.moveTo(-155,0);x.quadraticCurveTo(0,-122,155,0);x.quadraticCurveTo(0,122,-155,0);x.stroke();x.beginPath();x.arc(0,0,49,0,Math.PI*2);x.stroke();x.beginPath();x.arc(0,0,14,0,Math.PI*2);x.stroke()}
-      else{for(let i=0;i<8;i++){x.rotate(Math.PI/4);x.beginPath();x.moveTo(0,-161);x.lineTo(34,-69);x.lineTo(0,-32);x.lineTo(-34,-69);x.closePath();x.stroke()}}
-      x.font='36px Georgia';x.textAlign='center';['☿','♄','♃','♆','☽','♇'].forEach((glyph,i)=>{const angle=i*Math.PI/3-Math.PI/2;x.fillText(glyph,Math.cos(angle)*181,Math.sin(angle)*181+12)});
-      x.globalAlpha=.27;x.beginPath();x.moveTo(-260,0);x.lineTo(260,0);x.moveTo(0,-270);x.lineTo(0,270);x.stroke();x.restore();
-      // Layered evidence-board ephemera; decorative case clues, not event facts.
-      function note(px,py,w,h,color,lines,angle){x.save();x.translate(px,py);x.rotate(angle);x.fillStyle='rgba(35,20,8,.18)';x.fillRect(5,7,w,h);x.fillStyle=color;x.beginPath();x.moveTo(0,0);x.lineTo(w,0);x.lineTo(w,h-17);x.lineTo(w-18,h);x.lineTo(0,h);x.closePath();x.fill();x.fillStyle='rgba(95,60,15,.12)';x.fillRect(0,0,w,17);x.textAlign='left';x.fillStyle='#383126';x.font='22px "Segoe Print", cursive';lines.forEach((s,i)=>x.fillText(s,13,40+i*31));x.fillStyle='rgba(249,240,192,.75)';x.beginPath();x.moveTo(w-18,h);x.lineTo(w-18,h-17);x.lineTo(w,h-17);x.fill();x.restore()}
-      note(494,323,207,157,'#d8ca74',['Same symbol.','Different place.','Why here?'],.065);
-      note(80,661,240,132,'#c6bf9c',['Salt. Iron. Silver.','Test before dark.'],-.07);
-      // Torn newspaper fragment with redaction and a circled clue.
-      x.save();x.translate(73,345);x.rotate(-.075);x.fillStyle='rgba(35,20,8,.17)';x.fillRect(5,7,192,190);x.fillStyle='#cbbfa0';x.beginPath();x.moveTo(0,0);x.lineTo(194,2);x.lineTo(189,184);for(let i=8;i>=0;i--)x.lineTo(i*23,187+(i%2)*5);x.lineTo(0,0);x.fill();x.textAlign='left';x.fillStyle='#393328';x.font='bold 21px Georgia';x.fillText('LOCAL ARCHIVE',12,32);x.font='13px monospace';x.fillText('UNEXPLAINED INCIDENT',12,55);x.strokeStyle='#635846';x.lineWidth=1;for(let i=0;i<7;i++){x.beginPath();x.moveTo(12,74+i*12);x.lineTo(i%3===0?143:176,74+i*12);x.stroke()}x.fillStyle='#302a22';x.fillRect(15,97,120,8);x.fillRect(82,122,86,8);x.strokeStyle='#944434';x.lineWidth=2;x.beginPath();x.ellipse(91,150,70,19,-.05,0,Math.PI*2);x.stroke();x.fillStyle='rgba(173,149,98,.6)';x.fillRect(54,-8,75,26);x.restore();
-      // Second instant photo: charcoal woods and an unidentified silhouette.
-      x.save();x.translate(508,614);x.rotate(.09);x.fillStyle='rgba(28,20,13,.2)';x.fillRect(5,8,179,178);x.fillStyle='#eee0bd';x.fillRect(0,0,179,178);x.fillStyle='#65645a';x.fillRect(11,11,157,130);x.strokeStyle='#35362f';x.lineWidth=4;for(let i=0;i<7;i++){x.beginPath();x.moveTo(21+i*22,141);x.lineTo(18+i*23,17);x.moveTo(19+i*23,55);x.lineTo(6+i*23,26);x.stroke()}x.fillStyle='#282b25';x.beginPath();x.ellipse(91,91,12,34,0,0,Math.PI*2);x.fill();x.beginPath();x.arc(91,56,9,0,Math.PI*2);x.fill();x.textAlign='left';x.font='15px monospace';x.fillStyle='#41352b';x.fillText('EXHIBIT B / UNKNOWN',11,161);x.fillStyle='rgba(174,150,105,.55)';x.fillRect(57,-9,76,29);x.restore();
-      // Red cotton connections with their own offset shadows and fine highlight.
-      const links=[[[195,168],[574,334]],[[574,334],[162,360]],[[162,360],[599,628]],[[599,628],[184,672]],[[195,168],[599,628]]];
-      links.forEach(([a,b])=>{x.save();x.lineCap='round';x.strokeStyle='rgba(42,18,10,.24)';x.lineWidth=4;x.beginPath();x.moveTo(a[0]+2,a[1]+3);x.lineTo(b[0]+2,b[1]+3);x.stroke();x.strokeStyle='#862d27';x.lineWidth=3;x.beginPath();x.moveTo(...a);x.lineTo(...b);x.stroke();x.strokeStyle='rgba(230,133,108,.5)';x.lineWidth=.65;x.beginPath();x.moveTo(a[0]-.5,a[1]);x.lineTo(b[0]-.5,b[1]);x.stroke();x.restore()});
-      function pin(px,py){x.save();x.fillStyle='rgba(20,14,7,.23)';x.beginPath();x.ellipse(px+4,py+5,10,8,0,0,Math.PI*2);x.fill();const g=x.createRadialGradient(px-3,py-3,0,px,py,8);g.addColorStop(0,'#e3c994');g.addColorStop(.45,'#997848');g.addColorStop(1,'#473222');x.fillStyle=g;x.beginPath();x.arc(px,py,8,0,Math.PI*2);x.fill();x.restore()}
-      [[195,168],[574,334],[162,360],[599,628],[184,672]].forEach(p=>pin(...p));
-      // Wire paper clip and an evidence tag with a small wax seal.
-      x.save();x.translate(628,159);x.rotate(.15);x.strokeStyle='#5e5b51';x.lineWidth=3;x.beginPath();x.moveTo(0,53);x.lineTo(0,0);x.quadraticCurveTo(0,-15,12,-15);x.quadraticCurveTo(25,-15,25,0);x.lineTo(25,65);x.quadraticCurveTo(25,80,10,80);x.quadraticCurveTo(-6,80,-6,65);x.lineTo(-6,13);x.stroke();x.restore();
-      x.save();x.translate(489,236);x.rotate(.025);x.fillStyle='#c7b68c';x.beginPath();x.moveTo(0,0);x.lineTo(180,0);x.lineTo(196,23);x.lineTo(180,49);x.lineTo(0,49);x.closePath();x.fill();x.fillStyle='#534331';x.font='15px monospace';x.textAlign='left';x.fillText('CHAIN OF EVIDENCE',10,29);x.strokeStyle='#83553c';x.beginPath();x.arc(177,23,5,0,Math.PI*2);x.stroke();x.restore();
-      x.fillStyle='#7e382c';x.beginPath();for(let i=0;i<24;i++){const a=i*Math.PI/12,r=i%2?17:19;const px=690+Math.cos(a)*r,py=755+Math.sin(a)*r;i?x.lineTo(px,py):x.moveTo(px,py)}x.closePath();x.fill();x.strokeStyle='#ac6750';x.lineWidth=1.2;x.beginPath();x.arc(690,755,11,0,Math.PI*2);x.stroke();
-      x.textAlign='center';x.fillStyle='#775939';x.font='21px monospace';x.fillText('THE HUNT / INVESTIGATOR’S NOTEBOOK',384,810);x.font='italic 29px \"Segoe Print\", \"Bradley Hand\", cursive';x.fillText('Every symbol leaves a trace.',384,863);x.fillStyle='#753e2c';x.font='italic 24px \"Segoe Print\", cursive';x.fillText('Check the markings. Keep the circle intact.',384,918);
-      }else if(index===1){
-        // Domains verso: annotated town map, fingerprint card and research checklist.
-        x.save();x.translate(89,142);x.rotate(-.035);x.fillStyle='rgba(30,20,10,.17)';x.fillRect(7,8,575,402);x.fillStyle='#c8c4a3';x.fillRect(0,0,575,402);
-        x.strokeStyle='#7c8067';x.lineWidth=1;for(let i=0;i<11;i++){x.beginPath();x.moveTo(0,25+i*35);x.lineTo(575,35+i*35);x.stroke()}for(let i=0;i<13;i++){x.beginPath();x.moveTo(i*48,0);x.lineTo(i*48+40,402);x.stroke()}
-        x.strokeStyle='#52646a';x.lineWidth=7;x.beginPath();x.moveTo(25,0);x.bezierCurveTo(250,100,110,260,495,402);x.stroke();
-        x.strokeStyle='#8b352b';x.lineWidth=3;const route=[[76,120],[225,195],[377,115],[476,295]];x.beginPath();route.forEach(([px,py],i)=>i?x.lineTo(px,py):x.moveTo(px,py));x.stroke();route.forEach(([px,py],i)=>{x.beginPath();x.arc(px,py,15,0,Math.PI*2);x.stroke();x.fillStyle='#382c22';x.font='23px "Segoe Print", cursive';x.fillText(String(i+1),px-6,py+8)});x.fillStyle='#433c2e';x.font='24px "Segoe Print", cursive';x.fillText('Follow the pattern',32,368);x.fillStyle='rgba(179,143,83,.45)';x.fillRect(35,-10,100,30);x.fillRect(427,382,99,28);x.restore();
-        x.save();x.translate(90,603);x.rotate(.05);x.fillStyle='#e8d5b3';x.fillRect(3,5,258,212);x.strokeStyle='#6b6252';x.lineWidth=1.2;for(let i=0;i<14;i++){x.beginPath();x.ellipse(127,89,13+i*4,20+i*4,.1,.1,Math.PI*1.85);x.stroke()}x.fillStyle='#3c352a';x.font='21px "Segoe Print", cursive';x.fillText('Unknown print',30,193);x.restore();
-        x.save();x.translate(400,601);x.rotate(-.06);x.fillStyle='#dbcf80';x.fillRect(4,5,260,216);x.fillStyle='#343429';x.font='24px "Segoe Print", cursive';['Things to verify','□ Decode the signs','□ Compare patterns','□ Test the theory'].forEach((s,i)=>x.fillText(s,18,39+i*44));x.restore();
-        evidenceStamp('RESEARCH / OPEN',390,90);x.fillStyle='#704732';x.textAlign='center';x.font='28px "Segoe Print", cursive';x.fillText('The clues are connected.',384,892);x.font='19px "Segoe Print", cursive';x.fillText('THE HUNT / INVESTIGATOR’S NOTEBOOK',384,944);
-      }else{
-        // Final verso: celestial chart, sealed envelope, key and admission stub.
-        x.save();x.translate(380,352);x.strokeStyle='#5a4b35';for(const r of [68,133,204]){x.beginPath();x.arc(0,0,r,0,Math.PI*2);x.stroke()}const stars=[[-145,-84],[-53,-126],[62,-78],[136,51],[38,153],[-112,103]];x.beginPath();stars.forEach(([px,py],i)=>i?x.lineTo(px,py):x.moveTo(px,py));x.closePath();x.stroke();stars.forEach(([px,py])=>{x.beginPath();x.moveTo(px-8,py);x.lineTo(px+8,py);x.moveTo(px,py-8);x.lineTo(px,py+8);x.stroke()});x.font='22px "Segoe Print", cursive';x.fillStyle='#594630';x.fillText('align the signs',-89,250);x.restore();
-        x.save();x.translate(83,644);x.rotate(-.035);x.fillStyle='rgba(30,20,9,.2)';x.fillRect(6,7,341,185);x.fillStyle='#b89d72';x.fillRect(0,0,341,185);x.strokeStyle='#715d40';x.beginPath();x.moveTo(0,0);x.lineTo(170,111);x.lineTo(341,0);x.moveTo(0,185);x.lineTo(135,90);x.moveTo(341,185);x.lineTo(208,90);x.stroke();x.fillStyle='#843c2e';x.beginPath();x.arc(170,104,25,0,Math.PI*2);x.fill();x.strokeStyle='#bc7c5a';x.beginPath();x.arc(170,104,16,0,Math.PI*2);x.stroke();x.restore();
-        x.save();x.translate(534,639);x.rotate(.18);x.strokeStyle='#8a724b';x.lineWidth=12;x.beginPath();x.arc(0,0,31,0,Math.PI*2);x.moveTo(0,32);x.lineTo(0,135);x.lineTo(35,135);x.moveTo(0,111);x.lineTo(25,111);x.stroke();x.restore();
-        x.save();x.translate(486,779);x.rotate(.07);x.fillStyle='#c5bba1';x.fillRect(0,0,193,78);x.strokeStyle='#766952';x.strokeRect(7,7,179,64);x.fillStyle='#43382c';x.font='23px "Segoe Print", cursive';x.fillText('Admit one idea',12,46);x.restore();
-        evidenceStamp('SEALED / THE HUNT',382,100);x.textAlign='center';x.fillStyle='#6b3d2c';x.font='27px "Segoe Print", cursive';x.fillText('Keep this until the final hour.',384,910);x.font='18px "Segoe Print", cursive';x.fillText('THE HUNT / INVESTIGATOR’S NOTEBOOK',384,957);
-      }
+      paintEvidenceSpread(x,gothicReference,768,1024,index);
+      evidenceStamp(copy('EVIDENCE / 0')+(index+1),390,105);
+      x.textAlign='center';x.fillStyle='#5a3a29';x.font='italic 24px Georgia';x.fillText(copy('Every symbol leaves a trace.'),384,956);
     }else if(kind==='paper'||kind==='timelineLeft'){
 
-      x.textAlign='left';x.fillStyle='#51402d';x.font='19px monospace';x.fillText('THE HUNT / FIELD JOURNAL',82,98);evidenceStamp('CASE / THE HUNT',571,96);x.strokeStyle='#8b7450';x.lineWidth=1;x.beginPath();x.moveTo(82,125);x.lineTo(686,125);x.stroke();
+      x.textAlign='left';x.fillStyle='#51402d';x.font='19px monospace';x.fillText(copy("THE HUNT / FIELD JOURNAL"),82,98);evidenceStamp(copy("CASE / THE HUNT"),571,96);x.strokeStyle='#8b7450';x.lineWidth=1;x.beginPath();x.moveTo(82,125);x.lineTo(686,125);x.stroke();
       function wrap(text,font,y,lineHeight,maxWidth=598){x.font=font;let line='';for(const word of String(text).split(' ')){const next=line?line+' '+word:word;if(x.measureText(next).width>maxWidth&&line){x.fillText(line,82,y);y+=lineHeight;line=word}else line=next}if(line)x.fillText(line,82,y);return y+lineHeight}
       function heading(text){x.fillStyle='#25251f';const y=wrap(text,'bold 52px "Segoe Print", "Bradley Hand", cursive',210,66)+24;x.save();x.strokeStyle='#443a28';x.lineWidth=1.4;x.beginPath();x.moveTo(82,231);x.lineTo(346,234);x.stroke();x.restore();return y}
       x.save();x.fillStyle='rgba(172,142,91,.3)';x.translate(721,182);x.rotate(.12);x.fillRect(-6,-14,34,83);x.strokeStyle='#77694e';x.lineWidth=1;x.beginPath();x.moveTo(4,-5);x.lineTo(4,52);x.stroke();x.restore();
       function foot(text,number){x.fillStyle='#64503a';x.font='18px monospace';x.fillText(text,82,966);x.textAlign='right';x.fillText(number,686,966);x.textAlign='left'}
       if(kind==='timelineLeft'||index===1){
-        heading(kind==='timelineLeft'?'The timeline':'The final stretch');
+        heading(kind==='timelineLeft'?copy("The timeline"):copy("The final stretch"));
         x.fillStyle='#7b4930';wrap(event.timelineStatus,'20px "Segoe Print", cursive',290,25);
         const left=kind==='timelineLeft',start=left?0:3,lineY=525;
         function column(text,cx,y,font,size,width=198){x.font=font;x.textAlign='center';let line='';for(const word of String(text).split(' ')){const next=line?line+' '+word:word;if(x.measureText(next).width>width&&line){x.fillText(line,cx,y);y+=size;line=word}else line=next}if(line)x.fillText(line,cx,y);x.textAlign='left';return y+size}
@@ -136,27 +80,35 @@ export function createOccultBook({pageCount=3, approach=3.5, event=hackathon, on
           x.save();x.translate(cx,cardY);x.rotate(angle);x.fillStyle='rgba(30,20,10,.16)';x.fillRect(-106+4,6,212,177);x.fillStyle=upper?'#e5d9b7':'#d2c68d';x.fillRect(-106,0,212,177);x.fillStyle='rgba(176,151,94,.42)';x.fillRect(-33,-10,66,25);x.fillStyle='#783d29';column(entry.time,0,39,'bold 27px "Segoe Print", cursive',31,190);x.fillStyle='#25251e';column(entry.title,0,87,'bold 26px "Segoe Print", cursive',34,192);x.restore();
           x.strokeStyle='#8d322b';x.lineWidth=2;x.beginPath();x.moveTo(cx,pinYs[i]);x.lineTo(cx+2,upper?cardY+169:cardY+7);x.stroke();x.fillStyle='#6c3b24';x.beginPath();x.arc(cx,pinYs[i],8,0,Math.PI*2);x.fill();x.fillStyle='#d7b783';x.beginPath();x.arc(cx-2,pinYs[i]-2,3,0,Math.PI*2);x.fill();
           x.fillStyle='#4b3927';column(entry.detail,cx,upper?822:806,'24px "Segoe Print", cursive',31,218);
-        });foot('FOLLOW THE EVIDENCE',left?'02':'03');
+        });foot(copy("FOLLOW THE EVIDENCE"),left?'02':'03');
       }else if(index===0){
-        x.save();x.strokeStyle='#8e4734';x.lineWidth=2;x.beginPath();x.ellipse(663,210,33,36,-.2,0,Math.PI*2);x.stroke();x.font='17px "Segoe Print", cursive';x.fillStyle='#754834';x.fillText('start',638,210);x.fillText('here',642,230);x.restore();let y=heading('About us');x.fillStyle='#7b4930';x.font='bold 30px "Segoe Print", cursive';x.fillText('FOLLOW THE EVIDENCE',82,y);y+=73;
+        x.save();x.strokeStyle='#8e4734';x.lineWidth=2;x.beginPath();x.ellipse(663,210,33,36,-.2,0,Math.PI*2);x.stroke();x.font='17px "Segoe Print", cursive';x.fillStyle='#754834';x.fillText(copy("start"),638,210);x.fillText(copy("here"),642,230);x.restore();let y=heading(copy("About us"));x.fillStyle='#7b4930';x.font='bold 30px "Segoe Print", cursive';x.fillText(copy("FOLLOW THE EVIDENCE"),82,y);y+=73;
         x.fillStyle='#281e15';for(const paragraph of event.about)y=wrap(paragraph,'32px "Segoe Print", "Bradley Hand", cursive',y,48)+30;
-        x.fillStyle='#6c4930';y=wrap('Hosted by: '+event.organizer,'25px "Segoe Print", "Bradley Hand", cursive',Math.min(y+16,870),36);foot('IDEAS BECOME PROTOTYPES','01');
+        x.fillStyle='#6c4930';y=wrap(copy("Hosted by: ")+event.organizer,'25px "Segoe Print", "Bradley Hand", cursive',Math.min(y+16,870),36);freeInk=y;foot(copy("IDEAS BECOME PROTOTYPES"),'01');
       }else if(index===2){
-        x.save();x.fillStyle='#b4bd9b';x.translate(634,173);x.rotate(.1);x.fillRect(0,0,79,65);x.font='16px "Segoe Print", cursive';x.fillStyle='#374635';x.fillText('choose',7,26);x.fillText('a path',9,49);x.restore();heading('Domains');x.fillStyle='#7b4930';wrap(event.domainsStatus,'18px monospace',295,25);
-        event.domains.slice(0,4).forEach((entry,i)=>{const y=365+i*133;x.fillStyle='#281e15';wrap(String(i+1).padStart(2,'0')+'  '+entry.title,'bold 30px "Segoe Print", "Bradley Hand", cursive',y,41);x.fillStyle='#4b3927';wrap(entry.detail,'28px "Segoe Print", "Bradley Hand", cursive',y+57,36)});foot('CHOOSE YOUR CHALLENGE','04');
+        x.save();x.fillStyle='#b4bd9b';x.translate(634,173);x.rotate(.1);x.fillRect(0,0,79,65);x.font='16px "Segoe Print", cursive';x.fillStyle='#374635';x.fillText(copy("choose"),7,26);x.fillText(copy("a path"),9,49);x.restore();heading(copy("Domains"));x.fillStyle='#7b4930';wrap(event.domainsStatus,'18px monospace',295,25);
+        event.domains.slice(0,4).forEach((entry,i)=>{const y=365+i*133;x.fillStyle='#281e15';wrap(String(i+1).padStart(2,'0')+'  '+entry.title,'bold 30px "Segoe Print", "Bradley Hand", cursive',y,41);x.fillStyle='#4b3927';wrap(entry.detail,'28px "Segoe Print", "Bradley Hand", cursive',y+57,36)});freeInk=340+event.domains.length*133;foot(copy("CHOOSE YOUR CHALLENGE"),'04');
       }else{
-        x.save();x.strokeStyle='#79613d';x.lineWidth=2;x.beginPath();x.arc(668,195,20,0,Math.PI*2);x.moveTo(668,215);x.lineTo(668,254);x.lineTo(684,254);x.stroke();x.restore();heading('The essentials');const rows=[['PRIZE POOL',event.prizePool],['VENUE',event.venue],['DATE',event.date],['DURATION',event.duration]];
+        x.save();x.strokeStyle='#79613d';x.lineWidth=2;x.beginPath();x.arc(668,195,20,0,Math.PI*2);x.moveTo(668,215);x.lineTo(668,254);x.lineTo(684,254);x.stroke();x.restore();heading(copy("The essentials"));const rows=[[copy("PRIZE POOL"),event.prizePool],[copy("VENUE"),event.venue],[copy("DATE"),event.date],[copy("DURATION"),event.duration]];
         rows.forEach(([label,value],i)=>{const y=330+i*132;x.fillStyle='#7b4930';x.font='23px "Segoe Print", cursive';x.fillText(label,82,y);x.fillStyle='#281e15';wrap(value,'bold 32px "Segoe Print", "Bradley Hand", cursive',y+52,43)});
-        x.fillStyle='#6c4930';wrap(event.registrationUrl?'Register using the link below.':event.registrationLabel,'26px "Segoe Print", "Bradley Hand", cursive',898,35);foot('MAKE YOUR NEXT IDEA REAL','05');
+        x.fillStyle='#6c4930';wrap(event.registrationUrl?copy("Register using the link below."):event.registrationLabel,'26px "Segoe Print", "Bradley Hand", cursive',898,35);foot(copy("MAKE YOUR NEXT IDEA REAL"),'05');
       }
     }
 
-    if(kind==='sigil' && index===2) drawFieldSketch(x);
-    const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=4;if(record && kind!=='cover')paperRecipes.push({map:t,kind,index});return t;
+
+    if(kind!=='cover' && kind!=='sigil' && gothicReference.complete && gothicReference.naturalWidth){
+      if(freeInk>0&&freeInk<800){
+        const h=Math.min(190,920-freeInk-20);
+        paintEvidencePhoto(x,gothicReference,index,90,freeInk+18,220,h,-.035);
+        paintEvidencePhoto(x,gothicReference,index+3,425,freeInk+18,220,h,.04);
+      }
+      paintEvidencePhoto(x,gothicReference,index+2,656,20,72,63,.045);
+    }
+    const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=8;if(record && kind!=='cover')paperRecipes.push({map:t,kind,index});return t;
   }
   function relief(kind){const c=document.createElement('canvas');c.width=c.height=512;const x=c.getContext('2d');x.fillStyle='#888';x.fillRect(0,0,512,512);for(let i=0;i<42000;i++){const v=90+Math.floor(random()*85);x.fillStyle='rgb('+v+','+v+','+v+')';const px=random()*512,py=random()*512;x.beginPath();x.ellipse(px,py,kind==='leather'?random()*1.6+.4:random()*3+.5,random()*.8+.3,random()*3,0,Math.PI*2);x.fill()}const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(kind==='leather'?3:2,4);return t}
   const leatherMap=texture('cover'),blankMap=texture('blank'),sigilMaps=[texture('sigil',0),texture('sigil',1),texture('sigil',2)],timelineLeftMap=texture('timelineLeft'),finalMap=texture('paper',3),paperMaps=Array.from({length:pageCount},(_,i)=>texture('paper',i)),leatherRelief=relief('leather'),paperRelief=relief('paper');
-  const leather=new THREE.MeshStandardMaterial({map:leatherMap,bumpMap:leatherRelief,bumpScale:.018,roughnessMap:leatherRelief,roughness:.88,color:0xffffff});
+  const leather=new THREE.MeshStandardMaterial({map:leatherMap,bumpMap:leatherMap,bumpScale:.028,roughnessMap:leatherRelief,roughness:.88,color:0xffffff});
   const ec=document.createElement('canvas');ec.width=512;ec.height=256;const ex=ec.getContext('2d');ex.fillStyle='#bca375';ex.fillRect(0,0,512,256);for(let i=0;i<128;i++){ex.fillStyle=i%3?'rgba(57,34,11,.25)':'rgba(242,216,163,.3)';ex.fillRect(0,i*2,512,.6+random()*.7)}const edgeMap=new THREE.CanvasTexture(ec);edgeMap.colorSpace=THREE.SRGBColorSpace;const edge=new THREE.MeshStandardMaterial({map:edgeMap,bumpMap:edgeMap,bumpScale:.006,roughness:1});
   function mesh(geometry,material,parent=group){const m=new THREE.Mesh(geometry,material);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m}
   // Local coordinates: x from hinge to fore-edge, y along spine, z through thickness.
@@ -258,5 +210,5 @@ export function createOccultBook({pageCount=3, approach=3.5, event=hackathon, on
     if(showTimeline){const y=(.5-525/1024)*(H-.11),bp=bridgeGeo.attributes.position;const zl=pages[0].pivot.position.z,zr=pages[1].pivot.position.z;const points=[[-.055,zl+.055*Math.sin(wingAngle)+.002],[0,(zl+zr)/2],[.055,zr+.055*Math.sin(wingAngle)+.002]];points.forEach(([x,z],i)=>{bp.setXYZ(i*2,x,y-.009,z);bp.setXYZ(i*2+1,x,y+.009,z)});bp.needsUpdate=true;bridgeGeo.computeVertexNormals();bridgeGeo.computeBoundingSphere();timelineBridge.material.opacity=1;}
   }
   update(0);
-  return {group,setView(camera){view.position.copy(camera.position);view.quaternion.copy(camera.quaternion);view.fov=camera.fov;view.aspect=camera.aspect},setRestPose(point,scale,mobile){restCenter.copy(point);tableScale=scale;mobileView=mobile;resting.setFromEuler(new THREE.Euler(-1.0,.25,.28,'ZYX'))},setProgress(value){progress=clamp(Number(value)||0)},update,dispose(){const gs=new Set(),ms=new Set(),ts=new Set();group.traverse(o=>{if(o.geometry)gs.add(o.geometry);if(o.material)(Array.isArray(o.material)?o.material:[o.material]).forEach(m=>{ms.add(m);for(const key of ['map','bumpMap','roughnessMap'])if(m[key])ts.add(m[key])})});gs.forEach(g=>g.dispose());ms.forEach(m=>m.dispose());ts.forEach(t=>t.dispose());group.removeFromParent()}};
+  return {group,ready:Promise.all([referenceCover.decode(),referencePages.decode(),paperReference.decode(),gothicReference.decode()]).then(()=>{referenceCover.onload?.();referencePages.onload?.();paperReference.onload?.()}),setView(camera){view.position.copy(camera.position);view.quaternion.copy(camera.quaternion);view.fov=camera.fov;view.aspect=camera.aspect},setRestPose(point,scale,mobile){restCenter.copy(point);tableScale=scale;mobileView=mobile;resting.setFromEuler(new THREE.Euler(-1.0,.25,.28,'ZYX'))},setProgress(value){progress=clamp(Number(value)||0)},update,dispose(){const gs=new Set(),ms=new Set(),ts=new Set();group.traverse(o=>{if(o.geometry)gs.add(o.geometry);if(o.material)(Array.isArray(o.material)?o.material:[o.material]).forEach(m=>{ms.add(m);for(const key of ['map','bumpMap','roughnessMap'])if(m[key])ts.add(m[key])})});gs.forEach(g=>g.dispose());ms.forEach(m=>m.dispose());ts.forEach(t=>t.dispose());group.removeFromParent()}};
 }

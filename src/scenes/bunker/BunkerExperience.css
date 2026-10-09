@@ -170,7 +170,73 @@ body:has(.bunker-viewport[data-map-focus='true']) #root > header,
 .bunker-experience--reduced .bunker-mobile-document { display:none; }
 body:has(.bunker-viewport[data-map-focus='true']) .journal-navigation { visibility:hidden; }
 
-.bunker-viewport[data-map-focus='true'] :is(.bunker-chapters,.bunker-progress,.bunker-panels) { visibility:hidden; }
+.bunker-viewport[data-map-focus='true'] .bunker-panels { visibility:hidden; }
 
 .bunker-experience--reduced .bunker-panel[data-panel='rules']::before { content:''; position:absolute; z-index:-1; inset:-.8rem -.65rem; background:url('/s03/textures/ancient-folder.webp') center/100% 100%; transform:rotate(-1.4deg); }
 .bunker-experience--reduced .bunker-panel[data-panel='rules'] { isolation:isolate; }
+
+/* Ink is revealed only once the physical leaf has finished turning. */
+.bunker-experience:not(.bunker-experience--simple) .bunker-panel:is([data-panel='rules'],[data-panel='faq']) { overflow:visible; height:43svh; }
+.bunker-experience:not(.bunker-experience--simple) .bunker-panel:is([data-panel='rules'],[data-panel='faq']) > .bunker-eyebrow { display:none; }
+.document-leaf { position:absolute; inset:0; opacity:0; padding-top:.5rem; }
+.bunker-panel:focus { outline:none; }
+.document-cover { display:flex; flex-direction:column; justify-content:center; text-align:center; }
+.printed-answer { padding:.65rem 0; border-bottom:1px solid #73593d33; }
+.bunker-panel .printed-answer h4, .bunker-mobile-document .printed-answer h4 { color:#432d1c; text-transform:none; letter-spacing:0; font:600 clamp(1rem,1.3vw,1.5rem)/1.15 'Cormorant Garamond',Georgia,serif; margin:0 0 .35rem; }
+.bunker-panel .printed-answer p { font:.85rem/1.5 Georgia,serif; margin:0; }
+.bunker-mobile-document .printed-answer h4 { font-size:1.05rem; }
+.bunker-mobile-document .printed-answer p { font-size:.72rem; margin:0; line-height:1.45; }
+.bunker-experience--simple:not(.bunker-experience--reduced) .bunker-mobile-document:is([data-readout='faq'],[data-readout='rules']) { height:39svh; overflow:visible; }
+.bunker-experience--simple .bunker-panels .document-leaf { position:relative; opacity:1; padding:1.5rem 0; }
+.bunker-experience--simple .bunker-panels .document-cover { min-height:35svh; border-bottom:1px solid #73593d55; }
+.bunker-experience--simple .bunker-panels .printed-answer h4 { color:#432d1c; }
+.bunker-experience--simple .bunker-panels .printed-answer p { font:1rem/1.6 Georgia,serif; }
+
+/* Sharp ink, a stationary full spread, and an always-available brass navigation rail. */
+.bunker-chapters { opacity:1; z-index:10; background:#100c09ed; padding:.85rem 1rem; border-block:1px solid #b3935744; }
+.bunker-viewport[aria-hidden='true'] .bunker-chapters { visibility:hidden; }
+.bunker-experience:not(.bunker-experience--simple) .bunker-panel:is([data-panel='rules'],[data-panel='faq']) { left:calc(50% + 5.8svh); width:34svh; top:29svh; height:42svh; max-height:42svh; }
+.bunker-experience--reduced { overflow-x:clip; }
+.bunker-experience--reduced .bunker-panel { background-size:100% auto; background-repeat:repeat-y; }
+.bunker-experience:not(.bunker-experience--simple) .bunker-panel:is([data-panel='rules'],[data-panel='faq']) .document-cover h3 { font-size:clamp(2rem,2.7vw,3.1rem); }
+.case-brief h5 { font:italic 1rem/1.2 Georgia,serif; margin:.9rem 0 .4rem; color:#62432a; }
+.case-brief ul { padding-left:1.1rem; margin:.4rem 0 .6rem; font:.8rem/1.5 Georgia,serif; }
+.case-brief li { padding:.18rem 0; }
+.bunker-panel .bunker-document-rules { font:.55rem/1.5 'IBM Plex Mono',monospace !important; margin-top:.8rem; letter-spacing:.04em; }
+.bunker-panel .case-brief p { font:.84rem/1.5 Georgia,serif; }
+.bunker-panel .case-brief h4 { font-size:clamp(1.15rem,1.6vw,1.8rem); }
+.bunker-experience:not(.bunker-experience--simple) .bunker-panel[data-panel='prizes'] { top:27svh; max-height:48svh; }
+.bunker-panel[data-panel='prizes'] h3 { margin:.4rem 0 .6rem !important; }
+.prize-placements { width:100%; margin:.35rem 0; }
+.prize-placements > div { display:flex; align-items:baseline; justify-content:space-between; gap:1rem; padding:.8rem 0; border-bottom:1px solid #74503055; }
+.prize-placements dt { font:italic 1.15rem Georgia,serif; }
+.prize-placements dd { margin:0; font:600 1.7rem 'Cormorant Garamond',Georgia,serif; }
+.bunker-panel .prize-sample-note, .bunker-mobile-document .prize-sample-note { font:.5rem/1.5 'IBM Plex Mono',monospace; letter-spacing:.08em; margin-top:.8rem; }
+.bunker-experience--simple:not(.bunker-experience--reduced) .bunker-chapters { position:fixed; z-index:12; inset:auto .55rem .55rem; display:grid; grid-template-columns:repeat(3,1fr); gap:.4rem; margin:0; padding:.6rem; background:#100c09f5; }
+.bunker-experience--simple:not(.bunker-experience--reduced) .bunker-chapters a { font-size:.49rem; padding:.35rem .15rem; }
+.bunker-experience--simple:not(.bunker-experience--reduced) .bunker-chapters a > span { margin-right:.3rem; }
+.bunker-mobile-document .case-brief h4 { font-size:1.1rem; }
+.bunker-mobile-document .case-brief h5 { font-size:.8rem; margin:.6rem 0 .3rem; }
+.bunker-mobile-document .case-brief p, .bunker-mobile-document .case-brief ul { font-size:.68rem; line-height:1.4; }
+.bunker-mobile-document .case-brief ul { margin: .3rem 0; }
+.bunker-mobile-document .bunker-document-rules { font:.42rem/1.4 'IBM Plex Mono',monospace; }
+.bunker-experience--simple:not(.bunker-experience--reduced) .bunker-mobile-document[data-readout='rules'] { top:29svh; left:20%; width:60%; }
+.bunker-experience--simple:not(.bunker-experience--reduced) .bunker-mobile-document[data-readout='faq'] { top:30svh; left:20%; width:60%; }
+.bunker-mobile-document[data-readout='prizes'] { top:27svh !important; }
+.bunker-mobile-document .prize-placements > div { padding:.55rem 0; }
+.bunker-mobile-document .prize-placements dt { font-size:.9rem; }
+.bunker-mobile-document .prize-placements dd { font-size:1.3rem; }
+body:has(.bunker-viewport[aria-hidden='false']) .s02-sound { top:1rem; bottom:auto; }
+
+/* Match the closer physical sheets, with a reserved photographic footer. */
+.bunker-experience:not(.bunker-experience--simple) .bunker-panel:is([data-panel='rules'],[data-panel='faq']) { left:calc(50% + 6.1svh); width:42svh; top:22svh; height:53svh; max-height:53svh; overflow:visible; }
+.bunker-panel .case-brief p { font:.95rem/1.45 Georgia,serif; }
+.case-brief ul { font:.9rem/1.45 Georgia,serif; }
+.bunker-panel .case-brief h4 { font-size:clamp(1.3rem,1.7vw,1.9rem); }
+.bunker-experience:not(.bunker-experience--simple) .bunker-panel[data-panel='prizes'] { inset:25svh auto auto 50%; transform:translateX(-50%); width:40svh; height:auto; max-height:none; overflow:visible; scrollbar-width:none; }
+.bunker-experience:not(.bunker-experience--simple) .bunker-panel[data-panel='prizes'] h3 { font-size:clamp(2rem,4.2svh,3.3rem); }
+.bunker-experience--simple:not(.bunker-experience--reduced) .bunker-mobile-document[data-readout='prizes'] { overflow:visible; max-height:none; scrollbar-width:none; }
+.bunker-experience--simple:not(.bunker-experience--reduced) .bunker-mobile-document:is([data-readout='rules'],[data-readout='faq']) { top:24svh; left:16%; width:68%; height:46svh; max-height:46svh; overflow:visible; }
+.bunker-mobile-document .case-brief p, .bunker-mobile-document .case-brief ul { font-size:.74rem; line-height:1.4; }
+.bunker-mobile-document .case-brief h4 { font-size:1.15rem; }
+.bunker-mobile-document .printed-answer p { font-size:.78rem; line-height:1.45; }

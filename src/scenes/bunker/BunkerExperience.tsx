@@ -1,3 +1,4 @@
+import { copy } from '../../data/content'
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -9,6 +10,8 @@ import BunkerOverlays from './BunkerOverlays'
 import { bunkerChapters } from './bunkerChapters'
 import { createBunkerTimeline, addDeskChoreography, BUNKER_DURATION, panelAt } from './bunkerTimeline'
 import './BunkerExperience.css'
+import { deskSchedule } from './deskSchedule'
+import { addDocumentChoreography, syncDocumentAccessibility } from './bunkerTimeline'
 import { journalMotion, deskMotion, resetDeskMotion } from './journalMotion'
 
 export default function BunkerExperience() {
@@ -49,7 +52,7 @@ export default function BunkerExperience() {
     const trigger = master.current?.timeline.scrollTrigger ?? mobileMaster.current?.scrollTrigger
     const element = document.getElementById(id)
     let destination: number
-    if (trigger && (!mobile || !['bunker-allies', 'S10'].includes(id))) destination = trigger.start + (trigger.end - trigger.start) * chapter.at * (mobile ? BUNKER_DURATION / 311 : 1)
+    if (trigger && (!mobile || !['S10'].includes(id))) destination = trigger.start + (trigger.end - trigger.start) * chapter.at * (mobile ? BUNKER_DURATION / deskSchedule.mobileDuration : 1)
     else if (simple && element) destination = element.getBoundingClientRect().top + window.scrollY - 32
     else { pendingChapter.current = id; return }
     const duration = animate && !reducedMotion ? Math.min(8, Math.max(2.2, Math.abs(destination - window.scrollY) / innerHeight * .22)) : 0
@@ -121,7 +124,7 @@ export default function BunkerExperience() {
       if (mobile && !reducedMotion) {
         const runway = screen.querySelector<HTMLElement>('.bunker-cinematic-runway')!
         mobileJournal = gsap.timeline({ defaults: { ease: 'none' }, onUpdate: () => {
-          journalMotion.draw?.(); screen.dataset.mapFocus = String(deskMotion.mapFocus > .95)
+          journalMotion.draw?.(); syncDocumentAccessibility(screen); screen.dataset.mapFocus = String(deskMotion.mapFocus > .95)
           screen.querySelectorAll<HTMLElement>('[data-readout]').forEach(el => {
             const visible = Number(gsap.getProperty(el, 'opacity')) > .9
             el.inert = !visible; el.setAttribute('aria-hidden', String(!visible))
@@ -130,16 +133,17 @@ export default function BunkerExperience() {
           trigger: runway, start: 'top top', end: 'bottom bottom', scrub: .85,
           onUpdate: self => {
             screen.dataset.cinematic = String(self.isActive)
-            screen.dataset.chapter = self.isActive ? panelAt(self.progress * 311) : ''
+            screen.dataset.chapter = self.isActive ? panelAt(self.progress * deskSchedule.mobileDuration) : ''
           },
         } })
         mobileMaster.current = mobileJournal
         addDeskChoreography(mobileJournal)
+        addDocumentChoreography(mobileJournal, screen)
         mobileJournal.fromTo(room.querySelector('.bunker-clean-plate'), { opacity: 0 }, { opacity: 1, duration: 2 }, 1)
-          .to(room.querySelector('.bunker-clean-plate'), { opacity: 0, duration: 8 }, 302)
+          .to(room.querySelector('.bunker-clean-plate'), { opacity: 0, duration: 8 }, deskSchedule.faqEnd)
           .fromTo(screen.querySelector('.bunker-journal-shade'), { opacity: 0 }, { opacity: .96, duration: 12 }, 2)
-          .to(screen.querySelector('.bunker-journal-shade'), { opacity: 0, duration: 8 }, 302)
-        for (const [name, at, end] of [['rules', 176, 196], ['prizes', 242, 260], ['faq', 280, 302]] as const) {
+          .to(screen.querySelector('.bunker-journal-shade'), { opacity: 0, duration: 8 }, deskSchedule.faqEnd)
+        for (const [name, at, end] of [['rules', 174, deskSchedule.caseEnd], ['prizes', deskSchedule.prizeRead, deskSchedule.prizeEnd], ['faq', deskSchedule.faqStart + 10, deskSchedule.faqEnd]] as const) {
           const readout = screen.querySelector(`[data-readout="${name}"]`)
           mobileJournal.fromTo(readout, { opacity: 0 }, { opacity: 1, duration: 2 }, at).to(readout, { opacity: 0, duration: 2 }, end)
         }
@@ -163,8 +167,8 @@ export default function BunkerExperience() {
   }, [active, background.phase])
 
   return <section ref={section} id="S03" className={`bunker-experience${simple ? ' bunker-experience--simple' : ''}${reducedMotion ? ' bunker-experience--reduced' : ''}`}
-    aria-labelledby="S03-title" data-ready={background.phase === 'ready'}>
-    <h2 id="S03-title" className="bunker-accessible-title">The Bunker — DJS ISACA: The Hunt</h2>
+    style={simple ? undefined : { height: `${deskSchedule.duration * 5.76}svh` }} aria-labelledby="S03-title" data-ready={background.phase === 'ready'}>
+    <h2 id="S03-title" className="bunker-accessible-title">{copy("The Bunker — DJS ISACA: The Hunt")}</h2>
     <BunkerWorld background={background} />
     <div ref={viewport} className="bunker-viewport" aria-hidden={!active || background.phase !== 'ready'}>
       <BunkerOverlays navigate={navigate} />

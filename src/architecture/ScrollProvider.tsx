@@ -33,8 +33,8 @@ export function ScrollProvider({ children }: { children: ReactNode }) {
     smoothScroll.current?.stop()
     const block = (event: Event) => event.preventDefault()
     const blockKey = (event: KeyboardEvent) => {
-      if (event.target instanceof HTMLElement && event.target.closest('input, textarea, select, [contenteditable="true"]')) return
-      if (event.key === ' ' && event.target instanceof HTMLElement && event.target.closest('button, a')) return
+      if (event.target instanceof HTMLElement && event.target.closest("input, textarea, select, [contenteditable=\"true\"]")) return
+      if (event.key === ' ' && event.target instanceof HTMLElement && event.target.closest("button, a")) return
       if (['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End', ' '].includes(event.key)) event.preventDefault()
     }
     window.addEventListener('wheel', block, { passive: false, capture: true })

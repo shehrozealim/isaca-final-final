@@ -1,3 +1,5 @@
+import { prepareBunkerAssets, signalBunkerRenderReady } from './bunkerAssets'
+import { siteContent } from '../../data/content'
 import { useLayoutEffect, useRef } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { Euler, PerspectiveCamera, Quaternion, Vector3 } from 'three'
@@ -6,17 +8,9 @@ import { event } from '../../data/event'
 import { getBunkerBackgroundState } from '../../components/bunker/bunkerBackgroundState'
 import { journalMotion, deskMotion } from './journalMotion'
 import { createOverheadDesk } from './OverheadDesk'
+import { waitForThreeTextures } from './textureReadiness'
 
-const journalEvent = {
-  name: 'THE HUNT', organizer: 'DJS ISACA',
-  about: ['An investigation in ideas. A hackathon for the curious.', 'Bring your questions. Work together. Turn an idea into something you can put to the test.'],
-  timelineStatus: 'EVENT TIMINGS / TO BE ANNOUNCED',
-  timeline: ['The briefing', 'Choose a trail', 'Begin building', 'Test the theory', 'Follow the evidence', 'The final reveal'].map((title, i) => ({ time: `FILE 0${i + 1}`, title, detail: 'Schedule to be announced.' })),
-  domainsStatus: 'CHALLENGE TRACKS / TO BE ANNOUNCED',
-  domains: [{ title: 'Unseal the case', detail: 'Official tracks will appear in the next briefing.' }],
-  prizePool: 'To be announced', venue: 'DJSCE / Vile Parle, Mumbai', date: event.dateTime, duration: event.duration,
-  registrationUrl: event.registrationUrl, registrationLabel: 'Registration opens soon',
-}
+const journalEvent = { ...siteContent.journal, date: event.dateTime, duration: event.duration, registrationUrl: event.registrationUrl }
 
 export default function JournalScene({ mobile }: { mobile: boolean }) {
   const { get, size, invalidate } = useThree()
@@ -41,8 +35,15 @@ export default function JournalScene({ mobile }: { mobile: boolean }) {
     const desk = createOverheadDesk(() => journalMotion.draw?.())
     deskRef.current = desk
     get().scene.add(desk.group)
-    return () => { instance.dispose(); desk.dispose(); bookRef.current = null; deskRef.current = null }
-  }, [get, mobile])
+    let disposed = false
+    void Promise.all([prepareBunkerAssets(), instance.ready, desk.ready, waitForThreeTextures()]).then(() => new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve())))).then(async () => {
+      if (disposed) return
+      const renderer = get()
+      await renderer.gl.compileAsync(renderer.scene, renderer.camera)
+      if (!disposed) { signalBunkerRenderReady(); invalidate() }
+    }).catch(() => { signalBunkerRenderReady(false) })
+    return () => { disposed = true; instance.dispose(); desk.dispose(); bookRef.current = null; deskRef.current = null }
+  }, [get, mobile, invalidate])
   useLayoutEffect(() => {
     const book = bookRef.current
     const camera = get().camera
@@ -80,10 +81,10 @@ export default function JournalScene({ mobile }: { mobile: boolean }) {
     if (book.group.visible) book.update(Math.min(dt, .05))
     const approach = deskMotion.approach, prize = deskMotion.prize, reveal = deskMotion.prizeOpacity
     if (approach > 0 && book.group.visible) {
-      tableBook.current.set(mobile ? -4.1 - reveal * .5 : -5.2 - reveal * 1.1, -1.42, -.6)
+      tableBook.current.set(mobile ? -1.65 : -4.8, -1.72, mobile ? -.8 : .8)
       book.group.position.lerp(tableBook.current, approach)
       book.group.quaternion.slerp(tableRotation.current, approach)
-      book.group.scale.multiplyScalar(1 - approach * .18)
+      book.group.scale.multiplyScalar(1 - approach * .74)
     }
     const drift = Math.sin(deskMotion.drift * Math.PI)
     readingCamera.current.set(drift * .28, drift * .10, 12 - drift * .35)
@@ -91,9 +92,8 @@ export default function JournalScene({ mobile }: { mobile: boolean }) {
     readingRotation.current.copy(camera.quaternion)
     aim.current.up.set(0, 0, -1)
     // Overhead reading holds stay centered; the orbit resolves before the ink appears.
-    const orbit = Math.sin(deskMotion.folder * Math.PI) * (1 - deskMotion.folderPage)
     const sealArc = Math.sin(prize * Math.PI) * reveal
-    aim.current.position.set(orbit * .65 + sealArc * .3, 11.1 + sealArc * .5, .08 + orbit * .8 + sealArc * .4)
+    aim.current.position.set(sealArc * .12, 11.1 + sealArc * .18, .08 + sealArc * .12)
     aim.current.lookAt(0, -1.5, 0)
     camera.position.lerp(aim.current.position, approach)
     camera.quaternion.slerpQuaternions(readingRotation.current, aim.current.quaternion, approach)

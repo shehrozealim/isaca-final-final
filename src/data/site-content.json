@@ -1,0 +1,418 @@
+{
+  "event": {
+    "title": "DJS ISACA — THE HUNT",
+    "dateTime": "To be announced",
+    "duration": "To be announced",
+    "venue": "Dwarkadas J. Sanghvi College of Engineering",
+    "registrationUrl": "",
+    "teamSize": "To be announced",
+    "eligibility": "To be announced",
+    "problemStatements": [
+      {
+        "title": "01 / The Vanishing Signal",
+        "description": "Distress calls vanish from the archive. Build a searchable dashboard that connects related reports and reveals unusual patterns.",
+        "objective": "Help investigators find the next lead in noisy reports.",
+        "deliverables": [
+          "A searchable incident timeline.",
+          "Related reports and anomaly flags.",
+          "A demo following one clear lead."
+        ]
+      },
+      {
+        "title": "02 / The Forged Identity",
+        "description": "Stolen identities are moving through the network. Build a tool that explains suspicious messages and preserves the evidence.",
+        "objective": "Explain each warning and suggest a safe next step.",
+        "deliverables": [
+          "A message or link checker.",
+          "Risk reasons and an evidence log.",
+          "A demo with fictional messages."
+        ]
+      },
+      {
+        "title": "03 / The Midnight Route",
+        "description": "A team must reach a safe house before dawn. Build a map that responds to new incidents and available supplies.",
+        "objective": "Choose a safe route and adapt when conditions change.",
+        "deliverables": [
+          "A map with route alternatives.",
+          "Supply and incident reporting.",
+          "A demo of a route change."
+        ]
+      }
+    ],
+    "tracks": [],
+    "prizes": [
+      {
+        "place": "First place",
+        "amount": "₹50,000"
+      },
+      {
+        "place": "Second place",
+        "amount": "₹30,000"
+      },
+      {
+        "place": "Third place",
+        "amount": "₹20,000"
+      }
+    ],
+    "schedule": [],
+    "rules": [],
+    "faq": [
+      {
+        "question": "Where does the trail lead?",
+        "answer": "Dwarkadas J. Sanghvi College of Engineering, Vile Parle West, Mumbai."
+      },
+      {
+        "question": "When does the hunt begin?",
+        "answer": "The date and schedule will be announced by DJS ISACA."
+      },
+      {
+        "question": "How do I join?",
+        "answer": "Registration opens soon. The link will appear in the final dossier."
+      }
+    ]
+  },
+  "journal": {
+    "name": "THE HUNT",
+    "organizer": "DJS ISACA",
+    "about": [
+      "An investigation in ideas. A hackathon for the curious.",
+      "Bring your questions. Work together. Turn an idea into something you can put to the test."
+    ],
+    "timelineStatus": "EVENT TIMINGS / TO BE ANNOUNCED",
+    "timeline": [
+      {
+        "time": "FILE 01",
+        "title": "The briefing",
+        "detail": "Schedule to be announced."
+      },
+      {
+        "time": "FILE 02",
+        "title": "Choose a trail",
+        "detail": "Schedule to be announced."
+      },
+      {
+        "time": "FILE 03",
+        "title": "Begin building",
+        "detail": "Schedule to be announced."
+      },
+      {
+        "time": "FILE 04",
+        "title": "Test the theory",
+        "detail": "Schedule to be announced."
+      },
+      {
+        "time": "FILE 05",
+        "title": "Follow the evidence",
+        "detail": "Schedule to be announced."
+      },
+      {
+        "time": "FILE 06",
+        "title": "The final reveal",
+        "detail": "Schedule to be announced."
+      }
+    ],
+    "domainsStatus": "CHALLENGE TRACKS / TO BE ANNOUNCED",
+    "domains": [
+      {
+        "title": "Unseal the case",
+        "detail": "Official tracks will appear in the next briefing."
+      }
+    ],
+    "prizePool": "₹1,00,000",
+    "venue": "DJSCE / Vile Parle, Mumbai",
+    "registrationLabel": "Registration opens soon"
+  },
+  "chapters": [
+    {
+      "id": "bunker-details",
+      "title": "Field journal"
+    },
+    {
+      "id": "bunker-about",
+      "title": "The destination"
+    },
+    {
+      "id": "bunker-archive",
+      "title": "The sealed cases"
+    },
+    {
+      "id": "bunker-prizes",
+      "title": "The bounty"
+    },
+    {
+      "id": "bunker-faq",
+      "title": "The archive"
+    },
+    {
+      "id": "S10",
+      "title": "Join the hunt"
+    }
+  ],
+  "scenes": [
+    {
+      "title": "Intro / Darkness",
+      "description": "The invitation into THE HUNT."
+    },
+    {
+      "title": "Title Sting",
+      "description": "The title sequence."
+    },
+    {
+      "title": "Case File",
+      "description": "The bunker shutter."
+    },
+    {
+      "title": "The Bunker",
+      "description": "Field journal, destination, sealed cases, rewards, FAQ and registration."
+    }
+  ],
+  "copy": {
+    "0": "0",
+    "Skip to content": "Skip to content",
+    "Hunter’s Journal": "Hunter’s Journal",
+    "Scenes": "Scenes",
+    "useScrollState requires ScrollProvider": "useScrollState requires ScrollProvider",
+    "Development scroll diagnostics": "Development scroll diagnostics",
+    "Development HUD": "Development HUD",
+    "Global:": "Global:",
+    "Active:": "Active:",
+    "·": "·",
+    "Local:": "Local:",
+    "Mobile fallback": "Mobile fallback",
+    " · Reduced motion": " · Reduced motion",
+    "The Hunt": "The Hunt",
+    "DJS ISACA PRESENTS": "DJS ISACA PRESENTS",
+    "THE HUNT": "THE HUNT",
+    "JOIN THE HUNT": "JOIN THE HUNT",
+    "SCROLL TO ENTER": "SCROLL TO ENTER",
+    "Mute S00 sound": "Mute S00 sound",
+    "Enable S00 sound": "Enable S00 sound",
+    "SOUND": "SOUND",
+    "ON": "ON",
+    "OFF": "OFF",
+    "THE HUNT / ARCHIVE PREPARATION": "THE HUNT / ARCHIVE PREPARATION",
+    "The archive could not load.": "The archive could not load.",
+    "Preparing the investigation.": "Preparing the investigation.",
+    "Preparing the scene.": "Preparing the scene.",
+    "Loading textures and artifacts.": "Loading textures and artifacts.",
+    "Retry loading": "Retry loading",
+    "Mute bunker sound": "Mute bunker sound",
+    "Enable bunker sound": "Enable bunker sound",
+    "Bunker shutter": "Bunker shutter",
+    "start": "start",
+    "Mute title sting sound": "Mute title sting sound",
+    "Enable title sting sound": "Enable title sting sound",
+    "3D unavailable. All sections remain accessible below.": "3D unavailable. All sections remain accessible below.",
+    "Static scene fallback": "Static scene fallback",
+    "3D unavailable.": "3D unavailable.",
+    "Intro / Darkness": "Intro / Darkness",
+    "Recruitment introduction placeholder.": "Recruitment introduction placeholder.",
+    "Title Sting": "Title Sting",
+    "A 4.1-second supernatural title sting, ending at the closed bunker shutter.": "A 4.1-second supernatural title sting, ending at the closed bunker shutter.",
+    "Case File": "Case File",
+    "Event introduction placeholder.": "Event introduction placeholder.",
+    "The Bunker": "The Bunker",
+    "Investigation, field briefing, schedule, archive, allies, and registration.": "Investigation, field briefing, schedule, archive, allies, and registration.",
+    "DJS ISACA / THE HUNT": "DJS ISACA / THE HUNT",
+    "Leave nothing unexplained.": "Leave nothing unexplained.",
+    "The seal remembers.": "The seal remembers.",
+    "Follow the markings.": "Follow the markings.",
+    "Do not lose the thread.": "Do not lose the thread.",
+    "THE UNANSWERED FILES / RESEARCH NOTES": "THE UNANSWERED FILES / RESEARCH NOTES",
+    "CHALLENGE BRIEFING / KEEP THIS FILE CLOSE": "CHALLENGE BRIEFING / KEEP THIS FILE CLOSE",
+    "REWARD DOSSIER / BREAK THE SEAL": "REWARD DOSSIER / BREAK THE SEAL",
+    "Map template unavailable": "Map template unavailable",
+    "CASE 03 / THE HUNT": "CASE 03 / THE HUNT",
+    "The Bunker — DJS ISACA: The Hunt": "The Bunker — DJS ISACA: The Hunt",
+    "FIELD NOTES": "FIELD NOTES",
+    "03 / HUNTER’S JOURNAL": "03 / HUNTER’S JOURNAL",
+    "FIELD JOURNAL": "FIELD JOURNAL",
+    "DJS ISACA": "DJS ISACA",
+    "Problem statements.": "Problem statements.",
+    "The sealed cases.": "The sealed cases.",
+    "CHALLENGE DOSSIER": "CHALLENGE DOSSIER",
+    "CASE BRIEFING": "CASE BRIEFING",
+    "The cases are still sealed.": "The cases are still sealed.",
+    "The official cases will be released by DJS ISACA.": "The official cases will be released by DJS ISACA.",
+    "AWAITING DECLASSIFICATION": "AWAITING DECLASSIFICATION",
+    "Official rules will be published with the problem statements.": "SAMPLE CASE / Official challenges will be announced.",
+    "FROM THE ARCHIVE": "FROM THE ARCHIVE",
+    "FAQ": "FAQ",
+    "The unanswered files.": "The unanswered files.",
+    "QUESTIONS &amp; ANSWERS": "QUESTIONS & ANSWERS",
+    "DJS / ISACA / CASE 03": "DJS / ISACA / CASE 03",
+    "THE SEAL IS BROKEN": "THE SEAL IS BROKEN",
+    "Prize pool.": "Prize pool.",
+    "The official bounty will be announced by DJS ISACA.": "The official bounty will be announced by DJS ISACA.",
+    "Bunker chapters": "Bunker chapters",
+    "01 / THE DESTINATION": "01 / THE DESTINATION",
+    "Follow the evidence.": "Follow the evidence.",
+    "Investigation map marking Dwarkadas J. Sanghvi College of Engineering in Vile Parle West": "Investigation map marking Dwarkadas J. Sanghvi College of Engineering in Vile Parle West",
+    "An investigation in ideas. A hackathon for the curious.": "An investigation in ideas. A hackathon for the curious.",
+    "Enter THE HUNT with DJS ISACA. Bring your questions, work together, and turn an idea into something you can put to the test.": "Enter THE HUNT with DJS ISACA. Bring your questions, work together, and turn an idea into something you can put to the test.",
+    "Choose your trail": "Choose your trail",
+    "Tracks will be revealed in the next briefing.": "Tracks will be revealed in the next briefing.",
+    "THE DESTINATION / LOCATION CONFIRMED": "THE DESTINATION / LOCATION CONFIRMED",
+    "Dwarkadas J. Sanghvi": "Dwarkadas J. Sanghvi",
+    "College of Engineering": "College of Engineering",
+    "U-15, JVPD Scheme, Bhaktivedanta Swami Marg,": "U-15, JVPD Scheme, Bhaktivedanta Swami Marg,",
+    "Vile Parle West, Mumbai 400056.": "Vile Parle West, Mumbai 400056.",
+    "OPEN DIRECTIONS": "OPEN DIRECTIONS",
+    "02 / EVENT DETAILS": "02 / EVENT DETAILS",
+    "Your field briefing.": "Your field briefing.",
+    "Keep the essentials close.": "Keep the essentials close.",
+    "Event essentials +": "Event essentials +",
+    "Date & time": "Date & time",
+    "Duration": "Duration",
+    "Venue": "Venue",
+    "Team size": "Team size",
+    "Eligibility": "Eligibility",
+    "THE SEALED CASES / FILE 04": "THE SEALED CASES / FILE 04",
+    "THE SEAL IS BROKEN / REWARD DOSSIER": "THE SEAL IS BROKEN / REWARD DOSSIER",
+    "The rewards await.": "The rewards await.",
+    "To be announced": "To be announced",
+    "FROM THE ARCHIVE / FILE 06": "FROM THE ARCHIVE / FILE 06",
+    "06 / YOUR NEXT CASE": "06 / YOUR NEXT CASE",
+    "JOIN THE HUNT.": "JOIN THE HUNT.",
+    "The evidence brought you here.": "The evidence brought you here.",
+    "The next move is yours.": "The next move is yours.",
+    "REGISTER FOR THE HUNT": "REGISTER FOR THE HUNT",
+    "REGISTRATION OPENS SOON": "REGISTRATION OPENS SOON",
+    "Revisit the case files": "Revisit the case files",
+    "ALLIES / THE HUNT": "ALLIES / THE HUNT",
+    "COUNCIL DOSSIERS": "COUNCIL DOSSIERS",
+    "INVESTIGATION DIVISION": "INVESTIGATION DIVISION",
+    "CLASSIFIED": "CLASSIFIED",
+    "Twenty-four hours. One idea. A working prototype. Our hackathon brings builders together to explore a problem and create something worth sharing.": "Twenty-four hours. One idea. A working prototype. Our hackathon brings builders together to explore a problem and create something worth sharing.",
+    "Form a team, choose your challenge, and turn your ideas into code. This book is your guide to the event.": "Form a team, choose your challenge, and turn your ideas into code. This book is your guide to the event.",
+    "DRAFT / TIMES TO BE CONFIRMED": "DRAFT / TIMES TO BE CONFIRMED",
+    "T + 00h": "T + 00h",
+    "Opening & kickoff": "Opening & kickoff",
+    "Meet your team and choose a challenge.": "Meet your team and choose a challenge.",
+    "T + 01h": "T + 01h",
+    "Building begins": "Building begins",
+    "Plan your prototype and start creating.": "Plan your prototype and start creating.",
+    "T + 06h": "T + 06h",
+    "First checkpoint": "First checkpoint",
+    "Review progress and refine your approach.": "Review progress and refine your approach.",
+    "T + 12h": "T + 12h",
+    "Halfway review": "Halfway review",
+    "Test what works and focus your next steps.": "Test what works and focus your next steps.",
+    "T + 20h": "T + 20h",
+    "Final sprint": "Final sprint",
+    "Polish the prototype and prepare your demo.": "Polish the prototype and prepare your demo.",
+    "T + 24h": "T + 24h",
+    "Hacking ends": "Hacking ends",
+    "Submit your work. Judging schedule to follow.": "Submit your work. Judging schedule to follow.",
+    "PROPOSED / TO BE CONFIRMED": "PROPOSED / TO BE CONFIRMED",
+    "AI & Machine Learning": "AI & Machine Learning",
+    "Intelligent tools and useful automation.": "Intelligent tools and useful automation.",
+    "Web & App Development": "Web & App Development",
+    "Digital experiences that solve a problem.": "Digital experiences that solve a problem.",
+    "Privacy, trust, and safer systems.": "Privacy, trust, and safer systems.",
+    "Open Innovation": "Open Innovation",
+    "A challenge beyond the usual categories.": "A challenge beyond the usual categories.",
+    "Registration details coming soon": "Registration details coming soon",
+    "mountD3COYBook requires a DOM container.": "mountD3COYBook requires a DOM container.",
+    "D3COY interactive hackathon diary": "D3COY interactive hackathon diary",
+    "SPECIMEN / FIELD COPY": "SPECIMEN / FIELD COPY",
+    "SPECIMEN 07 / UNIDENTIFIED": "SPECIMEN 07 / UNIDENTIFIED",
+    "iron residue at the edge": "iron residue at the edge",
+    "SUPERNATURAL INVESTIGATIONS": "SUPERNATURAL INVESTIGATIONS",
+    "DJS ISACA / FIELD JOURNAL": "DJS ISACA / FIELD JOURNAL",
+    "BUILD / CREATE / SHIP": "BUILD / CREATE / SHIP",
+    "EXHIBIT 0": "EXHIBIT 0",
+    " / FIELD SKETCH": " / FIELD SKETCH",
+    "EVIDENCE / 0": "EVIDENCE / 0",
+    "Same symbol.": "Same symbol.",
+    "Different place.": "Different place.",
+    "Why here?": "Why here?",
+    "Salt. Iron. Silver.": "Salt. Iron. Silver.",
+    "Test before dark.": "Test before dark.",
+    "LOCAL ARCHIVE": "LOCAL ARCHIVE",
+    "UNEXPLAINED INCIDENT": "UNEXPLAINED INCIDENT",
+    "EXHIBIT B / UNKNOWN": "EXHIBIT B / UNKNOWN",
+    "CHAIN OF EVIDENCE": "CHAIN OF EVIDENCE",
+    "THE HUNT / INVESTIGATOR’S NOTEBOOK": "THE HUNT / INVESTIGATOR’S NOTEBOOK",
+    "Every symbol leaves a trace.": "Every symbol leaves a trace.",
+    "Check the markings. Keep the circle intact.": "Check the markings. Keep the circle intact.",
+    "Follow the pattern": "Follow the pattern",
+    "Unknown print": "Unknown print",
+    "Things to verify": "Things to verify",
+    "□ Decode the signs": "□ Decode the signs",
+    "□ Compare patterns": "□ Compare patterns",
+    "□ Test the theory": "□ Test the theory",
+    "RESEARCH / OPEN": "RESEARCH / OPEN",
+    "The clues are connected.": "The clues are connected.",
+    "align the signs": "align the signs",
+    "Admit one idea": "Admit one idea",
+    "SEALED / THE HUNT": "SEALED / THE HUNT",
+    "Keep this until the final hour.": "Keep this until the final hour.",
+    "THE HUNT / FIELD JOURNAL": "THE HUNT / FIELD JOURNAL",
+    "CASE / THE HUNT": "CASE / THE HUNT",
+    "The timeline": "The timeline",
+    "The final stretch": "The final stretch",
+    "FOLLOW THE EVIDENCE": "FOLLOW THE EVIDENCE",
+    "here": "here",
+    "About us": "About us",
+    "Hosted by: ": "Hosted by: ",
+    "IDEAS BECOME PROTOTYPES": "IDEAS BECOME PROTOTYPES",
+    "choose": "choose",
+    "a path": "a path",
+    "Domains": "Domains",
+    "CHOOSE YOUR CHALLENGE": "CHOOSE YOUR CHALLENGE",
+    "The essentials": "The essentials",
+    "PRIZE POOL": "PRIZE POOL",
+    "Register using the link below.": "Register using the link below.",
+    "MAKE YOUR NEXT IDEA REAL": "MAKE YOUR NEXT IDEA REAL",
+    "VENUE": "VENUE",
+    "DATE": "DATE",
+    "DURATION": "DURATION",
+    "Desktop": "Desktop",
+    "EXHIBIT / {number}": "EXHIBIT / {number}",
+    "The objective": "The objective",
+    "Bring back evidence": "Bring back evidence",
+    "SAMPLE BOUNTY / FOR PREVIEW ONLY": "SAMPLE BOUNTY / FOR PREVIEW ONLY",
+    "FIELD OBSERVATIONS": "FIELD OBSERVATIONS",
+    "No witness stands alone.": "No witness stands alone.",
+    "Check the circle before dawn.": "Check the circle before dawn.",
+    "TRACE / RECORD / RETURN": "TRACE / RECORD / RETURN"
+  },
+  "map": {
+    "landscape_0": "DJS ISACA / INVESTIGATION NO. 03",
+    "landscape_1": "The trail ends here.",
+    "landscape_2": "MUMBAI · VILE PARLE WEST · JVPD SCHEME",
+    "landscape_3": "ARABIAN SEA",
+    "landscape_4": "BHAKTIVEDANTA SWAMI MARG",
+    "landscape_5": "JVPD SCHEME",
+    "landscape_6": "VILE PARLE WEST",
+    "landscape_7": "JUHU",
+    "landscape_8": "VILE PARLE STATION",
+    "landscape_9": "COOPER",
+    "landscape_10": "HOSPITAL",
+    "landscape_11": "Dwarkadas J. Sanghvi",
+    "landscape_12": "College of Engineering",
+    "landscape_13": "PLOT U-15 / THE DESTINATION",
+    "landscape_14": "N",
+    "landscape_15": "Follow the thread. Keep the evidence.",
+    "landscape_16": "INVESTIGATION SKETCH / NOT TO SCALE · ADDRESS VERIFIED AT DJSCE.AC.IN",
+    "landscape_17": "LOCATION",
+    "landscape_18": "CONFIRMED",
+    "portrait_0": "DJS ISACA / INVESTIGATION 03",
+    "portrait_1": "MUMBAI · VILE PARLE WEST",
+    "portrait_2": "The trail ends here.",
+    "portrait_3": "ARABIAN SEA / JUHU",
+    "portrait_4": "Dwarkadas J. Sanghvi",
+    "portrait_5": "College of Engineering",
+    "portrait_6": "PLOT U-15 / THE DESTINATION",
+    "portrait_7": "COOPER",
+    "portrait_8": "HOSPITAL",
+    "portrait_9": "BHAKTIVEDANTA SWAMI MARG",
+    "portrait_10": "JVPD SCHEME",
+    "portrait_11": "VILE PARLE WEST",
+    "portrait_12": "VILE PARLE STATION",
+    "portrait_13": "N",
+    "portrait_14": "INVESTIGATION SKETCH / NOT TO SCALE",
+    "portrait_15": "COLLEGE ADDRESS VERIFIED / DJSCE.AC.IN"
+  }
+}

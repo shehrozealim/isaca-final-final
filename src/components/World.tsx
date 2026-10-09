@@ -1,3 +1,5 @@
+import { copy } from '../data/content'
+import { signalBunkerRenderReady } from '../scenes/bunker/bunkerAssets'
 import { Component, useLayoutEffect, useRef, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
@@ -12,8 +14,8 @@ import JournalScene from '../scenes/bunker/JournalScene'
 
 class CanvasBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
   state = { failed: false }
-  static getDerivedStateFromError() { return { failed: true } }
-  render() { return this.state.failed ? <p className="fallback">3D unavailable. All sections remain accessible below.</p> : this.props.children }
+  static getDerivedStateFromError() { signalBunkerRenderReady(false); return { failed: true } }
+  render() { return this.state.failed ? <p className="fallback">{copy("3D unavailable. All sections remain accessible below.")}</p> : this.props.children }
 }
 function PlaceholderWorld() {
   const { camera, invalidate } = useThree()
@@ -50,9 +52,9 @@ export default function World() {
   const { simple, mobile, reducedMotion } = usePreferences()
   const { state } = useScrollState()
   const background = useBunkerBackground()
-  if (!reducedMotion && background.phase === 'ready' && ['S02', 'S03'].includes(state.active.id)) {
+  if (!reducedMotion && ['opening', 'ready'].includes(background.phase) && ['S02', 'S03'].includes(state.active.id)) {
     const canvas = <div className="world journal-world" aria-hidden="true">
-      <CanvasBoundary><Canvas shadows={!mobile} frameloop="demand" dpr={[1, mobile ? 1.25 : 1.5]} camera={{ position: [0, 0, 12], fov: 38 }}
+      <CanvasBoundary><Canvas shadows={!mobile} frameloop="demand" dpr={[1, mobile ? 1.5 : 2]} camera={{ position: [0, 0, 12], fov: 38 }}
         gl={{ alpha: true, antialias: true }}><JournalScene mobile={mobile} /></Canvas></CanvasBoundary>
     </div>
     const slot = document.getElementById('bunker-canvas-slot')
@@ -61,6 +63,6 @@ export default function World() {
   // The opening sequence through the bunker shutter is entirely DOM-only.
   if (state.active.id === 'S00' || state.active.id === 'S01' || state.active.id === 'S02' || state.active.id === 'S03') return null
   return <div className="world" aria-hidden="true">
-    {simple ? <div className="static-placeholder">Static scene fallback</div> : <CanvasBoundary><Canvas dpr={[1, 1.5]} frameloop="demand" camera={{ position: [0, 0, 7], fov: 45 }} fallback={<p className="fallback">3D unavailable.</p>}><PlaceholderWorld /></Canvas></CanvasBoundary>}
+    {simple ? <div className="static-placeholder">{copy("Static scene fallback")}</div> : <CanvasBoundary><Canvas dpr={[1, 1.5]} frameloop="demand" camera={{ position: [0, 0, 7], fov: 45 }} fallback={<p className="fallback">{copy("3D unavailable.")}</p>}><PlaceholderWorld /></Canvas></CanvasBoundary>}
   </div>
 }

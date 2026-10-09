@@ -181,10 +181,7 @@ export function createShutterTimeline(root: HTMLElement, options: {
     .addLabel('room-hold', 4.38)
     .addLabel('small-step', 4.7)
 
-  if (!reducedMotion) {
-    timeline.to(select('.s02-room'), { scale: mobile ? 1.015 : 1.025, y: mobile ? '-0.3vh' : '-0.5vh', duration: 1.1, ease: 'power1.inOut' }, 4.7)
-      .to(select('.s02-frame'), { scale: mobile ? 1.006 : 1.01, duration: 1.1, ease: 'power1.inOut' }, 4.7)
-  }
+  // Hold the room and frame at their original scale when the shutter opens.
 
   timeline.addLabel('ambience', 5.6)
     .call(() => cue('hum'), [], 5.6)

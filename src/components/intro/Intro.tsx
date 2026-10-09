@@ -1,3 +1,4 @@
+import { copy } from '../../data/content'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import gsap from 'gsap'
@@ -121,7 +122,7 @@ export default function Intro() {
         // inference on fractional mobile image widths.
         master.set('.intro-hunter', { xPercent: -50, x: 0 }, 0)
           .set('.intro-forest', {
-            filter: 'saturate(.65) brightness(.25) contrast(1.08)', scale: 1.025,
+            filter: "saturate(.65) brightness(.25) contrast(1.08)", scale: 1.025,
           }, 0)
           .set(atmosphere, { opacity: 0 }, 0)
           .set(left, { x: -element.clientWidth * .18, y: element.clientHeight * .02 }, 0)
@@ -129,7 +130,7 @@ export default function Intro() {
           .set(center, { scale: .52, opacity: .3, y: -element.clientHeight * .06 }, 0)
           .set('.intro-entrance-black', { opacity: 0 }, .45)
           .to('.intro-forest', {
-            filter: 'saturate(.65) brightness(.83) contrast(1)',
+            filter: "saturate(.65) brightness(.83) contrast(1)",
             scale: 1, duration: .85, ease: 'power2.inOut',
           }, .45)
           .to(atmosphere, { opacity: 1, duration: .85, ease: 'sine.inOut' }, .45)
@@ -198,11 +199,11 @@ export default function Intro() {
         .fromTo('.intro-distant-fog, .intro-near-fog', { opacity: 1 }, {
           opacity: 0, duration: .35,
         }, .55)
-        .fromTo('.intro-hunter img', { filter: 'saturate(.5) brightness(.52)' }, {
-          filter: 'saturate(.5) brightness(0)', duration: .35,
+        .fromTo('.intro-hunter img', { filter: "saturate(.5) brightness(.52)" }, {
+          filter: "saturate(.5) brightness(0)", duration: .35,
         }, .65)
-        .fromTo('.intro-forest', { filter: 'saturate(.65) brightness(.83) contrast(1)' }, {
-          filter: 'saturate(.65) brightness(0) contrast(1)', duration: .15,
+        .fromTo('.intro-forest', { filter: "saturate(.65) brightness(.83) contrast(1)" }, {
+          filter: "saturate(.65) brightness(0) contrast(1)", duration: .15,
         }, .85)
         // Finish the matte just before the boundary so fractional scroll
         // rounding cannot leave a sliver of light in the last S00 frame.
@@ -223,32 +224,32 @@ export default function Intro() {
   }, [active, introReady, reducedMotion])
 
   return <>
-    {!active && <h1 id="S00-title" className="intro-accessible-title">The Hunt</h1>}
+    {!active && <h1 id="S00-title" className="intro-accessible-title">{copy("The Hunt")}</h1>}
     {active && <div ref={root} className={`intro${reducedMotion ? ' intro--reduced' : ''}`}>
       <div className="intro-black" aria-hidden="true" />
-      <img className="intro-forest" src="/s00/background/forest-bg.png" alt="" />
+      <img className="intro-forest" src="/s00/background/forest-bg.png" alt={""} />
       <div className="intro-distant-fog" aria-hidden="true">
         <div className="intro-backlight" />
         <div className="intro-fog intro-fog--distant" />
         <div className="intro-fog intro-fog--clearing" />
       </div>
       <div className="intro-hunters" aria-hidden="true">
-        <div className="intro-hunter intro-hunter--center"><img src="/s00/hunters/hunter-center.png" alt="" /></div>
-        <div className="intro-hunter intro-hunter--left"><img src="/s00/hunters/hunter-left.png" alt="" /></div>
-        <div className="intro-hunter intro-hunter--right"><img src="/s00/hunters/hunter-right.png" alt="" /></div>
+        <div className="intro-hunter intro-hunter--center"><img src="/s00/hunters/hunter-center.png" alt={""} /></div>
+        <div className="intro-hunter intro-hunter--left"><img src="/s00/hunters/hunter-left.png" alt={""} /></div>
+        <div className="intro-hunter intro-hunter--right"><img src="/s00/hunters/hunter-right.png" alt={""} /></div>
       </div>
       <div className="intro-near-fog" aria-hidden="true"><div className="intro-fog intro-fog--near" /></div>
       <div className="intro-foreground" aria-hidden="true">
-        <img className="intro-branches intro-branches--left" src="/s00/foreground/branches-left.png" alt="" />
-        <img className="intro-branches intro-branches--right" src="/s00/foreground/branches-right.png" alt="" />
+        <img className="intro-branches intro-branches--left" src="/s00/foreground/branches-left.png" alt={""} />
+        <img className="intro-branches intro-branches--right" src="/s00/foreground/branches-right.png" alt={""} />
       </div>
       <div className="intro-vignette" aria-hidden="true" />
       <div className="intro-typography">
-        <p className="intro-presenter">DJS ISACA PRESENTS</p>
-        <h1 id="S00-title" className="intro-title">THE HUNT</h1>
+        <p className="intro-presenter">{copy("DJS ISACA PRESENTS")}</p>
+        <h1 id="S00-title" className="intro-title">{copy("THE HUNT")}</h1>
       </div>
       <div className="intro-actions">
-        <a className="intro-join" href="#S10">JOIN THE HUNT</a>
+        <a className="intro-join" href="#S10">{copy("JOIN THE HUNT")}</a>
         <a className="intro-scroll" href="#S01" onClick={event => {
           const destination = document.getElementById('S01')
           if (!destination) return
@@ -263,15 +264,15 @@ export default function Intro() {
           history.pushState(null, '', '#S01')
           window.scrollTo({ top: destination.offsetTop + 2, behavior: 'instant' })
         }}>
-          <span>SCROLL TO ENTER</span>
+          <span>{copy("SCROLL TO ENTER")}</span>
           <span className="intro-scroll-line" aria-hidden="true" />
         </a>
       </div>
       <div className="intro-grain" aria-hidden="true" />
       <div className="intro-entrance-black" aria-hidden="true" />
       <button className="intro-sound" type="button" onClick={toggleSound}
-        aria-pressed={soundEnabled} aria-label={soundEnabled ? 'Mute S00 sound' : 'Enable S00 sound'}>
-        SOUND {soundEnabled ? 'ON' : 'OFF'}
+        aria-pressed={soundEnabled} aria-label={soundEnabled ? copy("Mute S00 sound") : copy("Enable S00 sound")}>
+        {copy("SOUND")} {soundEnabled ? copy("ON") : copy("OFF")}
       </button>
     </div>}
     {active && createPortal(<div ref={exitBlack} className="intro-exit-black" aria-hidden="true" />, document.body)}

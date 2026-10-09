@@ -7,8 +7,8 @@ function useMedia(query: string) {
   }, () => window.matchMedia(query).matches, () => false)
 }
 export function usePreferences() {
-  const mobile = useMedia('(max-width: 767px)')
-  const systemReducedMotion = useMedia('(prefers-reduced-motion: reduce)')
+  const mobile = useMedia("(max-width: 767px)")
+  const systemReducedMotion = useMedia("(prefers-reduced-motion: reduce)")
   // A shareable reduced-effects path also makes the static composition reviewable.
   const reducedMotion = systemReducedMotion || new URLSearchParams(window.location.search).get('effects') === 'reduce'
   return { mobile, reducedMotion, simple: mobile || reducedMotion }

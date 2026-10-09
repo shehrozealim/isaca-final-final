@@ -1,8 +1,9 @@
+import { copy } from '../data/content'
 import { createContext, useContext, type RefObject } from 'react'
 import { getScrollState } from '../data/scenes'
 export const ScrollContext = createContext<{ state: ReturnType<typeof getScrollState>; progress: RefObject<number>; lockScroll: () => () => void; scrollTo: (top: number, options?: { duration?: number }) => void } | null>(null)
 export function useScrollState() {
   const context = useContext(ScrollContext)
-  if (!context) throw new Error('useScrollState requires ScrollProvider')
+  if (!context) throw new Error(copy("useScrollState requires ScrollProvider"))
   return context
 }

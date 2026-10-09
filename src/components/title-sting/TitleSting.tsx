@@ -1,3 +1,4 @@
+import { copy } from '../../data/content'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import gsap from 'gsap'
@@ -126,7 +127,7 @@ export default function TitleSting() {
   }, [active, seal, mobile, reducedMotion, cue, stop])
 
   if (!active) return <>
-    <h2 id="S01-title" className="s01-accessible-title">THE HUNT</h2>
+    <h2 id="S01-title" className="s01-accessible-title">{copy("THE HUNT")}</h2>
     {handoff && state.active.id === 'S02' && createPortal(
       <div className="s01-sting s01-sting--handoff" data-phase="handoff">
         <div className="s01-black" aria-hidden="true" />
@@ -137,12 +138,12 @@ export default function TitleSting() {
 
   return createPortal(<div ref={root} className="s01-sting" data-phase="playing" data-duration-seconds={STING_DURATION}>
     <div className="s01-black" aria-hidden="true" />
-    <img className="s01-smoke" data-sting-layer="smoke" src="/s01/images/smoke.webp" alt="" />
+    <img className="s01-smoke" data-sting-layer="smoke" src="/s01/images/smoke.webp" alt={""} />
     <div className="s01-vignette" data-sting-layer="vignette" aria-hidden="true" />
     <div className="s01-seal" data-sting-layer="seal" aria-hidden="true" dangerouslySetInnerHTML={{ __html: seal }} />
     <div className="s01-typography">
-      <p className="s01-presenter" data-sting-layer="presenter">DJS ISACA PRESENTS</p>
-      <h2 id="S01-title" className="s01-title" data-sting-layer="title"><span>THE HUNT</span></h2>
+      <p className="s01-presenter" data-sting-layer="presenter">{copy("DJS ISACA PRESENTS")}</p>
+      <h2 id="S01-title" className="s01-title" data-sting-layer="title"><span>{copy("THE HUNT")}</span></h2>
     </div>
     <div className="s01-interference" data-sting-layer="interference" aria-hidden="true" />
     <ShearLayers seal={seal} mobile={mobile} />
@@ -151,8 +152,8 @@ export default function TitleSting() {
     <div className="s01-failure-black" data-sting-layer="failure-black" aria-hidden="true" />
     <ShutterCue />
     <button className="s01-sound" type="button" onClick={toggle} aria-pressed={soundEnabled}
-      aria-label={soundEnabled ? 'Mute title sting sound' : 'Enable title sting sound'}>
-      SOUND {soundEnabled ? 'ON' : 'OFF'}
+      aria-label={soundEnabled ? copy("Mute title sting sound") : copy("Enable title sting sound")}>
+      {copy("SOUND")} {soundEnabled ? copy("ON") : copy("OFF")}
     </button>
   </div>, document.body)
 }

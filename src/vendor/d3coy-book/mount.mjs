@@ -1,3 +1,4 @@
+import { copy } from '../../data/content'
 import * as THREE from 'three';
 import { createOccultBook } from './OccultBook.mjs';
 import { hackathon } from './hackathon-data.mjs';
@@ -10,7 +11,7 @@ export async function mountD3COYBook(container, {
   maxPixelRatio = 2,
 } = {}) {
   if (!container || typeof container.appendChild !== 'function') {
-    throw new TypeError('mountD3COYBook requires a DOM container.');
+    throw new TypeError(copy("mountD3COYBook requires a DOM container."));
   }
   if (document.fonts) {
     await document.fonts.load('32px "Segoe Print"');
@@ -24,7 +25,7 @@ export async function mountD3COYBook(container, {
   renderer.toneMappingExposure = 1.05;
   renderer.domElement.style.cssText = 'width:100%;height:100%;display:block;';
   renderer.domElement.setAttribute('role', 'img');
-  renderer.domElement.setAttribute('aria-label', 'D3COY interactive hackathon diary');
+  renderer.domElement.setAttribute('aria-label', copy("D3COY interactive hackathon diary"));
   container.appendChild(renderer.domElement);
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x14110d);

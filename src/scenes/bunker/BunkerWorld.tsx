@@ -2,7 +2,6 @@ import { useLayoutEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import type { BunkerBackgroundState } from '../../components/bunker/bunkerBackgroundState'
 import BunkerBoard from './BunkerBoard'
-import BunkerRadio from './BunkerRadio'
 import BunkerFinale from './BunkerFinale'
 
 export default function BunkerWorld({ background }: { background: BunkerBackgroundState }) {
@@ -36,7 +35,7 @@ export default function BunkerWorld({ background }: { background: BunkerBackgrou
   }, [room, image])
   if (!room) return null
   return createPortal(<div ref={plane} className="bunker-layer-plane" aria-hidden="true">
-    <img className="bunker-clean-plate" src="/s03/textures/bunker-table-cleared.webp" alt="" decoding="async" />
-    <BunkerBoard /><BunkerRadio /><BunkerFinale />
+    <img className="bunker-clean-plate" src="/s03/textures/bunker-table-cleared.webp" alt={""} decoding="async" />
+    <BunkerBoard /><BunkerFinale />
   </div>, room)
 }
