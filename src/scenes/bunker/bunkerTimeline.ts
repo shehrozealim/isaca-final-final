@@ -9,6 +9,8 @@ export const BUNKER_DURATION = schedule.duration
 export const panelAt = (p: number) => p < 24 ? '' : p < 104 ? 'journal' : p < 145 ? 'board' : p < schedule.prizeStart ? 'rules' : p < schedule.faqStart ? 'prizes' : p < schedule.finaleStart ? 'faq' : 'finale'
 export function addDeskChoreography(t: gsap.core.Timeline) {
   journalMotion.progress = 0; journalMotion.opacity = 0; resetDeskMotion()
+  // Mobile uses this same absolute schedule, including the final room reading hold.
+  t.to({}, { duration: schedule.duration }, 0)
   t.to(journalMotion, { opacity: 1, duration: 2 }, 1)
     .to(journalMotion, { progress: .18, duration: 12, ease: 'power2.inOut' }, 2)
     .to(journalMotion, { progress: .36, duration: 10, ease: 'power2.inOut' }, 14)
@@ -32,9 +34,11 @@ export function addDeskChoreography(t: gsap.core.Timeline) {
     .to(deskMotion, { prizeOpacity: 0, prize: 0, duration: 8, ease: 'power2.inOut' }, schedule.prizeEnd)
     .to(deskMotion, { faqOpacity: 1, duration: 8, ease: 'power2.inOut' }, schedule.faqStart)
     .to(deskMotion, { faq: 1, duration: 12, ease: 'power2.inOut' }, schedule.faqStart + 18)
-    .to(deskMotion, { opacity: 0, duration: 8 }, schedule.faqEnd)
-    .to(journalMotion, { opacity: 0, duration: 8 }, schedule.faqEnd)
-    .to(deskMotion, { approach: 0, duration: 3 }, schedule.faqEnd + 8)
+    .to(deskMotion, { faqOpacity: 0, duration: 8, ease: 'power2.inOut' }, schedule.faqEnd)
+    .to(deskMotion, { broadcast: 1, duration: 6, ease: 'power2.inOut' }, schedule.broadcastStart)
+    .to(deskMotion, { broadcast: 0, opacity: 0, duration: 12, ease: 'power2.inOut' }, schedule.roomReturn)
+    .to(journalMotion, { opacity: 0, duration: 12 }, schedule.roomReturn)
+    .to(deskMotion, { approach: 0, duration: 3 }, schedule.roomReturn + 12)
   for (let i = 1; i < casePageCount; i++) t.to(deskMotion, { folderTurn: i + 1, duration: 12, ease: 'power2.inOut' }, 218 + (i - 1) * 34)
   for (let i = 1; i < faqPageCount; i++) t.to(deskMotion, { faq: i + 1, duration: 12, ease: 'power2.inOut' }, schedule.faqRead + 24 + (i - 1) * 34)
   return t
@@ -64,13 +68,15 @@ export function createBunkerTimeline(section: HTMLElement, viewport: HTMLElement
   }
   show('journal', 24, 88); show('rules', 174, schedule.caseEnd); show('prizes', schedule.prizeRead, schedule.prizeEnd); show('faq', schedule.faqStart + 10, schedule.faqEnd); show('finale', schedule.finaleStart + 6, BUNKER_DURATION)
   addDocumentChoreography(timeline, viewport)
+  timeline.fromTo(select('.desk-broadcast'), { opacity: 0, x: 32, scale: .62 }, { opacity: 1, x: 0, scale: 1, duration: 6, ease: 'power2.out' }, schedule.broadcastStart)
+    .to(select('.desk-broadcast'), { opacity: 0, duration: 8 }, schedule.roomReturn)
   timeline.fromTo(world('.bunker-clean-plate'), { opacity: 0 }, { opacity: 1, duration: 2, immediateRender: false }, 1)
-    .to(world('.bunker-clean-plate'), { opacity: 0, duration: 6 }, schedule.faqEnd)
+    .to(world('.bunker-clean-plate'), { opacity: 0, duration: 12 }, schedule.roomReturn)
     .fromTo(select('.bunker-journal-shade'), { opacity: 0 }, { opacity: .96, duration: 12, immediateRender: false }, 2)
-    .to(select('.bunker-journal-shade'), { opacity: 0, duration: 8 }, schedule.faqEnd)
+    .to(select('.bunker-journal-shade'), { opacity: 0, duration: 12 }, schedule.roomReturn)
     .fromTo(stage.querySelector('.s02-frame'), { opacity: 1 }, { opacity: 0, duration: 10, immediateRender: false }, 2)
     .fromTo(world('[data-object="finale"]'), { opacity: 0, rotation: -12 }, { opacity: 1, rotation: 0, duration: 6, immediateRender: false }, schedule.finaleStart)
-    .fromTo(select('.bunker-room-shade'), { opacity: 0 }, { opacity: .80, duration: 7, immediateRender: false }, schedule.finaleStart + 2)
+    .fromTo(select('.bunker-room-shade'), { opacity: 0 }, { opacity: .35, duration: 7, immediateRender: false }, schedule.finaleStart + 2)
     .fromTo(select('.bunker-progress span'), { scaleX: 0 }, { scaleX: 1, duration: BUNKER_DURATION, immediateRender: false }, 0)
   timeline.scrollTrigger?.refresh(); sync(timeline.scrollTrigger?.progress ?? 0, timeline.scrollTrigger?.isActive ?? false)
   return { timeline, dispose: () => { effects.dispose(); journalMotion.opacity = 0; journalMotion.progress = 0; resetDeskMotion(); journalMotion.draw?.() } }
@@ -88,6 +94,12 @@ export function addDocumentChoreography(t: gsap.core.Timeline, scope: HTMLElemen
   for (let i = 0; i < faqPageCount; i++) page(`[data-faq-page="${i}"]`, schedule.faqRead + i * 34, i + 1 === faqPageCount ? schedule.faqEnd : schedule.faqRead + 23 + i * 34)
 }
 export function syncDocumentAccessibility(scope: HTMLElement) {
+  const broadcast = scope.querySelector<HTMLElement>('.desk-broadcast')
+  if (broadcast) {
+    const staticPath = !!scope.closest('.bunker-experience--reduced')
+    const visible = staticPath || Number(gsap.getProperty(broadcast, 'opacity')) > .8
+    broadcast.inert = !visible; broadcast.setAttribute('aria-hidden', String(!visible))
+  }
   scope.querySelectorAll<HTMLElement>('.document-leaf').forEach(el => {
     if (scope.closest('.bunker-experience--simple') && !el.closest('.bunker-mobile-document')) return
     const visible = Number(gsap.getProperty(el, 'opacity')) > .8

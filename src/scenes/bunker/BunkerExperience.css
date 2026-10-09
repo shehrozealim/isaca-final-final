@@ -240,3 +240,57 @@ body:has(.bunker-viewport[aria-hidden='false']) .s02-sound { top:1rem; bottom:au
 .bunker-mobile-document .case-brief p, .bunker-mobile-document .case-brief ul { font-size:.74rem; line-height:1.4; }
 .bunker-mobile-document .case-brief h4 { font-size:1.15rem; }
 .bunker-mobile-document .printed-answer p { font-size:.78rem; line-height:1.45; }
+
+/* The broadcast sits at the center of the physical table, over the live canvas. */
+.desk-broadcast { position:absolute; z-index:7; left:50%; top:50%; width:46svh; aspect-ratio:4.5/3.2; transform:translate(-50%,-50%); opacity:0; pointer-events:none; }
+.desk-broadcast:not([inert]) { pointer-events:auto; }
+.desk-broadcast-case { position:absolute; inset:0; width:100%; height:100%; }
+.desk-broadcast-screen { position:absolute; left:9%; top:15%; width:65%; height:69%; overflow:hidden; border-radius:13% / 10%; background:#0b1718; color:#c6e5d2; box-shadow:inset 0 0 24px #000,0 0 15px #73bcac1a; isolation:isolate; }
+.desk-broadcast-screen::after { content:''; position:absolute; inset:0; pointer-events:none; z-index:4; background:repeating-linear-gradient(0deg,#0005 0 1px,transparent 1px 3px),repeating-linear-gradient(90deg,#ff282812 0 1px,#29ff8512 1px 2px,#395dff18 2px 3px); }
+.crt-message { position:relative; z-index:2; padding:8% 9%; text-align:center; font:.7svh/1.7 'IBM Plex Mono',monospace; text-shadow:1px 0 #ff607d55,-1px 0 #4adffb77,0 0 5px #b9ffdf88; }
+.crt-message h3 { font:600 3.7svh/.95 'Cormorant Garamond',Georgia,serif; letter-spacing:.02em; margin:1.2svh 0; }
+.crt-message p { margin:.55svh 0; }
+.crt-channel { font-size:.55svh; letter-spacing:.13em; }
+.crt-message a { display:block; border:1px solid #abcab580; padding:.6svh .3svh; margin:.9svh 0 .4svh; color:#e8ffe9; text-decoration:none; font-size:.7svh; background:#152b26; }
+.crt-message small { font-size:.5svh; }
+.crt-interference { position:absolute; inset:-100% 0; z-index:3; pointer-events:none; opacity:.25; background:repeating-linear-gradient(174deg,transparent 0 24px,#54aeff30 25px 31px,transparent 32px 46px,#ce469b33 47px 51px); animation:crt-travel 7s linear infinite; mix-blend-mode:screen; }
+@keyframes crt-travel { from { transform:translateY(-18%); } to { transform:translateY(18%); } }
+.registration-shortcut { position:fixed; z-index:80; top:1.15rem; right:1.25rem; padding:.8rem 1.1rem; display:flex; align-items:center; gap:.65rem; border:1px solid #b89b6477; background:#16120eea; color:#e0ca9f; font:.61rem/1.4 'IBM Plex Mono',monospace; letter-spacing:.13em; text-decoration:none; box-shadow:0 4px 16px #0005; transition:background .25s,transform .25s; }
+.registration-shortcut small { color:#a58c63; font-size:.45rem; border-left:1px solid #a58c6355; padding-left:.7rem; }
+.registration-shortcut:hover { background:#332619; transform:translateX(-2px); }
+.registration-shortcut:focus-visible,.crt-message a:focus-visible { outline:2px solid #f2d59a; outline-offset:4px; }
+body:has(.desk-broadcast:not([inert])) .registration-shortcut { border-color:#8ccab2; color:#cae8d7; }
+.registration-page { min-height:100svh; padding:clamp(3rem,8vw,8rem); max-width:850px; margin:auto; color:#dbc8a5; }
+.registration-page h1 { font:600 clamp(3.5rem,8vw,6rem)/1 'Cormorant Garamond',Georgia,serif; }
+.registration-page dl { margin:2.5rem 0; }
+.registration-page dl > div { padding:1rem 0; border-bottom:1px solid #bba16b33; display:grid; grid-template-columns:1fr 2fr; gap:1rem; }
+.registration-page dt { font:.7rem 'IBM Plex Mono',monospace; color:#b99a65; }
+.registration-page dd { margin:0; }
+.registration-page .bunker-revisit { display:block; margin-top:2rem; }
+.bunker-experience--simple:not(.bunker-experience--reduced) .desk-broadcast { position:fixed; width:min(94vw,46svh); }
+.bunker-experience--reduced .desk-broadcast { position:relative; inset:auto; transform:none; opacity:1; width:min(94vw,620px); margin:0 auto 4rem; pointer-events:auto; }
+.bunker-experience--reduced .crt-message { font-size:.7rem; }
+.bunker-experience--reduced .crt-message h3 { font-size:3rem; }
+.bunker-experience--reduced .crt-message a { font-size:.65rem; }
+.bunker-experience--reduced .crt-message small,.bunker-experience--reduced .crt-channel { font-size:.5rem; }
+@media(max-width:767px) { .registration-shortcut { top:.75rem; right:.75rem; padding:.7rem .8rem; font-size:.55rem; } .registration-shortcut small { display:none; } }
+@media(prefers-reduced-motion:reduce) { .crt-interference { animation:none; } .registration-shortcut { transition:none; } }
+.bunker-experience--reduced .crt-interference { animation:none; }
+.desk-broadcast { width:74svh; }
+.crt-message { font-size:clamp(9px,1.2svh,13px); padding:7% 8%; line-height:1.5; }
+.crt-message h3 { font-size:clamp(28px,5.1svh,52px); margin:1svh 0; }
+.crt-message a { font-size:clamp(9px,1.2svh,13px); padding:.8svh .3svh; }
+.crt-channel,.crt-message small { font-size:clamp(7px,.8svh,9px); }
+.bunker-experience--simple:not(.bunker-experience--reduced) .desk-broadcast { width:min(98vw,74svh); }
+@media(max-width:767px) { .crt-message { font-size:9px; line-height:1.35; padding:5% 6%; } .crt-message h3 { font-size:28px; margin:.5svh 0; } .crt-message a { font-size:9px; margin:.5svh 0; padding:.55svh .2svh; } .crt-channel,.crt-message small { font-size:6px; } }
+body:has(.registration-shortcut) .s02-sound { right:14rem; }
+@media(max-width:767px) { body:has(.registration-shortcut) .s02-sound { right:7.5rem; } }
+.bunker-panel[data-panel='finale'] { text-shadow:0 2px 14px #000; }
+.bunker-panel[data-panel='finale'] h3 { color:#f3e2be; }
+/* Use explicit centering so GSAP's horizontal slide cannot replace percentage transforms. */
+.bunker-experience:not(.bunker-experience--reduced) .desk-broadcast { left:calc(50% - 37svh); top:calc(50% - 26.31svh); transform:none; }
+@media(max-width:767px) { .bunker-experience--simple:not(.bunker-experience--reduced) .desk-broadcast { width:98vw; left:1vw; top:calc(50% - 34.845vw); transform:none; } }
+.bunker-experience--reduced .crt-message { font-size:clamp(9px,1vw,13px); line-height:1.4; padding:5% 6%; }
+.bunker-experience--reduced .crt-message h3 { font-size:clamp(28px,4vw,42px); margin:.5svh 0; }
+.bunker-experience--reduced .crt-message a { font-size:clamp(9px,1vw,13px); }
+.bunker-experience--reduced .crt-message small,.bunker-experience--reduced .crt-channel { font-size:clamp(6px,.7vw,9px); }

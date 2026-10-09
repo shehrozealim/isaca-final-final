@@ -6,6 +6,8 @@ import type { ReactNode } from 'react'
 import { event } from '../../data/event'
 import { bunkerChapters } from './bunkerChapters'
 import { BunkerSeal } from './BunkerFinale'
+import DeskBroadcast from './DeskBroadcast'
+import { registrationDestination } from '../../data/registration'
 function FactList({ entries, pending }: { entries: readonly unknown[]; pending: string }) {
   if (!entries.length) return pending ? <p className="bunker-pending">{pending}</p> : null
   return <ul className="bunker-facts">{entries.map((entry, i) => <li key={i}>{typeof entry === 'object' && entry !== null ? Object.entries(entry).map(([key, value]) => <p key={key}><span>{key}</span> {String(value)}</p>) : String(entry)}</li>)}</ul>
@@ -72,9 +74,9 @@ export default function BunkerOverlays({ navigate }: { navigate: (id: string) =>
       <Panel name="faq" id="bunker-faq" kicker={copy("FROM THE ARCHIVE / FILE 06")} title={copy("FAQ")} side="left"><FAQPages /></Panel>
       <Panel name="finale" id="S10" kicker={copy("06 / YOUR NEXT CASE")} title={copy("JOIN THE HUNT.")} side="center">
         <p className="bunker-lede">{copy("The evidence brought you here.")}<br />{copy("The next move is yours.")}</p>
-        {event.registrationUrl ? <a className="bunker-join" href={event.registrationUrl}>{copy("REGISTER FOR THE HUNT")}</a> : <p className="bunker-registration-pending">{copy("REGISTRATION OPENS SOON")}</p>}
+        <a className="bunker-join" href={registrationDestination}>{copy("REGISTER FOR THE HUNT")}</a>
         <p className="bunker-margin-note">{event.title}</p><a className="bunker-revisit" href="#bunker-about" onClick={e => { e.preventDefault(); navigate('bunker-about') }}>{copy("Revisit the case files")}</a>
       </Panel>
-    </div><div className="bunker-progress" aria-hidden="true"><span /></div>
+    </div><DeskBroadcast /><div className="bunker-progress" aria-hidden="true"><span /></div>
   </>
 }

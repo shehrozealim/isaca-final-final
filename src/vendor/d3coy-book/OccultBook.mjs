@@ -1,6 +1,6 @@
 import { copy } from '../../data/content'
 import * as THREE from 'three';
-import { EVIDENCE_ATLAS, paintEvidencePhoto, paintEvidenceSpread } from '../../scenes/bunker/EvidencePhotos.mjs';
+import { EVIDENCE_ATLAS, SKETCH_ATLAS, paintEvidencePhoto, paintFieldSketch } from '../../scenes/bunker/EvidencePhotos.mjs';
 import { hackathon } from './hackathon-data.mjs';
 
 /** Supplied bundle geometry, with local journal reference textures. */
@@ -21,9 +21,11 @@ export function createOccultBook({pageCount=3, approach=3.5, event=hackathon, on
   referencePages.onload=()=>onTextureReady();
   group.addEventListener('removed',()=>{referenceCover.onload=null;referencePages.onload=null});
   const gothicReference=new Image();gothicReference.src=EVIDENCE_ATLAS;
+  const sketchReference=new Image();sketchReference.src=SKETCH_ATLAS;
   const paperReference=new Image(), paperRecipes=[];
   paperReference.onload=()=>{for(const {map,kind,index} of paperRecipes){const replacement=texture(kind,index,false);map.image=replacement.image;map.needsUpdate=true;replacement.dispose()}onTextureReady()};paperReference.src='/s03/textures/ancient-paper.webp';
   gothicReference.onload=()=>paperReference.onload?.();
+  sketchReference.onload=()=>paperReference.onload?.();
   group.addEventListener('removed',()=>{paperReference.onload=null;gothicReference.onload=null});
   let seed=13;const random=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296};
   const restCenter=new THREE.Vector3(0,.16,0);let tableScale=1,mobileView=false;
@@ -57,7 +59,8 @@ export function createOccultBook({pageCount=3, approach=3.5, event=hackathon, on
       x.save();x.translate(384,899);x.rotate(-.045);x.strokeStyle='#3d2118';x.strokeRect(-170,-38,340,64);x.font='23px monospace';x.fillText(copy("BUILD / CREATE / SHIP"),0,4);x.restore();
       for(let i=0;i<45;i++){x.strokeStyle='rgba(218,178,125,.09)';x.lineWidth=.6;x.beginPath();const px=random()*768,py=random()*1024;x.moveTo(px,py);x.lineTo(px+random()*100-50,py+random()*28);x.stroke()}
     }else if(kind==='sigil'){
-      paintEvidenceSpread(x,gothicReference,768,1024,index);
+      paintFieldSketch(x,sketchReference,index,100,165,565,565);
+      if(index%2===0)paintEvidencePhoto(x,gothicReference,index+1,450,740,190,220,.045);
       evidenceStamp(copy('EVIDENCE / 0')+(index+1),390,105);
       x.textAlign='center';x.fillStyle='#5a3a29';x.font='italic 24px Georgia';x.fillText(copy('Every symbol leaves a trace.'),384,956);
     }else if(kind==='paper'||kind==='timelineLeft'){

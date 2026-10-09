@@ -4,6 +4,7 @@ import { deskMotion } from './journalMotion'
 import { createAncientPaper, drawArtifactInk } from './AncientPaper'
 import { createDeskFiles } from './DeskFiles'
 import { createDeskProps } from './DeskProps'
+import { createDeskHeroProps } from './DeskHeroProps'
 
 export function createOverheadDesk(redraw: () => void) {
   const group = new Group()
@@ -14,6 +15,7 @@ export function createOverheadDesk(redraw: () => void) {
   }
   const files = createDeskFiles(redraw)
   const props = createDeskProps(redraw); group.add(props.group)
+  const heroProps = createDeskHeroProps(redraw); group.add(heroProps.group)
 
   const geometries = new Set<BoxGeometry | PlaneGeometry | CylinderGeometry | TorusGeometry>()
   const materials = new Set<MeshStandardMaterial>()
@@ -29,9 +31,6 @@ export function createOverheadDesk(redraw: () => void) {
   const darkMetal = new MeshStandardMaterial({ color: '#32332a', roughness: .72, metalness: .45 })
   const brass = new MeshStandardMaterial({ color: '#ad8950', roughness: .55, metalness: .72 })
   // Foreground lamp rim and the brass instruments stay quiet during the reveal.
-  const lampBase = add(new CylinderGeometry(.65, .8, .16, 48), darkMetal); lampBase.position.set(6.1, -1.78, -2.6)
-  const lampStem = add(new CylinderGeometry(.06, .06, 3.8, 16), brass); lampStem.position.set(6.1, .1, -2.6)
-  const shade = add(new CylinderGeometry(.55, 1, 1.1, 48, 1, true), darkMetal); shade.position.set(5.7, 2.3, -2.4); shade.rotation.z = -.35
   const saucer = add(new CylinderGeometry(.9, .85, .08, 48), brass); saucer.position.set(-5.7, -1.82, 3.1)
   const cup = add(new CylinderGeometry(.58, .42, .6, 40, 1, true), new MeshStandardMaterial({ color: '#5a4835', roughness: .65, side: DoubleSide })); cup.position.set(-5.7, -1.49, 3.1)
   const coffee = add(new CylinderGeometry(.52, .52, .025, 40), new MeshStandardMaterial({ color: '#170f09', roughness: .26 })); coffee.position.set(-5.7, -1.26, 3.1)
@@ -66,6 +65,9 @@ export function createOverheadDesk(redraw: () => void) {
     ready: Promise.all([files.ready, props.ready, ...paperAssets.map(asset => asset.ready)]),
     update(mobile: boolean, aspect: number) {
       group.visible = deskMotion.opacity > .001
+      heroProps.update(mobile)
+      heroProps.television.visible = deskMotion.broadcast < .999
+      heroProps.television.material.opacity = 1 - deskMotion.broadcast
       map.update(deskMotion.mapLift, deskMotion.route, mobile)
       const focus = deskMotion.mapFocus
 
@@ -79,27 +81,27 @@ export function createOverheadDesk(redraw: () => void) {
       map.group.rotation.x = -Math.PI / 2 + (1 - focus) * deskMotion.mapLift * .025
       map.group.rotation.z *= 1 - focus
       const held = deskMotion.mapLift * (1 - deskMotion.mapSettle)
-      map.group.position.set((mobile ? -1.55 : -5.1) * (1 - held), -1.72 + held * .55, (mobile ? -3.8 : -2.5) * (1 - held))
+      map.group.position.set((mobile ? -1.8 : -4.2) * (1 - held), -1.48, (mobile ? -1 : -1.2) * (1 - held))
       map.group.visible = true
       files.update(mobile)
       packet.visible = true
-      packet.position.set((mobile ? -1.35 : -3.4) * (1 - deskMotion.prizeOpacity), -1.73 + deskMotion.prizeOpacity * .35, (mobile ? 3 : 2.7) * (1 - deskMotion.prizeOpacity))
+      packet.position.set((mobile ? -1.35 : -3.8) * (1 - deskMotion.prizeOpacity), -1.25, (mobile ? 3 : 2.3) * (1 - deskMotion.prizeOpacity))
       packet.scale.setScalar((mobile ? .24 : .36) + deskMotion.prizeOpacity * (mobile ? .50 : .64))
       const progress = deskMotion.prize
       for (let i = 0; i < leaves.length; i++) {
         const { mesh, geometry, rest, last } = leaves[i]
         const t = ease((progress - (1 - i) * .19 - .08) / .46), sign = i % 2 ? 1 : -1
-        mesh.position.set(sign * t * 4.2, -t * 1.4, .04 + i * .045 + Math.sin(t * Math.PI) * 1.25)
+        mesh.position.set(sign * t * 4.2, -t * .7, .10 + i * .045 + Math.sin(t * Math.PI) * .08)
         mesh.scale.setScalar(1 - t * .65)
-        mesh.rotation.set(Math.sin(t * Math.PI) * sign * .18, Math.sin(t * Math.PI) * sign * .22, sign * t * .12)
+        mesh.rotation.set(0, 0, sign * t * .08)
         if (Math.abs(t - last) > .0001) {
           const p = geometry.attributes.position
-          for (let j = 0; j < p.count; j++) p.setZ(j, Math.sin(t * Math.PI) * Math.pow((rest[j * 3] + 2.675) / 5.35, 2) * 1.2)
+          for (let j = 0; j < p.count; j++) p.setZ(j, Math.sin(t * Math.PI) * Math.pow((rest[j * 3] + 2.675) / 5.35, 2) * .08)
           p.needsUpdate = true; geometry.computeVertexNormals(); geometry.computeBoundingSphere(); leaves[i].last = t
         }
       }
       for (const { seal, sign } of seals) { const t = ease(progress / .24); seal.position.set(sign * (.35 + t * 2.85), -t * 3.8, .27 * (1 - t) + .045 * t + .5 * Math.sin(t * Math.PI)); seal.rotation.z = sign * t * .6; seal.visible = true }
     },
-    dispose() { props.dispose(); files.dispose(); paperAssets.forEach(asset => asset.dispose()); map.dispose(); geometries.forEach(g => g.dispose()); materials.forEach(m => m.dispose()); textures.forEach(t => t.dispose()); group.removeFromParent() },
+    dispose() { heroProps.dispose(); props.dispose(); files.dispose(); paperAssets.forEach(asset => asset.dispose()); map.dispose(); geometries.forEach(g => g.dispose()); materials.forEach(m => m.dispose()); textures.forEach(t => t.dispose()); group.removeFromParent() },
   }
 }

@@ -1,32 +1,35 @@
 import { copy, formatCopy } from '../../data/content'
 import { CanvasTexture, SRGBColorSpace } from 'three'
-import { EVIDENCE_ATLAS, paintEvidencePhoto, paintEvidenceSpread } from './EvidencePhotos.mjs'
+import { EVIDENCE_ATLAS, SKETCH_ATLAS, paintEvidencePhoto, paintFieldSketch } from './EvidencePhotos.mjs'
 
 /** One supplied-derived parchment across every physical page, with crisp ink. */
 export function createAncientPaper(draw: (x: CanvasRenderingContext2D, w: number, h: number) => void, redraw: () => void, study = false, variant = 0) {
   const canvas = document.createElement('canvas'); canvas.width = 1536; canvas.height = 2048
   const x = canvas.getContext('2d')!, texture = new CanvasTexture(canvas)
   texture.colorSpace = SRGBColorSpace; texture.anisotropy = 8
-  const image = new Image(), symbols = new Image()
+  const image = new Image(), symbols = new Image(), sketches = new Image()
   const paint = () => {
     x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, canvas.width, canvas.height)
     x.fillStyle = '#e5cd9e'; x.fillRect(0, 0, canvas.width, canvas.height)
     if (image.complete && image.naturalWidth) x.drawImage(image, 0, 0, canvas.width, canvas.height)
     draw(x, canvas.width, canvas.height)
     if (symbols.complete && symbols.naturalWidth) {
-      if (study) paintEvidenceSpread(x, symbols, canvas.width, canvas.height, variant)
+      if (study) {
+        paintFieldSketch(x, sketches, variant, canvas.width * .14, canvas.height * .17, canvas.width * .72, canvas.width * .72)
+        if (variant % 2 === 0) paintEvidencePhoto(x, symbols, variant + 1, canvas.width * .57, canvas.height * .68, canvas.width * .27, canvas.height * .18, .055)
+      }
       else {
-        paintEvidencePhoto(x, symbols, variant, canvas.width * .12, canvas.height * .82, canvas.width * .25, canvas.height * .10, -.035)
-        paintEvidencePhoto(x, symbols, variant + 3, canvas.width * .62, canvas.height * .82, canvas.width * .25, canvas.height * .10, .035)
+        paintEvidencePhoto(x, symbols, variant, canvas.width * .62, canvas.height * .77, canvas.width * .22, canvas.height * .14, -.035)
       }
 
     }
     texture.needsUpdate = true; redraw()
   }
   symbols.onload = paint; symbols.src = EVIDENCE_ATLAS
+  sketches.onload = paint; sketches.src = SKETCH_ATLAS
   image.onload = paint; image.src = '/s03/textures/ancient-paper.webp'; paint()
-  const ready = Promise.all([image.decode(), symbols.decode()]).then(() => { paint() })
-  return { texture, ready, dispose: () => { image.onload = null; symbols.onload = null; texture.dispose() } }
+  const ready = Promise.all([image.decode(), symbols.decode(), sketches.decode()]).then(() => { paint() })
+  return { texture, ready, dispose: () => { image.onload = null; symbols.onload = null; sketches.onload = null; texture.dispose() } }
 }
 
 export function drawArtifactInk(x: CanvasRenderingContext2D, w: number, h: number, kind: 'cases' | 'bounty' | 'leaf' | 'faq' | 'study', index = 0) {

@@ -69,14 +69,14 @@ export function createDeskFiles(redraw: () => void) {
       const enter = deskMotion.folderOpacity, faqEnter = deskMotion.faqOpacity
       folder.visible = faq.visible = true
       const parked = deskMotion.folderTurn > 0 && enter < 1
-      folder.position.set((mobile ? 1.35 : 4.5) * (1 - enter) + (mobile ? 0 : 2.675 * .88) * enter, -1.73 + enter * .12, (mobile && parked ? -3.6 : -.8) * (1 - enter))
+      folder.position.set((mobile ? 1.8 : 4.65) * (1 - enter) + (mobile ? 0 : 2.675 * .88) * enter, -1.4, (mobile && parked ? 3.4 : -.8) * (1 - enter))
       folder.rotation.z = -.10 * (1 - enter)
-      const restScale = mobile ? .28 : .36
-      folder.scale.setScalar(parked ? restScale + (.88 - restScale) * enter : .88)
+      const restScale = mobile ? .23 : .36
+      folder.scale.setScalar(restScale + (.88 - restScale) * enter)
       hinge.rotation.y = -deskMotion.folder * Math.PI
       papers.position.z = .12
       turn(caseLeaves, deskMotion.folderTurn, mobile, enter)
-      faq.position.set((mobile ? 1.7 : 4.7) * (1 - faqEnter) + (mobile ? 0 : 2.675 * .88) * faqEnter, -1.73 + faqEnter * .12, 2.2 * (1 - faqEnter))
+      faq.position.set((mobile ? 1.7 : 5) * (1 - faqEnter) + (mobile ? 0 : 2.675 * .88) * faqEnter, -1.1, 2.2 * (1 - faqEnter))
       faq.scale.setScalar((mobile ? .26 : .36) + faqEnter * (mobile ? .62 : .52))
       faq.rotation.z = .08 * (1 - faqEnter)
       turn(faqLeaves, deskMotion.faq, mobile)

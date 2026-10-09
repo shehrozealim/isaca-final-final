@@ -1,15 +1,24 @@
 /** Original photographic evidence atlas, shared by the diary and physical files. */
 export const EVIDENCE_ATLAS = '/s03/textures/evidence-photos.webp';
+export const SKETCH_ATLAS = '/s03/props/field-sketches.webp';
+
+export function paintFieldSketch(ctx, atlas, index, x, y, width, height) {
+  if (!atlas.complete || !atlas.naturalWidth) return;
+  const n = ((index % 4) + 4) % 4, w = atlas.naturalWidth / 2, h = atlas.naturalHeight / 2;
+  ctx.save(); ctx.globalCompositeOperation = 'multiply'; ctx.globalAlpha = .86;
+  ctx.drawImage(atlas, (n % 2) * w, Math.floor(n / 2) * h, w, h, x, y, width, height);
+  ctx.restore();
+}
 
 export function paintEvidencePhoto(ctx, atlas, index, px, py, width, height, angle = 0) {
   if (!atlas.complete || !atlas.naturalWidth) return;
   const n = ((index % 6) + 6) % 6, cellW = atlas.naturalWidth / 3, cellH = atlas.naturalHeight / 2;
-  const rim = Math.max(3, width * .035), imageW = width - rim * 2, imageH = height - rim * 3;
+  const rim = Math.max(3, width * .045), imageW = width - rim * 2, imageH = height - rim - height * .18;
   // Crop each atlas cell to the print without stretching the photograph.
   const ratio = imageW / imageH, sourceW = Math.min(cellW, cellH * ratio), sourceH = sourceW / ratio;
   ctx.save(); ctx.translate(px + width / 2, py + height / 2); ctx.rotate(angle);
   ctx.shadowColor = '#160e09aa'; ctx.shadowBlur = width * .025; ctx.shadowOffsetX = 3; ctx.shadowOffsetY = 7;
-  ctx.fillStyle = '#cbbb98'; ctx.fillRect(-width / 2, -height / 2, width, height);
+  ctx.fillStyle = '#e5dfcd'; ctx.fillRect(-width / 2, -height / 2, width, height);
   ctx.shadowColor = 'transparent';
   ctx.drawImage(atlas, (n % 3) * cellW + (cellW - sourceW) / 2, Math.floor(n / 3) * cellH + (cellH - sourceH) / 2, sourceW, sourceH, -width / 2 + rim, -height / 2 + rim, imageW, imageH);
   ctx.fillStyle = '#b8a27388'; ctx.fillRect(-width * .16, -height / 2 - rim, width * .32, rim * 3);

@@ -52,7 +52,7 @@ export default function BunkerExperience() {
     const trigger = master.current?.timeline.scrollTrigger ?? mobileMaster.current?.scrollTrigger
     const element = document.getElementById(id)
     let destination: number
-    if (trigger && (!mobile || !['S10'].includes(id))) destination = trigger.start + (trigger.end - trigger.start) * chapter.at * (mobile ? BUNKER_DURATION / deskSchedule.mobileDuration : 1)
+    if (trigger) destination = trigger.start + (trigger.end - trigger.start) * chapter.at * (mobile ? BUNKER_DURATION / deskSchedule.mobileDuration : 1)
     else if (simple && element) destination = element.getBoundingClientRect().top + window.scrollY - 32
     else { pendingChapter.current = id; return }
     const duration = animate && !reducedMotion ? Math.min(8, Math.max(2.2, Math.abs(destination - window.scrollY) / innerHeight * .22)) : 0
@@ -116,6 +116,8 @@ export default function BunkerExperience() {
     const { room, surface } = background
     if (!root || !screen || !room || !surface || background.phase !== 'ready' || !artReady) return
     if (simple) {
+      const broadcast = screen.querySelector<HTMLElement>('.desk-broadcast')
+      if (broadcast && reducedMotion) { broadcast.inert = false; broadcast.setAttribute('aria-hidden', 'false') }
       screen.querySelectorAll<HTMLElement>('[data-panel]').forEach(panel => { panel.inert = false; panel.removeAttribute('aria-hidden') })
       const nav = screen.querySelector<HTMLElement>('.bunker-chapters')
       if (nav) nav.inert = false
@@ -139,10 +141,12 @@ export default function BunkerExperience() {
         mobileMaster.current = mobileJournal
         addDeskChoreography(mobileJournal)
         addDocumentChoreography(mobileJournal, screen)
+        mobileJournal.fromTo(broadcast, { opacity: 0, x: 24, scale: .85 }, { opacity: 1, x: 0, scale: 1, duration: 6, ease: 'power2.out' }, deskSchedule.broadcastStart)
+          .to(broadcast, { opacity: 0, duration: 8 }, deskSchedule.roomReturn)
         mobileJournal.fromTo(room.querySelector('.bunker-clean-plate'), { opacity: 0 }, { opacity: 1, duration: 2 }, 1)
-          .to(room.querySelector('.bunker-clean-plate'), { opacity: 0, duration: 8 }, deskSchedule.faqEnd)
+          .to(room.querySelector('.bunker-clean-plate'), { opacity: 0, duration: 12 }, deskSchedule.roomReturn)
           .fromTo(screen.querySelector('.bunker-journal-shade'), { opacity: 0 }, { opacity: .96, duration: 12 }, 2)
-          .to(screen.querySelector('.bunker-journal-shade'), { opacity: 0, duration: 8 }, deskSchedule.faqEnd)
+          .to(screen.querySelector('.bunker-journal-shade'), { opacity: 0, duration: 12 }, deskSchedule.roomReturn)
         for (const [name, at, end] of [['rules', 174, deskSchedule.caseEnd], ['prizes', deskSchedule.prizeRead, deskSchedule.prizeEnd], ['faq', deskSchedule.faqStart + 10, deskSchedule.faqEnd]] as const) {
           const readout = screen.querySelector(`[data-readout="${name}"]`)
           mobileJournal.fromTo(readout, { opacity: 0 }, { opacity: 1, duration: 2 }, at).to(readout, { opacity: 0, duration: 2 }, end)
