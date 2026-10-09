@@ -1,0 +1,18 @@
+Built-in imagegen edit of public/Occult_Research_Bunker_Study.png.
+
+Precise object-removal edit for a website animation background plate. Remove ONLY
+the single upright leaning closed leather journal with round metal occult seal
+in the center foreground of the wooden table (approximately x 724 to 875,
+y 496 to 610 in the original 1672x941 photo). Reconstruct the small area
+behind/under that book as bare worn wooden tabletop, continuing the existing
+table grain and warm desk lamp illumination. The book and its contact shadow
+should be completely gone; do not replace with any object. Keep every other
+pixel/composition feature as unchanged as possible: all other book stacks,
+loose paper sketches, pens, jars, lamps, table outline, cabinets, stool, walls,
+symbols, red illumination, camera, crop, perspective and contrast. Preserve
+the exact original landscape aspect ratio, framing, and registration; this
+edited plate will be crossfaded over the original image and alignment must
+match perfectly. No text additions, no watermark. Output only the edited image.
+
+The generated PNG was encoded as WebP, quality 90, without resizing.
+The site only exposes a feathered region around the original journal.

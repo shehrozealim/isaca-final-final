@@ -1,4 +1,5 @@
 import { Component, useLayoutEffect, useRef, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Box, Sphere, Torus } from '@react-three/drei'
 import gsap from 'gsap'
@@ -6,6 +7,8 @@ import { type Group } from 'three'
 import { scenes } from '../data/scenes'
 import { useScrollState } from '../architecture/scrollContext'
 import { usePreferences } from '../architecture/preferences'
+import { useBunkerBackground } from './bunker/bunkerBackgroundState'
+import JournalScene from '../scenes/bunker/JournalScene'
 
 class CanvasBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
   state = { failed: false }
@@ -44,8 +47,17 @@ function PlaceholderWorld() {
   </>
 }
 export default function World() {
-  const { simple } = usePreferences()
+  const { simple, mobile, reducedMotion } = usePreferences()
   const { state } = useScrollState()
+  const background = useBunkerBackground()
+  if (!reducedMotion && background.phase === 'ready' && ['S02', 'S03'].includes(state.active.id)) {
+    const canvas = <div className="world journal-world" aria-hidden="true">
+      <CanvasBoundary><Canvas shadows={!mobile} frameloop="demand" dpr={[1, mobile ? 1.25 : 1.5]} camera={{ position: [0, 0, 12], fov: 38 }}
+        gl={{ alpha: true, antialias: true }}><JournalScene mobile={mobile} /></Canvas></CanvasBoundary>
+    </div>
+    const slot = document.getElementById('bunker-canvas-slot')
+    return slot ? createPortal(canvas, slot) : canvas
+  }
   // The opening sequence through the bunker shutter is entirely DOM-only.
   if (state.active.id === 'S00' || state.active.id === 'S01' || state.active.id === 'S02' || state.active.id === 'S03') return null
   return <div className="world" aria-hidden="true">

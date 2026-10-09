@@ -2,13 +2,13 @@ import { getAudioEnabled, setAudioEnabled, subscribeAudio } from '../../architec
 
 // S02 remains the sole owner of the continuous bunker hum.
 export function createBunkerEffects() {
-  const files = { page: 'page-turn.mp3', drawer: 'drawer-open.mp3', watch: 'clock-tick.mp3', radio: 'radio-static.mp3' }
+  const files = { page: 'page-turn.mp3', radio: 'radio-static.mp3' }
   type Name = keyof typeof files
   const tracks = Object.fromEntries(Object.entries(files).map(([name, file]) => {
     const track = new Audio(`/s03/audio/${file}`)
     track.preload = 'none'
-    track.loop = name === 'watch' || name === 'radio'
-    track.volume = name === 'radio' ? .035 : name === 'watch' ? .055 : .10
+    track.loop = name === 'radio'
+    track.volume = name === 'radio' ? .035 : .10
     return [name, track]
   })) as Record<Name, HTMLAudioElement>
   const pending = new Set<HTMLAudioElement>()
@@ -32,9 +32,7 @@ export function createBunkerEffects() {
   const pause = () => { generation++; Object.values(tracks).forEach(track => track.pause()) }
   const sync = () => {
     if (!allowed()) { pause(); return }
-    if (progress >= .43 && progress < .58) play('watch')
-    else tracks.watch.pause()
-    if (progress >= .74 && progress < .88) play('radio')
+    if (progress >= (310 / 344) && progress < (330 / 344)) play('radio')
     else tracks.radio.pause()
   }
   const unsubscribe = subscribeAudio(sync)
@@ -45,14 +43,13 @@ export function createBunkerEffects() {
       const changed = active !== present
       present = active
       const advancing = value > previous && value - previous < .12
-      for (const [at, name, key] of [[.335, 'page', 'journal'], [.635, 'drawer', 'rules'], [.675, 'drawer', 'prizes'], [.715, 'drawer', 'faq']] as const) {
+      for (const [at, name, key] of [[20 / 344, 'page', 'journal'], [40 / 344, 'page', 'journal-1'], [58 / 344, 'page', 'journal-2'], [76 / 344, 'page', 'journal-3'], [166 / 344, 'page', 'rules'], [228 / 344, 'page', 'prizes'], [270 / 344, 'page', 'faq']] as const) {
         if (advancing && previous < at && value >= at && !fired.has(key)) {
           fired.add(key)
           play(name)
         }
       }
-      if (changed || (previous >= .43 && previous < .58) !== (value >= .43 && value < .58) ||
-        (previous >= .74 && previous < .88) !== (value >= .74 && value < .88)) sync()
+      if (changed || (previous >= (310 / 344) && previous < (330 / 344)) !== (value >= (310 / 344) && value < (330 / 344))) sync()
       previous = value
     },
     dispose() {

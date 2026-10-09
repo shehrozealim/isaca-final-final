@@ -1,7 +1,27 @@
-.bunker-experience { height: 650svh; border: 0; position: relative; }
+.bunker-experience { height: 1980svh; border: 0; position: relative; }
+.world.journal-world { z-index: 2; opacity: 0; }
+.world.journal-world::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 52% 46%, transparent 32%, #08060370 100%); }
+.bunker-journal-shade, .bunker-map-shade { position: absolute; inset: 0; background: #080603; opacity: 0; pointer-events: none; }
+.bunker-cinematic-runway { display: none; }
+.bunker-viewport[data-chapter='journal'] .bunker-chapter-wash { background: transparent; }
+.bunker-field-evidence { display: none; }
+.bunker-experience--simple .bunker-cinematic-runway { display: block; }
+.bunker-static-map { display: none; }
+.bunker-experience--simple .bunker-static-map { display: block; width: 100%; margin-bottom: 2rem; box-shadow: 0 12px 30px #0009; }
+.bunker-experience--simple .bunker-journal-shade, .bunker-experience--simple .bunker-map-shade { position: fixed; z-index: -1; }
+.bunker-experience--simple .bunker-field-evidence { display: flex; gap: .7rem; align-items: center; margin-bottom: 2rem; padding: 1.2rem; background: url('/s03/textures/journal-leather.webp') center/cover; box-shadow: 0 12px 30px #0009; }
+.bunker-evidence-sheet { width: 60%; padding: .8rem; background: #d1bd95; color: #57452e; transform: rotate(-4deg); box-shadow: 3px 4px 0 #7e6a4a; }
+.bunker-evidence-sheet span { font: .4rem monospace; }
+.bunker-evidence-sheet svg { display: block; width: 100%; stroke-width: 1.3; }
+.bunker-evidence-sheet i { font: italic .7rem Georgia, serif; }
+.bunker-evidence-tag { width: 40%; font: .42rem/1.8 monospace; padding: .8rem; color: #493323; background: #bca774; transform: rotate(5deg); }
+.bunker-evidence-tag b { display: block; color: #773d2c; border-block: 1px solid; padding: .4rem 0; margin: .6rem 0; }
+.bunker-field-evidence .bunker-evidence-tag p { color: #493323; font: italic .7rem/1.5 Georgia, serif; }
+.bunker-experience--reduced .bunker-cinematic-runway { display: none; }
 .bunker-viewport { position: relative; height: 100svh; width: 100%; overflow: hidden; color: #d9caaa; }
 .bunker-accessible-title { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .bunker-layer-plane { position: absolute; z-index: 4; pointer-events: none; }
+.bunker-clean-plate { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; mask-image: radial-gradient(ellipse 9% 10% at 48% 59%, #000 70%, transparent 100%); }
 .bunker-object { position: absolute; opacity: 0; transform-origin: 50% 50%; }
 .bunker-object img { display: block; width: 100%; height: auto; }
 .bunker-board { left: 3%; top: 19%; width: 34%; }
@@ -15,17 +35,6 @@
 .bunker-journal-cover i { width: 19%; aspect-ratio: 1; border: 1px solid #b1945b88; transform: rotate(45deg); margin: 8%; }
 .bunker-journal-cover small { font: .42vw/1.7 'IBM Plex Mono', monospace; text-align: center; letter-spacing: .16em; }
 .bunker-journal-spine { position: absolute; left: -2%; top: 0; bottom: -6px; width: 4%; border-radius: 2px; background: #332015; }
-.bunker-watch { left: 37%; top: 63%; width: 14%; }
-.bunker-archive { left: 62%; top: 30%; width: 19%; padding: 2.2vw .8vw .6vw; background: linear-gradient(90deg, #171b18, #373a30 8%, #242921 92%, #111612); border: 1px solid #63634b; box-shadow: 14px 20px 24px #0009, inset 0 0 0 5px #1a211d; perspective: 1200px; }
-.bunker-cabinet-heading { position: absolute; top: 5%; left: 9%; color: #a39d7f; letter-spacing: .15em; font: .5vw 'IBM Plex Mono', monospace; }
-.bunker-drawer-slot { position: relative; height: 5.4vw; margin-bottom: .5vw; background: #0b100c; perspective: 1200px; }
-.bunker-drawer-paper { position: absolute; inset: 9% 7%; background: #bfa880; padding: 6%; transform: rotate(-3deg); box-shadow: 0 3px 0 #746449; color: #59472c; font: .7vw Georgia, serif; }
-.bunker-drawer-paper i { display: block; height: 1px; background: #73634277; margin: 8% 0; }
-.bunker-drawer-front { position: absolute; inset: 0; background: linear-gradient(100deg, #292d23dd, #424436cc, #20281fdd), url('/s03/textures/drawer-metal.webp') center / cover; border: 1px solid #77735a66; box-shadow: inset 0 2px 1px #92907544, inset 0 -5px 8px #111b14; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .6vw; }
-.bunker-drawer-front > span { padding: .35em .8em; color: #3d3527; background: #b2a07e; border: 2px solid #767465; font: .47vw 'IBM Plex Mono', monospace; letter-spacing: .06em; }
-.bunker-drawer-handle { width: 25%; height: .55vw; border: 2px solid #8b8b73; border-top-width: 3px; border-radius: 2px; box-shadow: 0 3px 3px #0009; }
-.bunker-drawer-front small { position: absolute; right: 5%; bottom: 8%; font: .36vw 'IBM Plex Mono', monospace; color: #999479; }
-.bunker-cabinet-feet { position: absolute; left: 5%; right: 5%; bottom: -1vw; height: 1vw; border-left: .8vw solid #1a211a; border-right: .8vw solid #1a211a; }
 .bunker-radio-light { left: 76%; top: 43%; width: 10%; height: 13%; background: radial-gradient(ellipse, #e4ac5930, transparent 70%); }
 .bunker-dossiers { left: 73%; top: 48%; width: 17%; aspect-ratio: 1.4; transform: rotate(-6deg); }
 .bunker-dossier { position: absolute; inset: 0; padding: 12%; background: linear-gradient(110deg, #c7b58e, #9a865f); color: #4e422d; border-left: .5vw solid #8b704c; box-shadow: 0 10px 15px #0008; }
@@ -43,11 +52,28 @@
 .bunker-viewport[data-chapter='prizes'] .bunker-chapter-wash,
 .bunker-viewport[data-chapter='faq'] .bunker-chapter-wash,
 .bunker-viewport[data-chapter='radio'] .bunker-chapter-wash { background: linear-gradient(90deg, #050604ed, #080905d9 36%, #06070508 66%); }
-.bunker-entry-note { position: absolute; left: 7vw; bottom: 16svh; opacity: 0; text-shadow: 0 2px 20px #000; }
-.bunker-entry-note p { font: .65rem 'IBM Plex Mono', monospace; letter-spacing: .3em; color: #c5ac7d; }
-.bunker-entry-note > span { font: clamp(1.5rem, 2.2vw, 2.75rem) 'Cormorant Garamond', Georgia, serif; }
-.bunker-entry-note small { display: block; margin-top: 1.5rem; font: .55rem 'IBM Plex Mono', monospace; letter-spacing: .2em; color: #bdaf93; }
 .bunker-panels { position: absolute; inset: 0; pointer-events: none; }
+.bunker-chapters, .bunker-progress { z-index: 4; }
+.bunker-reading-facts summary { cursor: pointer; font: .65rem 'IBM Plex Mono', monospace; letter-spacing: .1em; color: #c8b78e; }
+.bunker-experience:not(.bunker-experience--simple) .bunker-panel[data-panel='journal'] { inset: auto 5vw 11svh auto; width: auto; max-width: 90vw; display: block; padding: .8rem 1.1rem; background: #100c08eb; overflow: visible; }
+.bunker-experience:not(.bunker-experience--simple) .bunker-panel[data-panel='journal'] > p,
+.bunker-experience:not(.bunker-experience--simple) .bunker-panel[data-panel='journal'] > span { display: none; }
+.bunker-experience:not(.bunker-experience--simple) .bunker-panel[data-panel='journal'] h3 { font-size: 1.2rem; margin: 0 0 .65rem; }
+.bunker-experience:not(.bunker-experience--simple) .bunker-reading-facts[open] .bunker-details { position: absolute; bottom: 100%; right: 0; width: min(420px, 85vw); padding: 1.2rem; background: #110d08f5; border: 1px solid #a4864d55; }
+.bunker-destination span { font: .5rem 'IBM Plex Mono', monospace; letter-spacing: .18em; color: #b8975c; }
+.bunker-destination strong { display: block; margin: .75rem 0; font: 600 clamp(1.6rem, 2vw, 2.4rem)/1.08 'Cormorant Garamond', Georgia, serif; color: #e5d2ab; }
+.bunker-destination a { font: .6rem 'IBM Plex Mono', monospace; color: #d2b676; text-underline-offset: 5px; }
+.bunker-experience:not(.bunker-experience--simple) .bunker-panel[data-panel='board'] { inset: auto auto 12svh 4vw; width: min(29vw, 420px); background: #110d08ed; padding: 1.2rem; }
+.bunker-experience:not(.bunker-experience--simple) .bunker-panel[data-panel='board'] > :not(.bunker-destination) { display: none; }
+.bunker-experience:not(.bunker-experience--simple) .bunker-destination p { font-size: .74rem; line-height: 1.6; }
+.bunker-experience:not(.bunker-experience--simple) .bunker-panel[data-panel='prizes'] { inset: 36svh 32% 30svh; width: 36%; text-align: center; align-items: center; overflow: visible; }
+.bunker-experience:not(.bunker-experience--simple) .bunker-panel[data-panel='prizes'] h3 { color: #352919; font-size: clamp(2.5rem, 4.8vw, 5.3rem); margin: .7rem 0 1rem; }
+.bunker-experience:not(.bunker-experience--simple) .bunker-panel[data-panel='prizes'] p { color: #634b2d; }
+.bunker-experience:not(.bunker-experience--simple) .bunker-panel[data-panel='prizes'] .bunker-eyebrow { color: #7c402b; font-size: .52rem; }
+.bunker-panel .bunker-prize-value { font: italic clamp(1.4rem, 2.2vw, 2.5rem) 'Cormorant Garamond', Georgia, serif; }
+.bunker-experience:not(.bunker-experience--simple) .bunker-panel[data-panel='prizes'] .bunker-pending { padding: 0; border: 0; max-width: 24rem; font: .7rem/1.6 'IBM Plex Mono', monospace; }
+.bunker-experience:not(.bunker-experience--simple) .bunker-panel[data-panel='prizes'] .bunker-panel-number { display: none; }
+.bunker-experience--simple .bunker-destination { margin-top: 2rem; }
 .bunker-panel { position: absolute; top: 17svh; bottom: 16svh; width: min(35vw, 590px); display: flex; flex-direction: column; justify-content: center; opacity: 0; padding: 1rem 0; pointer-events: none; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #7a6948 transparent; }
 .bunker-panel:not([inert]) { pointer-events: auto; }
 .bunker-panel--right { right: 7vw; }
@@ -83,16 +109,12 @@
 .bunker-progress span { display: block; width: 100%; height: 100%; background: #a78347; transform: scaleX(0); transform-origin: 0 50%; }
 .bunker-experience--simple { height: auto; min-height: 650svh; }
 .bunker-experience--simple .bunker-viewport { height: auto; overflow: visible; }
-.bunker-experience--simple .bunker-entry-note { position: relative; left: auto; bottom: auto; opacity: 1; min-height: 100svh; display: flex; flex-direction: column; justify-content: flex-end; padding: 8rem 1.5rem 5rem; }
-.bunker-experience--simple .bunker-entry-note > span { font-size: 2rem; max-width: 18rem; }
 .bunker-experience--simple .bunker-panels { position: relative; padding: 2rem 1.25rem 5rem; background: linear-gradient(#0a0b07e8, #080a07fa); }
 .bunker-experience--simple .bunker-panel { position: relative; inset: auto; width: min(100%, 680px); min-height: 80svh; margin: 0 auto; opacity: 1; overflow: visible; pointer-events: auto; padding: 3rem .5rem; border-top: 1px solid #c8ac732a; }
 .bunker-experience--simple .bunker-panel h3 { font-size: clamp(2.5rem, 7vw, 4rem); }
 .bunker-experience--simple .bunker-chapters { position: relative; inset: auto; opacity: 1; display: grid; grid-template-columns: repeat(2, 1fr); padding: 1.5rem; margin: 0; background: #11120bd9; }
 .bunker-experience--simple .bunker-chapters a { padding: .65rem 0; font-size: .63rem; }
-.bunker-experience--simple .bunker-panel[data-panel='board']::before,
-.bunker-experience--simple .bunker-panel[data-panel='watch']::before { content: ''; display: block; width: 100%; height: 230px; margin: 0 0 2rem; background: url('/s03/board/case-board.webp') center / contain no-repeat; }
-.bunker-experience--simple .bunker-panel[data-panel='watch']::before { background-image: url('/s03/watch/pocket-watch.webp'); }
+.bunker-experience--simple .bunker-panel[data-panel='board']::before { content: ''; display: block; width: 100%; height: 230px; margin: 0 0 2rem; background: url('/s03/board/case-board.webp') center / contain no-repeat; }
 .bunker-experience--simple .bunker-panel--center { min-height: 100svh; }
 .bunker-experience--simple .bunker-mobile-seal { display: block; width: 150px; color: #bda26a; margin-bottom: 2rem; }
 .bunker-mobile-seal svg { display: block; width: 100%; stroke: currentColor; stroke-width: 1; }
@@ -105,3 +127,50 @@
   .bunker-panel--center { left: 15%; width: 70%; top: 47svh; }
   .bunker-chapters a { font-size: .48rem; }
 }
+body:has(.bunker-viewport[data-chapter='board']) .s02-sound,
+body:has(.bunker-viewport[data-map-focus='true']) .s02-sound,
+body:has(.bunker-viewport[data-chapter='board']) .journal-navigation { visibility: hidden; }
+body:has(.bunker-viewport[data-chapter='board']) #root > header,
+body:has(.bunker-viewport[data-map-focus='true']) #root > header,
+.bunker-viewport[data-chapter='board'] .bunker-progress { visibility: hidden; }
+
+/* Physical documents share the generated ancient diary stock. */
+.bunker-panels { z-index: 3; }
+.bunker-mobile-document { display: none; }
+.bunker-experience:not(.bunker-experience--simple) .bunker-panel:is([data-panel='rules'],[data-panel='prizes'],[data-panel='faq']) {
+  inset: 28svh auto auto 36%; width: 28%; max-height: 43svh; text-align: left; justify-content: flex-start; color: #402a1c; padding: 0; overflow-y: auto;
+}
+.bunker-experience:not(.bunker-experience--simple) .bunker-panel:is([data-panel='rules'],[data-panel='prizes'],[data-panel='faq']) h3 { color: #35271b; font-size: clamp(2.4rem,3.4vw,4rem); margin: .65rem 0 1.2rem; }
+.bunker-experience:not(.bunker-experience--simple) .bunker-panel:is([data-panel='rules'],[data-panel='prizes'],[data-panel='faq']) p { color: #65472f; font-size: clamp(.8rem,.9vw,1rem); }
+.bunker-experience:not(.bunker-experience--simple) .bunker-panel:is([data-panel='rules'],[data-panel='prizes'],[data-panel='faq']) .bunker-eyebrow { color: #81462f; font-size: .52rem; }
+.bunker-experience:not(.bunker-experience--simple) .bunker-panel:is([data-panel='rules'],[data-panel='prizes'],[data-panel='faq']) .bunker-panel-number { display:none; }
+.bunker-experience:not(.bunker-experience--simple) .bunker-panel[data-panel='prizes'] { text-align:center; align-items:center; top:34svh; }
+.bunker-experience:not(.bunker-experience--simple) .bunker-panel[data-panel='prizes'] .bunker-prize-value { font: italic 1.6rem Georgia,serif; }
+.bunker-ink-stamp { display: inline-block; align-self: flex-start; margin: .5rem 0 1.4rem; padding:.55rem .75rem; border:1px solid #86442e; color:#86442e; font: .55rem/1.5 'IBM Plex Mono',monospace; letter-spacing:.12em; transform:rotate(-3deg); }
+.bunker-case-rules, .bunker-faq-entries details { padding: .8rem 0; border-top:1px solid #80614855; font: .74rem/1.6 'IBM Plex Mono',monospace; }
+.bunker-case-rules summary, .bunker-faq-entries summary { cursor:pointer; color:inherit; }
+.bunker-faq-entries details p { margin:.7rem 0 0; }
+.bunker-faq-entries a { color:inherit; }
+.bunker-experience--simple .bunker-cinematic-runway { height:1790svh; }
+.bunker-experience--simple:not(.bunker-experience--reduced) .bunker-mobile-document { display:block; position:fixed; z-index:3; top:31svh; left:16%; width:68%; max-height:39svh; overflow:auto; opacity:0; color:#412a1c; pointer-events:none; }
+.bunker-viewport[data-cinematic='true'][data-chapter='faq'] [data-readout='faq'] { pointer-events:auto; }
+.bunker-mobile-document h3 { font:600 2.1rem/.98 'Cormorant Garamond',Georgia,serif; margin:.65rem 0 1rem; }
+.bunker-mobile-document p { font:.75rem/1.6 Georgia,serif; }
+.bunker-mobile-document .bunker-eyebrow { font:.43rem/1.5 'IBM Plex Mono',monospace; letter-spacing:.14em; color:#86442e; }
+.bunker-mobile-document .bunker-faq-entries details { font-size:.6rem; padding:.65rem 0; }
+.bunker-mobile-document[data-readout='prizes'] { top:37svh; text-align:center; }
+.bunker-mobile-document .bunker-prize-value { font:italic 1.15rem Georgia,serif; }
+.bunker-experience--simple .bunker-panel:is([data-panel='journal'],[data-panel='rules'],[data-panel='prizes'],[data-panel='faq']) {
+  background: url('/s03/textures/ancient-paper.webp') center/100% 100%; color:#412d21; padding:3.5rem 2rem; margin-block:2rem; min-height:70svh; box-shadow:0 20px 45px #0007;
+}
+.bunker-experience--simple .bunker-panel:is([data-panel='journal'],[data-panel='rules'],[data-panel='prizes'],[data-panel='faq']) :is(h3,p,dt,dd,summary) { color:inherit; }
+.bunker-experience--simple .bunker-panel[data-panel='rules'] { border-left:8px solid #76684e; background-image:url('/s03/textures/ancient-paper.webp'); }
+.bunker-experience--simple .bunker-panel[data-panel='board']::before { display:none; }
+.bunker-experience--reduced .bunker-cinematic-runway { display:none; }
+.bunker-experience--reduced .bunker-mobile-document { display:none; }
+body:has(.bunker-viewport[data-map-focus='true']) .journal-navigation { visibility:hidden; }
+
+.bunker-viewport[data-map-focus='true'] :is(.bunker-chapters,.bunker-progress,.bunker-panels) { visibility:hidden; }
+
+.bunker-experience--reduced .bunker-panel[data-panel='rules']::before { content:''; position:absolute; z-index:-1; inset:-.8rem -.65rem; background:url('/s03/textures/ancient-folder.webp') center/100% 100%; transform:rotate(-1.4deg); }
+.bunker-experience--reduced .bunker-panel[data-panel='rules'] { isolation:isolate; }

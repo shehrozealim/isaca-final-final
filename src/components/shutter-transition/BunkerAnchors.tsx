@@ -1,5 +1,5 @@
 import { useLayoutEffect, useRef } from 'react'
-import { bunkerAnchors } from './bunkerAnchors'
+import { bunkerAnchors } from './bunkerAnchorCoordinates'
 
 export default function BunkerAnchors() {
   const plane = useRef<HTMLDivElement>(null)

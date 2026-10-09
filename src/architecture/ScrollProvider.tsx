@@ -11,11 +11,23 @@ export function ScrollProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState(() => getScrollState(0))
   const progress = useRef(0)
   const smoothScroll = useRef<Lenis | null>(null)
-  const { simple } = usePreferences()
-  const scrollTo = useCallback((top: number) => {
-    if (smoothScroll.current) smoothScroll.current.scrollTo(top, { immediate: true, force: true })
-    else window.scrollTo({ top, behavior: 'instant' })
+  const seekTween = useRef<gsap.core.Tween | null>(null)
+  const { simple, reducedMotion } = usePreferences()
+  const scrollTo = useCallback((top: number, options?: { duration?: number }) => {
+    seekTween.current?.kill()
+    const duration = reducedMotion ? 0 : options?.duration ?? 0
+    if (smoothScroll.current) smoothScroll.current.scrollTo(top, { immediate: !duration, duration, easing: gsap.parseEase('power2.inOut'), force: true })
+    else if (duration) {
+      const position = { top: window.scrollY }
+      seekTween.current = gsap.to(position, { top, duration, ease: 'power2.inOut', onUpdate: () => { window.scrollTo({ top: position.top, behavior: 'instant' }); ScrollTrigger.update() } })
+    } else window.scrollTo({ top, behavior: 'instant' })
     ScrollTrigger.update()
+  }, [reducedMotion])
+  useLayoutEffect(() => {
+    const cancel = () => seekTween.current?.kill()
+    window.addEventListener('wheel', cancel, { passive: true })
+    window.addEventListener('touchstart', cancel, { passive: true })
+    return () => { cancel(); window.removeEventListener('wheel', cancel); window.removeEventListener('touchstart', cancel) }
   }, [])
   const lockScroll = useCallback(() => {
     smoothScroll.current?.stop()

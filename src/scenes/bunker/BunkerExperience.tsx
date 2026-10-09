@@ -7,16 +7,18 @@ import { useScrollState } from '../../architecture/scrollContext'
 import BunkerWorld from './BunkerWorld'
 import BunkerOverlays from './BunkerOverlays'
 import { bunkerChapters } from './bunkerChapters'
-import { createBunkerTimeline } from './bunkerTimeline'
+import { createBunkerTimeline, addDeskChoreography, BUNKER_DURATION, panelAt } from './bunkerTimeline'
 import './BunkerExperience.css'
+import { journalMotion, deskMotion, resetDeskMotion } from './journalMotion'
 
 export default function BunkerExperience() {
   const background = useBunkerBackground()
-  const { simple } = usePreferences()
+  const { simple, mobile, reducedMotion } = usePreferences()
   const { state, scrollTo } = useScrollState()
   const section = useRef<HTMLElement>(null)
   const viewport = useRef<HTMLDivElement>(null)
   const master = useRef<ReturnType<typeof createBunkerTimeline> | null>(null)
+  const mobileMaster = useRef<gsap.core.Timeline | null>(null)
   const pendingChapter = useRef<string | null>(null)
   const [artReady, setArtReady] = useState(false)
   const active = state.active.id === 'S03'
@@ -26,7 +28,7 @@ export default function BunkerExperience() {
     let cancelled = false
     // Decode the real mounted sprites during S02, before opacity reveals can
     // trigger an asynchronous first paint. Never reload/decode the bunker plate.
-    const images = Array.from(background.room.querySelectorAll<HTMLImageElement>('.bunker-object img'))
+    const images = Array.from(background.room.querySelectorAll<HTMLImageElement>('.bunker-object img, .bunker-clean-plate'))
     void Promise.all(images.map(image => image.decode())).then(() => {
       if (!cancelled) setArtReady(true)
     }).catch((error: unknown) => {
@@ -35,7 +37,7 @@ export default function BunkerExperience() {
     return () => { cancelled = true }
   }, [background.room])
 
-  const navigate = useCallback((id: string) => {
+  const navigate = useCallback((id: string, animate = true) => {
     const chapter = bunkerChapters.find(item => item.id === id)
     if (!chapter) return
     if (background.phase !== 'ready') {
@@ -44,16 +46,19 @@ export default function BunkerExperience() {
       if (shutter) scrollTo(shutter.offsetTop + 2)
       return
     }
-    const trigger = master.current?.timeline.scrollTrigger
+    const trigger = master.current?.timeline.scrollTrigger ?? mobileMaster.current?.scrollTrigger
     const element = document.getElementById(id)
-    if (simple && element) scrollTo(element.getBoundingClientRect().top + window.scrollY - 32)
-    else if (trigger) scrollTo(trigger.start + (trigger.end - trigger.start) * chapter.at)
+    let destination: number
+    if (trigger && (!mobile || !['bunker-allies', 'S10'].includes(id))) destination = trigger.start + (trigger.end - trigger.start) * chapter.at * (mobile ? BUNKER_DURATION / 311 : 1)
+    else if (simple && element) destination = element.getBoundingClientRect().top + window.scrollY - 32
     else { pendingChapter.current = id; return }
+    const duration = animate && !reducedMotion ? Math.min(8, Math.max(2.2, Math.abs(destination - window.scrollY) / innerHeight * .22)) : 0
+    scrollTo(destination, { duration })
     if (location.hash !== `#${id}`) history.pushState(null, '', `#${id}`)
     requestAnimationFrame(() => {
       if (element) { element.tabIndex = -1; element.focus({ preventScroll: true }) }
     })
-  }, [background.phase, simple, scrollTo])
+  }, [background.phase, simple, mobile, reducedMotion, scrollTo])
 
   useEffect(() => {
     const handoff = () => { if (section.current) scrollTo(section.current.offsetTop) }
@@ -76,20 +81,21 @@ export default function BunkerExperience() {
         navigate(id)
       }
     }
-    const hash = () => {
+    const hash = (animate = true) => {
       const id = location.hash.slice(1)
-      if (bunkerChapters.some(chapter => chapter.id === id)) navigate(id)
+      if (bunkerChapters.some(chapter => chapter.id === id)) navigate(id, animate)
       else if (id === 'S03') {
         const destination = background.phase === 'ready' ? section.current : document.getElementById('S02')
         if (destination) scrollTo(destination.offsetTop + (background.phase === 'ready' ? 0 : 2))
       }
     }
     document.addEventListener('click', intercept, true)
-    window.addEventListener('hashchange', hash)
+    const hashChanged = () => hash()
+    window.addEventListener('hashchange', hashChanged)
     // The initial fragment can arrive before React creates its destination,
     // so there may be no native hashchange or automatic anchor scroll.
-    const initialHash = requestAnimationFrame(hash)
-    return () => { cancelAnimationFrame(initialHash); document.removeEventListener('click', intercept, true); window.removeEventListener('hashchange', hash) }
+    const initialHash = requestAnimationFrame(() => hash(false))
+    return () => { cancelAnimationFrame(initialHash); document.removeEventListener('click', intercept, true); window.removeEventListener('hashchange', hashChanged) }
   }, [navigate, background.phase, scrollTo])
 
   useEffect(() => {
@@ -111,19 +117,52 @@ export default function BunkerExperience() {
       const nav = screen.querySelector<HTMLElement>('.bunker-chapters')
       if (nav) nav.inert = false
       ScrollTrigger.refresh()
+      let mobileJournal: gsap.core.Timeline | undefined
+      if (mobile && !reducedMotion) {
+        const runway = screen.querySelector<HTMLElement>('.bunker-cinematic-runway')!
+        mobileJournal = gsap.timeline({ defaults: { ease: 'none' }, onUpdate: () => {
+          journalMotion.draw?.(); screen.dataset.mapFocus = String(deskMotion.mapFocus > .95)
+          screen.querySelectorAll<HTMLElement>('[data-readout]').forEach(el => {
+            const visible = Number(gsap.getProperty(el, 'opacity')) > .9
+            el.inert = !visible; el.setAttribute('aria-hidden', String(!visible))
+          })
+        }, scrollTrigger: {
+          trigger: runway, start: 'top top', end: 'bottom bottom', scrub: .85,
+          onUpdate: self => {
+            screen.dataset.cinematic = String(self.isActive)
+            screen.dataset.chapter = self.isActive ? panelAt(self.progress * 311) : ''
+          },
+        } })
+        mobileMaster.current = mobileJournal
+        addDeskChoreography(mobileJournal)
+        mobileJournal.fromTo(room.querySelector('.bunker-clean-plate'), { opacity: 0 }, { opacity: 1, duration: 2 }, 1)
+          .to(room.querySelector('.bunker-clean-plate'), { opacity: 0, duration: 8 }, 302)
+          .fromTo(screen.querySelector('.bunker-journal-shade'), { opacity: 0 }, { opacity: .96, duration: 12 }, 2)
+          .to(screen.querySelector('.bunker-journal-shade'), { opacity: 0, duration: 8 }, 302)
+        for (const [name, at, end] of [['rules', 176, 196], ['prizes', 242, 260], ['faq', 280, 302]] as const) {
+          const readout = screen.querySelector(`[data-readout="${name}"]`)
+          mobileJournal.fromTo(readout, { opacity: 0 }, { opacity: 1, duration: 2 }, at).to(readout, { opacity: 0, duration: 2 }, end)
+        }
+        mobileJournal.scrollTrigger?.refresh()
+      }
       if (pendingChapter.current) { const id = pendingChapter.current; pendingChapter.current = null; navigate(id) }
-      return
+      return () => {
+        delete screen.dataset.mapFocus; delete screen.dataset.cinematic; delete screen.dataset.chapter
+        mobileJournal?.scrollTrigger?.kill(); mobileJournal?.kill(); mobileMaster.current = null
+        screen.querySelectorAll<HTMLElement>('[data-readout]').forEach(el => { el.style.opacity = '0'; el.inert = true; el.setAttribute('aria-hidden', 'true') })
+        journalMotion.opacity = 0; resetDeskMotion(); journalMotion.draw?.()
+      }
     }
     const context = gsap.context(() => { master.current = createBunkerTimeline(root, screen, room, surface) }, root)
     if (pendingChapter.current) { const id = pendingChapter.current; pendingChapter.current = null; navigate(id) }
     return () => { master.current?.dispose(); context.revert(); master.current = null }
-  }, [background, simple, navigate, artReady])
+  }, [background, simple, mobile, reducedMotion, navigate, artReady])
 
   useLayoutEffect(() => {
     if (viewport.current) viewport.current.inert = !active || background.phase !== 'ready'
   }, [active, background.phase])
 
-  return <section ref={section} id="S03" className={`bunker-experience${simple ? ' bunker-experience--simple' : ''}`}
+  return <section ref={section} id="S03" className={`bunker-experience${simple ? ' bunker-experience--simple' : ''}${reducedMotion ? ' bunker-experience--reduced' : ''}`}
     aria-labelledby="S03-title" data-ready={background.phase === 'ready'}>
     <h2 id="S03-title" className="bunker-accessible-title">The Bunker — DJS ISACA: The Hunt</h2>
     <BunkerWorld background={background} />
