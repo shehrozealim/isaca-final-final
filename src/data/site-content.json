@@ -125,27 +125,27 @@
   "chapters": [
     {
       "id": "bunker-details",
-      "title": "Field journal"
+      "title": "Event details"
     },
     {
       "id": "bunker-about",
-      "title": "The destination"
+      "title": "Location"
     },
     {
       "id": "bunker-archive",
-      "title": "The sealed cases"
+      "title": "Problem statements"
     },
     {
       "id": "bunker-prizes",
-      "title": "The bounty"
+      "title": "Prize pool"
     },
     {
       "id": "bunker-faq",
-      "title": "The archive"
+      "title": "FAQs"
     },
     {
-      "id": "S10",
-      "title": "Join the hunt"
+      "id": "bunker-broadcast",
+      "title": "TV broadcast"
     }
   ],
   "scenes": [
@@ -376,7 +376,18 @@
     "FIELD OBSERVATIONS": "FIELD OBSERVATIONS",
     "No witness stands alone.": "No witness stands alone.",
     "Check the circle before dawn.": "Check the circle before dawn.",
-    "TRACE / RECORD / RETURN": "TRACE / RECORD / RETURN"
+    "TRACE / RECORD / RETURN": "TRACE / RECORD / RETURN",
+    "CH 03 / INCOMING TRANSMISSION": "CH 03 / INCOMING TRANSMISSION",
+    "JOIN": "JOIN",
+    "THE HUNT.": "THE HUNT.",
+    "Team details to be announced": "Team details to be announced",
+    "REGISTER FOR THE HUNT ↗": "REGISTER FOR THE HUNT ↗",
+    "Rotate your phone for the best experience": "Rotate your phone for the best experience",
+    "Use landscape mode to explore the full table.": "Use landscape mode to explore the full table.",
+    "Continue in portrait": "Continue in portrait",
+    "Event broadcast": "Event broadcast",
+    "EVENT TRANSMISSION": "EVENT TRANSMISSION",
+    "Rotate device": "Rotate device"
   },
   "map": {
     "landscape_0": "DJS ISACA / INVESTIGATION NO. 03",

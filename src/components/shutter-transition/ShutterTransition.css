@@ -184,7 +184,7 @@
 .s02-slat-texture {
   position: absolute;
   inset: 0;
-  background-image: url('/s02/shutter/shutter-metal.jpg');
+  background-image: url('/s02/shutter/shutter-metal.webp');
   background-size: 100% calc(var(--slat-count, 16) * 100%);
   background-repeat: no-repeat;
   filter: grayscale(.9) brightness(calc(.3 * var(--slat-exposure))) contrast(1.08);
@@ -248,7 +248,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: url('/s02/shutter/frame-metal.jpg') 50% 50% / cover no-repeat;
+  background: url('/s02/shutter/frame-metal.webp') 50% 50% / cover no-repeat;
   filter: grayscale(.9) brightness(.18);
   opacity: .65;
 }

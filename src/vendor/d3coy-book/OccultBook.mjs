@@ -12,7 +12,7 @@ export function createOccultBook({pageCount=3, approach=3.5, event=hackathon, on
   referenceCover.onload=()=>{
     const c=leatherMap.image,x=c.getContext('2d');
     x.setTransform(1,0,0,1,0,0);
-    x.drawImage(referenceCover,0,0,referenceCover.width,referenceCover.height,0,0,c.width,c.height);leatherMap.needsUpdate=true;
+    x.drawImage(referenceCover,0,0,referenceCover.width,referenceCover.height,0,0,c.width,c.height);x.fillStyle='#17130fe8';x.fillRect(110,1520,1316,330);x.textAlign='center';x.fillStyle='#d8c29c';x.font='600 90px Georgia';x.fillText(copy('FIELD JOURNAL'),768,1660);x.font='35px monospace';x.fillText(copy('DJS ISACA / THE HUNT'),768,1760);leatherMap.needsUpdate=true;
     // The supplied photograph already contains its metal badge.
     cover.traverse(o=>{if(['CylinderGeometry','TorusGeometry','TubeGeometry'].includes(o.geometry?.type))o.visible=false});
     onTextureReady();
@@ -164,7 +164,7 @@ export function createOccultBook({pageCount=3, approach=3.5, event=hackathon, on
     const rim=mesh(rimGeometry,new THREE.MeshStandardMaterial({color:0xbeaa83,roughness:1,side:THREE.DoubleSide}),pivot);rim.castShadow=false;
     pages[i]={pivot,sheet,reverse,rest,rim,perimeter};springs[i]={x:0,v:0};
   }
-  const view={position:new THREE.Vector3(6,7,10),quaternion:new THREE.Quaternion(),fov:38,aspect:16/9};const aim=new THREE.Object3D();aim.position.copy(view.position);aim.lookAt(0,1.5,0);view.quaternion.copy(aim.quaternion);view.quaternion.multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0,1,0),Math.PI));const resting=new THREE.Quaternion().setFromEuler(new THREE.Euler(-Math.PI/2,0,-.10));const readingTilt=new THREE.Quaternion().setFromEuler(new THREE.Euler(-.08,.10,0));const readingPose=new THREE.Quaternion();const pose=new THREE.Quaternion(),center=new THREE.Vector3(),offset=new THREE.Vector3();const bridgeGeo=new THREE.BufferGeometry();const bridgePositions=new Float32Array(18);bridgeGeo.setAttribute('position',new THREE.BufferAttribute(bridgePositions,3));const bridgeIndex=[0,1,2,1,3,2,2,3,4,3,5,4];bridgeGeo.setIndex(bridgeIndex);const timelineBridge=mesh(bridgeGeo,new THREE.MeshStandardMaterial({color:0x8d322b,roughness:1,side:THREE.DoubleSide,transparent:true,opacity:0,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-1}),group);timelineBridge.castShadow=false;let progress=0;const lift={x:0,v:0},lid={x:0,v:0};const clamp=x=>Math.max(0,Math.min(1,x));const ease=x=>{x=clamp(x);return x*x*(3-2*x)};
+  const view={position:new THREE.Vector3(6,7,10),quaternion:new THREE.Quaternion(),fov:38,aspect:16/9};const aim=new THREE.Object3D();aim.position.copy(view.position);aim.lookAt(0,1.5,0);view.quaternion.copy(aim.quaternion);view.quaternion.multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0,1,0),Math.PI));const resting=new THREE.Quaternion().setFromEuler(new THREE.Euler(-Math.PI/2,0,-.10));const readingTilt=new THREE.Quaternion().setFromEuler(new THREE.Euler(-.08,.10,0));const readingPose=new THREE.Quaternion();const pose=new THREE.Quaternion(),center=new THREE.Vector3(),offset=new THREE.Vector3();const bridgeGeo=new THREE.BufferGeometry();const bridgePositions=new Float32Array(18);bridgeGeo.setAttribute('position',new THREE.BufferAttribute(bridgePositions,3));const bridgeIndex=[0,1,2,1,3,2,2,3,4,3,5,4];bridgeGeo.setIndex(bridgeIndex);const timelineBridge=mesh(bridgeGeo,new THREE.MeshStandardMaterial({color:0x8d322b,roughness:1,side:THREE.DoubleSide,transparent:true,opacity:0,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-1}),group);timelineBridge.castShadow=false;let progress=0,closing=0;const lift={x:0,v:0},lid={x:0,v:0};const clamp=x=>Math.max(0,Math.min(1,x));const ease=x=>{x=clamp(x);return x*x*(3-2*x)};
   function spring(s,target,dt,k=100,d=20){const a=k*(target-s.x)-d*s.v;s.v+=a*dt;s.x+=s.v*dt}
   function update(dt){dt=Math.min(Math.max(dt||0,0),.08);const steps=Math.max(1,Math.ceil(dt/(1/120))),h=dt/steps;
     for(let n=0;n<steps;n++){spring(lift,ease(progress/.18),h,70,18);spring(lid,ease((progress-.22)/.14),h,75,18);springs.forEach((s,i)=>spring(s,ease((progress-([.44,.65,.84][i]??.84))/.075),h,85,18))}
@@ -179,13 +179,13 @@ export function createOccultBook({pageCount=3, approach=3.5, event=hackathon, on
     group.scale.setScalar(THREE.MathUtils.lerp(tableScale,1,amount));
     offset.multiplyScalar(group.scale.x);
     group.position.copy(restCenter).lerp(center,amount).sub(offset);group.quaternion.copy(pose);
-    const opening=clamp(lid.x),wingAngle=opening*.22;
+    const opening=clamp(lid.x)*(1-closing),wingAngle=opening*.22;
     // 155-degree opening: each side rises 12.6 degrees from the center gutter.
     rightWing.rotation.y=-wingAngle;leftWing.rotation.y=wingAngle;
     cover.rotation.y=-opening*(Math.PI-.22);clasp.rotation.y=ease((progress-.15)/.1)*1.7;
     let turned=0,landed=0;
     pages.forEach(({pivot,sheet,reverse,rest,rim,perimeter},i)=>{
-      const s=springs[i],t=clamp(s.x);turned+=t;landed+=ease((t-.94)/.06);const wave=Math.sin(t*Math.PI),width=W-.07;
+      const s=springs[i],t=clamp(s.x)*(1-closing);turned+=t;landed+=ease((t-.94)/.06);const wave=Math.sin(t*Math.PI),width=W-.07;
       // Integrate tangent angles across each row: preserves strip arc length.
       // The leading corner peels first; curvature travels toward the binding.
       const a=sheet.geometry.attributes.position,b=reverse.geometry.attributes.position;
@@ -209,9 +209,9 @@ export function createOccultBook({pageCount=3, approach=3.5, event=hackathon, on
     finalRecto.position.z=block.position.z+.22*block.scale.z/2+.001;
     leftStack.visible=landed>.01;leftStack.scale.z=Math.max(.001,landed*.013);
     leftStack.position.z=T/2+.035+leftStack.scale.z/2;
-    const showTimeline=(springs[0]?.x>.985)&&(springs[1]?.x<.015);timelineBridge.visible=showTimeline;
+    const showTimeline=closing<.001&&(springs[0]?.x>.985)&&(springs[1]?.x<.015);timelineBridge.visible=showTimeline;
     if(showTimeline){const y=(.5-525/1024)*(H-.11),bp=bridgeGeo.attributes.position;const zl=pages[0].pivot.position.z,zr=pages[1].pivot.position.z;const points=[[-.055,zl+.055*Math.sin(wingAngle)+.002],[0,(zl+zr)/2],[.055,zr+.055*Math.sin(wingAngle)+.002]];points.forEach(([x,z],i)=>{bp.setXYZ(i*2,x,y-.009,z);bp.setXYZ(i*2+1,x,y+.009,z)});bp.needsUpdate=true;bridgeGeo.computeVertexNormals();bridgeGeo.computeBoundingSphere();timelineBridge.material.opacity=1;}
   }
   update(0);
-  return {group,ready:Promise.all([referenceCover.decode(),referencePages.decode(),paperReference.decode(),gothicReference.decode()]).then(()=>{referenceCover.onload?.();referencePages.onload?.();paperReference.onload?.()}),setView(camera){view.position.copy(camera.position);view.quaternion.copy(camera.quaternion);view.fov=camera.fov;view.aspect=camera.aspect},setRestPose(point,scale,mobile){restCenter.copy(point);tableScale=scale;mobileView=mobile;resting.setFromEuler(new THREE.Euler(-1.0,.25,.28,'ZYX'))},setProgress(value){progress=clamp(Number(value)||0)},update,dispose(){const gs=new Set(),ms=new Set(),ts=new Set();group.traverse(o=>{if(o.geometry)gs.add(o.geometry);if(o.material)(Array.isArray(o.material)?o.material:[o.material]).forEach(m=>{ms.add(m);for(const key of ['map','bumpMap','roughnessMap'])if(m[key])ts.add(m[key])})});gs.forEach(g=>g.dispose());ms.forEach(m=>m.dispose());ts.forEach(t=>t.dispose());group.removeFromParent()}};
+  return {group,ready:Promise.all([referenceCover.decode(),referencePages.decode(),paperReference.decode(),gothicReference.decode()]).then(()=>{referenceCover.onload?.();referencePages.onload?.();paperReference.onload?.()}),setView(camera){view.position.copy(camera.position);view.quaternion.copy(camera.quaternion);view.fov=camera.fov;view.aspect=camera.aspect},setRestPose(point,scale,mobile){restCenter.copy(point);tableScale=scale;mobileView=mobile;resting.setFromEuler(new THREE.Euler(-1.0,.25,.28,'ZYX'))},setProgress(value){progress=clamp(Number(value)||0)},setClosing(value){closing=ease(value)},update,dispose(){const gs=new Set(),ms=new Set(),ts=new Set();group.traverse(o=>{if(o.geometry)gs.add(o.geometry);if(o.material)(Array.isArray(o.material)?o.material:[o.material]).forEach(m=>{ms.add(m);for(const key of ['map','bumpMap','roughnessMap'])if(m[key])ts.add(m[key])})});gs.forEach(g=>g.dispose());ms.forEach(m=>m.dispose());ts.forEach(t=>t.dispose());group.removeFromParent()}};
 }

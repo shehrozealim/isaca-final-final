@@ -227,21 +227,21 @@ export default function Intro() {
     {!active && <h1 id="S00-title" className="intro-accessible-title">{copy("The Hunt")}</h1>}
     {active && <div ref={root} className={`intro${reducedMotion ? ' intro--reduced' : ''}`}>
       <div className="intro-black" aria-hidden="true" />
-      <img className="intro-forest" src="/s00/background/forest-bg.png" alt={""} />
+      <img className="intro-forest" src="/s00/background/forest-bg.webp" alt={""} />
       <div className="intro-distant-fog" aria-hidden="true">
         <div className="intro-backlight" />
         <div className="intro-fog intro-fog--distant" />
         <div className="intro-fog intro-fog--clearing" />
       </div>
       <div className="intro-hunters" aria-hidden="true">
-        <div className="intro-hunter intro-hunter--center"><img src="/s00/hunters/hunter-center.png" alt={""} /></div>
-        <div className="intro-hunter intro-hunter--left"><img src="/s00/hunters/hunter-left.png" alt={""} /></div>
-        <div className="intro-hunter intro-hunter--right"><img src="/s00/hunters/hunter-right.png" alt={""} /></div>
+        <div className="intro-hunter intro-hunter--center"><img src="/s00/hunters/hunter-center.webp" alt={""} /></div>
+        <div className="intro-hunter intro-hunter--left"><img src="/s00/hunters/hunter-left.webp" alt={""} /></div>
+        <div className="intro-hunter intro-hunter--right"><img src="/s00/hunters/hunter-right.webp" alt={""} /></div>
       </div>
       <div className="intro-near-fog" aria-hidden="true"><div className="intro-fog intro-fog--near" /></div>
       <div className="intro-foreground" aria-hidden="true">
-        <img className="intro-branches intro-branches--left" src="/s00/foreground/branches-left.png" alt={""} />
-        <img className="intro-branches intro-branches--right" src="/s00/foreground/branches-right.png" alt={""} />
+        <img className="intro-branches intro-branches--left" src="/s00/foreground/branches-left.webp" alt={""} />
+        <img className="intro-branches intro-branches--right" src="/s00/foreground/branches-right.webp" alt={""} />
       </div>
       <div className="intro-vignette" aria-hidden="true" />
       <div className="intro-typography">
@@ -249,7 +249,7 @@ export default function Intro() {
         <h1 id="S00-title" className="intro-title">{copy("THE HUNT")}</h1>
       </div>
       <div className="intro-actions">
-        <a className="intro-join" href="#S10">{copy("JOIN THE HUNT")}</a>
+        <a className="intro-join" href="#bunker-broadcast">{copy("JOIN THE HUNT")}</a>
         <a className="intro-scroll" href="#S01" onClick={event => {
           const destination = document.getElementById('S01')
           if (!destination) return

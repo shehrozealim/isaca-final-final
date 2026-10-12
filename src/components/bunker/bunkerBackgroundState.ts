@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from 'react'
 
-export const BUNKER_IMAGE = '/Occult_Research_Bunker_Study.png'
+export const BUNKER_IMAGE = '/Occult_Research_Bunker_Study.webp'
 
 export type BunkerBackgroundState = Readonly<{
   phase: 'unavailable' | 'opening' | 'ready'

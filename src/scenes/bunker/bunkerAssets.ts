@@ -15,9 +15,9 @@ const escapeXML = (text: string) => text.replace(/[<>&"']/g, c => ({ '<': '&lt;'
 export function prepareBunkerAssets(retry = false): Promise<void> {
   if (preparation && !retry) return preparation
   update({ loaded: 0, error: false, ready: false })
-  const images = [BUNKER_IMAGE, '/s02/shutter/shutter-metal.jpg', '/s02/shutter/frame-metal.jpg',
+  const images = [BUNKER_IMAGE, '/s02/shutter/shutter-metal.webp', '/s02/shutter/frame-metal.webp',
     ...['gothic-cover.webp','gothic-symbols.webp','ancient-paper.webp','ancient-map.webp','ancient-folder.webp','ancient-wax.webp','desk-wood-real.webp','evidence-photos.webp','bunker-table-cleared.webp','supplied-aged-pages.jpg'].map(name => '/s03/textures/' + name),
-    '/s03/board/case-board.webp', ...['sword','skull','candle','television','field-sketches'].map(name => `/s03/props/${name}.webp`)]
+    '/s03/board/case-board.webp', ...['television','field-sketches'].map(name => `/s03/props/${name}.webp`)]
   update({ total: images.length + 3 })
   preparation = Promise.all([
     ...images.map(decode),

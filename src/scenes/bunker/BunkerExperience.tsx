@@ -70,7 +70,7 @@ export default function BunkerExperience() {
   }, [scrollTo])
 
   useEffect(() => {
-    // Preserve the existing intro's #S10 link and chapter deep links. A cold
+    // Preserve the intro broadcast link and chapter deep links. A cold
     // entry first runs S02, then seeks within the same retained surface.
     const intercept = (event: MouseEvent) => {
       if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return
@@ -142,12 +142,12 @@ export default function BunkerExperience() {
         addDeskChoreography(mobileJournal)
         addDocumentChoreography(mobileJournal, screen)
         mobileJournal.fromTo(broadcast, { opacity: 0, x: 24, scale: .85 }, { opacity: 1, x: 0, scale: 1, duration: 6, ease: 'power2.out' }, deskSchedule.broadcastStart)
-          .to(broadcast, { opacity: 0, duration: 8 }, deskSchedule.roomReturn)
+
         mobileJournal.fromTo(room.querySelector('.bunker-clean-plate'), { opacity: 0 }, { opacity: 1, duration: 2 }, 1)
-          .to(room.querySelector('.bunker-clean-plate'), { opacity: 0, duration: 12 }, deskSchedule.roomReturn)
+
           .fromTo(screen.querySelector('.bunker-journal-shade'), { opacity: 0 }, { opacity: .96, duration: 12 }, 2)
-          .to(screen.querySelector('.bunker-journal-shade'), { opacity: 0, duration: 12 }, deskSchedule.roomReturn)
-        for (const [name, at, end] of [['rules', 174, deskSchedule.caseEnd], ['prizes', deskSchedule.prizeRead, deskSchedule.prizeEnd], ['faq', deskSchedule.faqStart + 10, deskSchedule.faqEnd]] as const) {
+
+        for (const [name, at, end] of [['rules', 164, deskSchedule.caseEnd], ['prizes', deskSchedule.prizeRead, deskSchedule.prizeEnd], ['faq', deskSchedule.faqStart + 10, deskSchedule.faqEnd]] as const) {
           const readout = screen.querySelector(`[data-readout="${name}"]`)
           mobileJournal.fromTo(readout, { opacity: 0 }, { opacity: 1, duration: 2 }, at).to(readout, { opacity: 0, duration: 2 }, end)
         }

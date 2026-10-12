@@ -1,12 +1,30 @@
 /** Original photographic evidence atlas, shared by the diary and physical files. */
 export const EVIDENCE_ATLAS = '/s03/textures/evidence-photos.webp';
+const graphiteCache = new WeakMap();
 export const SKETCH_ATLAS = '/s03/props/field-sketches.webp';
 
 export function paintFieldSketch(ctx, atlas, index, x, y, width, height) {
   if (!atlas.complete || !atlas.naturalWidth) return;
   const n = ((index % 4) + 4) % 4, w = atlas.naturalWidth / 2, h = atlas.naturalHeight / 2;
-  ctx.save(); ctx.globalCompositeOperation = 'multiply'; ctx.globalAlpha = .86;
-  ctx.drawImage(atlas, (n % 2) * w, Math.floor(n / 2) * h, w, h, x, y, width, height);
+  let variants=graphiteCache.get(atlas); if(!variants){variants=[];graphiteCache.set(atlas,variants)}
+  if(!variants[n]){
+    const ink=document.createElement('canvas');ink.width=w;ink.height=h;const pen=ink.getContext('2d');
+    pen.drawImage(atlas,(n%2)*w,Math.floor(n/2)*h,w,h,0,0,w,h);const data=pen.getImageData(0,0,w,h);
+    for(let i=0;i<data.data.length;i+=4){const lum=data.data[i]*.2126+data.data[i+1]*.7152+data.data[i+2]*.0722;
+      data.data[i+3]*=Math.max(0,Math.min(1,(210-lum)/130));data.data[i]=58;data.data[i+1]=43;data.data[i+2]=28}
+    pen.putImageData(data,0,0);variants[n]=ink
+  }
+  ctx.save(); ctx.translate(x,y); ctx.globalCompositeOperation='multiply'; ctx.globalAlpha=.80;
+  ctx.drawImage(variants[n],0,0,width,height);
+  // A faint offset graphite transfer breaks the clean digital edge.
+  ctx.globalAlpha=.08; ctx.drawImage(variants[n],1.2,1.6,width,height);
+  for(let i=0;i<12;i++){
+    const px=width*(.14+((i*37+n*13)%73)/100),py=height*(.15+((i*29+n*17)%69)/100);
+    const smudge=ctx.createRadialGradient(px,py,0,px,py,width*.055);
+    smudge.addColorStop(0,'#30251b22');smudge.addColorStop(1,'#30251b00');ctx.globalAlpha=.45;ctx.fillStyle=smudge;ctx.fillRect(px-width*.06,py-width*.06,width*.12,width*.12);
+  }
+  ctx.globalAlpha=.22;ctx.strokeStyle='#47382a';ctx.lineWidth=Math.max(.5,width/900);
+  for(let i=0;i<11;i++){const yy=height*(.83+i*.008);ctx.beginPath();ctx.moveTo(width*.09,yy);ctx.quadraticCurveTo(width*.17,yy+3,width*(.2+(i%3)*.025),yy-2);ctx.stroke()}
   ctx.restore();
 }
 

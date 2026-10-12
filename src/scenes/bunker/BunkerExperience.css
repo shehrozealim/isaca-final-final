@@ -294,3 +294,61 @@ body:has(.registration-shortcut) .s02-sound { right:14rem; }
 .bunker-experience--reduced .crt-message h3 { font-size:clamp(28px,4vw,42px); margin:.5svh 0; }
 .bunker-experience--reduced .crt-message a { font-size:clamp(9px,1vw,13px); }
 .bunker-experience--reduced .crt-message small,.bunker-experience--reduced .crt-channel { font-size:clamp(6px,.7vw,9px); }
+
+/* The broadcast is projected onto the live 3D screen by JournalScene. */
+.bunker-experience:not(.bunker-experience--reduced) .desk-broadcast { aspect-ratio:auto; transform:none; }
+.bunker-experience:not(.bunker-experience--reduced) .desk-broadcast-case { display:none; }
+.bunker-experience:not(.bunker-experience--reduced) .desk-broadcast-screen { inset:0; width:100%; height:100%; border-radius:7%; background:transparent; box-shadow:none; }
+.bunker-experience:not(.bunker-experience--reduced) .crt-message { padding:5% 7%; font-size:clamp(8px,1.05svh,12px); }
+.bunker-experience:not(.bunker-experience--reduced) .crt-message h3 { font-size:clamp(24px,3.8svh,42px); line-height:.96; }
+.document-cover { padding:0; gap:.5rem; }
+.document-cover .bunker-ink-stamp { align-self:center; margin:.5rem 0; }
+@media(max-width:767px) {
+ .bunker-experience:not(.bunker-experience--reduced) .crt-message { font-size:8px; line-height:1.2; padding:4% 6%; }
+ .bunker-experience:not(.bunker-experience--reduced) .crt-message h3 { font-size:22px; margin:4px 0; }
+ .bunker-experience:not(.bunker-experience--reduced) .crt-message p { margin:3px 0; }
+ .bunker-experience:not(.bunker-experience--reduced) .crt-message a { font-size:8px; padding:4px; margin:4px 0; }
+}
+
+/* The 1024 x 768 semantic readout shares the exact perspective of the CRT glass. */
+.bunker-experience:not(.bunker-experience--reduced) .desk-broadcast { width:1024px; height:768px; transform-origin:0 0; }
+.bunker-experience:not(.bunker-experience--reduced) .desk-broadcast-screen { overflow:hidden; border-radius:7%; background:radial-gradient(ellipse at 32% 8%,#d5ffe017,transparent 55%); box-shadow:inset 0 0 65px 18px #0009; }
+.bunker-experience:not(.bunker-experience--reduced) .crt-message { padding:46px 68px; font-size:26px; line-height:1.35; text-shadow:0 0 3px #b9e4c950; }
+.bunker-experience:not(.bunker-experience--reduced) .crt-message h3 { font-size:94px; line-height:.95; margin:18px 0; }
+.bunker-experience:not(.bunker-experience--reduced) .crt-message p { margin:12px 0; }
+.bunker-experience:not(.bunker-experience--reduced) .crt-message a { font-size:26px; padding:15px 20px; margin:18px 0; }
+.bunker-experience:not(.bunker-experience--reduced) .crt-channel,.bunker-experience:not(.bunker-experience--reduced) .crt-message small { font-size:18px; }
+
+/* A pinned stage must never become an internal focus-scroll container. */
+.bunker-viewport { overflow:clip; }
+
+
+/* Award copy is printed into the three 3D sheets, with one accessible DOM transcript. */
+.bunker-experience:not(.bunker-experience--reduced) .bunker-panel[data-panel='prizes'],
+.bunker-experience:not(.bunker-experience--reduced) .bunker-mobile-document[data-readout='prizes'] {
+  clip-path:inset(50%); width:1px; height:1px; padding:0; margin:0; overflow:clip; pointer-events:none;
+}
+/* WebGL renders the broadcast on the curved glass. This layer only supplies semantics and a link. */
+.bunker-experience:not(.bunker-experience--reduced) .desk-broadcast-screen { background:none; box-shadow:none; }
+.bunker-experience:not(.bunker-experience--reduced) .desk-broadcast-screen::after,
+.bunker-experience:not(.bunker-experience--reduced) .crt-interference { display:none; }
+.bunker-experience:not(.bunker-experience--reduced) .crt-message { color:transparent; text-shadow:none; }
+.bunker-experience:not(.bunker-experience--reduced) .crt-message > :not(a) { opacity:0; }
+.bunker-experience:not(.bunker-experience--reduced) .crt-message a { position:absolute; left:140px; top:568px; width:744px; height:66px; margin:0; padding:0; box-sizing:border-box; color:transparent; background:transparent; border-color:transparent; }
+.bunker-experience:not(.bunker-experience--reduced) .crt-message a:focus-visible { outline:5px solid #e1eac8; outline-offset:4px; }
+
+/* Keep content labels readable on narrow screens and short landscape viewports. */
+.bunker-chapters { gap:.55rem; }
+.bunker-chapters a { line-height:1.5; }
+.rotate-prompt { display:none; }
+@media (max-width:767px) and (orientation:portrait) {
+ .rotate-prompt { position:fixed; z-index:100; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:2rem; text-align:center; background:#090b0bf5; color:#e3d1ab; }
+ .rotate-prompt > span { font-size:4rem; color:#c5a76d; }
+ .rotate-prompt p { font:1.65rem/1.2 Georgia,serif; max-width:19rem; }
+ .rotate-prompt small { font: .8rem/1.6 monospace; max-width:20rem; }
+ .rotate-prompt button { margin-top:2rem; padding:.8rem 1rem; background:#211c14; border:1px solid #ad8d55; color:#e3d1ab; cursor:pointer; }
+}
+@media (max-height:600px) and (pointer:coarse) and (orientation:landscape) {
+ .bunker-experience--simple:not(.bunker-experience--reduced) .bunker-chapters { display:flex; justify-content:space-between; padding:.35rem .6rem; bottom:.25rem; }
+ .bunker-chapters a { font-size:.5rem; }
+}

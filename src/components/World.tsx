@@ -54,7 +54,7 @@ export default function World() {
   const background = useBunkerBackground()
   if (!reducedMotion && ['opening', 'ready'].includes(background.phase) && ['S02', 'S03'].includes(state.active.id)) {
     const canvas = <div className="world journal-world" aria-hidden="true">
-      <CanvasBoundary><Canvas shadows={!mobile} frameloop="demand" dpr={[1, mobile ? 1.5 : 2]} camera={{ position: [0, 0, 12], fov: 38 }}
+      <CanvasBoundary><Canvas shadows={!mobile} frameloop="demand" dpr={[1, mobile ? 1.25 : 1.75]} camera={{ position: [0, 0, 12], fov: 38 }}
         gl={{ alpha: true, antialias: true }}><JournalScene mobile={mobile} /></Canvas></CanvasBoundary>
     </div>
     const slot = document.getElementById('bunker-canvas-slot')

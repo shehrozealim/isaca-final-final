@@ -3,7 +3,7 @@ import { CanvasTexture, SRGBColorSpace } from 'three'
 import { EVIDENCE_ATLAS, SKETCH_ATLAS, paintEvidencePhoto, paintFieldSketch } from './EvidencePhotos.mjs'
 
 /** One supplied-derived parchment across every physical page, with crisp ink. */
-export function createAncientPaper(draw: (x: CanvasRenderingContext2D, w: number, h: number) => void, redraw: () => void, study = false, variant = 0) {
+export function createAncientPaper(draw: (x: CanvasRenderingContext2D, w: number, h: number) => void, redraw: () => void, study = false, variant = 0, plain = false) {
   const canvas = document.createElement('canvas'); canvas.width = 1536; canvas.height = 2048
   const x = canvas.getContext('2d')!, texture = new CanvasTexture(canvas)
   texture.colorSpace = SRGBColorSpace; texture.anisotropy = 8
@@ -13,7 +13,7 @@ export function createAncientPaper(draw: (x: CanvasRenderingContext2D, w: number
     x.fillStyle = '#e5cd9e'; x.fillRect(0, 0, canvas.width, canvas.height)
     if (image.complete && image.naturalWidth) x.drawImage(image, 0, 0, canvas.width, canvas.height)
     draw(x, canvas.width, canvas.height)
-    if (symbols.complete && symbols.naturalWidth) {
+    if (!plain && symbols.complete && symbols.naturalWidth) {
       if (study) {
         paintFieldSketch(x, sketches, variant, canvas.width * .14, canvas.height * .17, canvas.width * .72, canvas.width * .72)
         if (variant % 2 === 0) paintEvidencePhoto(x, symbols, variant + 1, canvas.width * .57, canvas.height * .68, canvas.width * .27, canvas.height * .18, .055)

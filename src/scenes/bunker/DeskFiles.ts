@@ -2,7 +2,8 @@ import { BackSide, BoxGeometry, DoubleSide, FrontSide, Group, Mesh, MeshStandard
 import { createAncientPaper, drawArtifactInk } from './AncientPaper'
 import { deskMotion } from './journalMotion'
 import { casePageCount, faqPageCount } from './deskSchedule'
-import { createGothicSymbol } from './GothicSymbol'
+import { CanvasTexture } from 'three'
+import { copy } from '../../data/content'
 
 export function createDeskFiles(redraw: () => void) {
   const group = new Group(), folder = new Group(), faq = new Group(), papers = new Group()
@@ -16,13 +17,20 @@ export function createDeskFiles(redraw: () => void) {
     const mesh = new Mesh(geometry, material); mesh.castShadow = mesh.receiveShadow = true; parent.add(mesh); resources.push(geometry); return mesh
   }
   add(folder, new BoxGeometry(5.8, 7.5, .1), board)
-  const hinge = new Group(); hinge.position.set(-2.9, 0, .22); folder.add(hinge)
+  const hinge = new Group(); hinge.position.set(-2.9, 0, .50); folder.add(hinge)
   const cover = add(hinge, new BoxGeometry(5.8, 7.5, .09), board); cover.position.x = 2.9
-  const ornament = createGothicSymbol(0, 1.4, redraw); ornament.mesh.position.set(2.9, 0, .055); hinge.add(ornament.mesh); resources.push(ornament)
+  const label = (parent: Group, title: string, x = 0, z = .3) => {
+    const canvas=document.createElement('canvas');canvas.width=1024;canvas.height=512
+    const ctx=canvas.getContext('2d')!;ctx.fillStyle='#241a12';ctx.fillRect(0,0,1024,512);ctx.strokeStyle='#b8a177';ctx.lineWidth=3;ctx.strokeRect(30,30,964,452)
+    ctx.textAlign='center';ctx.fillStyle='#d7c39b';ctx.font='600 76px Georgia';ctx.fillText(title,512,250);ctx.font='26px monospace';ctx.fillText(copy('DJS ISACA / THE HUNT'),512,335)
+    const texture=new CanvasTexture(canvas);texture.colorSpace=SRGBColorSpace;texture.anisotropy=8
+    const material=new MeshStandardMaterial({map:texture,roughness:.94});const tag=add(parent,new PlaneGeometry(4.6,2.3),material);tag.position.set(x,0,z);resources.push(texture,material)
+  }
+  label(hinge, copy('Problem statements.'),2.9,.055)
   const stack = (parent: Group, kind: 'cases' | 'faq', count: number) => {
     const offset = kind === 'faq' ? 3 : 0
     const makeLeaf = (index: number) => {
-      const paper = createAncientPaper((x, w, h) => drawArtifactInk(x, w, h, kind, index), redraw, false, index + offset)
+      const paper = createAncientPaper((x, w, h) => drawArtifactInk(x, w, h, kind, index), redraw, false, index + offset, kind === 'cases' || index === 0)
       const study = createAncientPaper((x, w, h) => drawArtifactInk(x, w, h, 'study', index), redraw, true, index + offset)
       study.texture.repeat.x = -1; study.texture.offset.x = 1
       const front = new MeshStandardMaterial({ map: paper.texture, bumpMap: paper.texture, bumpScale: .008, roughness: .98, side: FrontSide })
@@ -41,6 +49,10 @@ export function createDeskFiles(redraw: () => void) {
       return { pivot, geometry, rest: geometry.attributes.position.array.slice(), last: -1 }
     })
   }
+  const faqBoard = add(faq,new BoxGeometry(5.8,7.5,.1),board);faqBoard.position.z=-.04
+  const faqHinge=new Group();faqHinge.position.set(-2.9,0,.25);faq.add(faqHinge)
+  const faqLid=add(faqHinge,new BoxGeometry(5.8,7.5,.09),board);faqLid.position.x=2.9
+  label(faqHinge,copy('FAQ'),2.9,.055)
   const caseLeaves = stack(papers, 'cases', casePageCount), faqLeaves = stack(faq, 'faq', faqPageCount)
   const insideCover = createAncientPaper((x, w, h) => drawArtifactInk(x, w, h, 'study'), redraw, true, 3)
   insideCover.texture.repeat.x = -1; insideCover.texture.offset.x = 1
@@ -68,18 +80,19 @@ export function createDeskFiles(redraw: () => void) {
     update(mobile: boolean) {
       const enter = deskMotion.folderOpacity, faqEnter = deskMotion.faqOpacity
       folder.visible = faq.visible = true
-      const parked = deskMotion.folderTurn > 0 && enter < 1
-      folder.position.set((mobile ? 1.8 : 4.65) * (1 - enter) + (mobile ? 0 : 2.675 * .88) * enter, -1.4, (mobile && parked ? 3.4 : -.8) * (1 - enter))
+      folder.position.set((mobile ? 1.85 : 2.8) * (1 - enter) + (mobile ? 0 : 2.675 * (.88 * 10 / 12.18)) * enter, -1.73 + enter * 2.83, 2.95 * (1 - enter))
       folder.rotation.z = -.10 * (1 - enter)
-      const restScale = mobile ? .23 : .36
-      folder.scale.setScalar(restScale + (.88 - restScale) * enter)
+      const restScale = mobile ? .30 : .43
+      folder.scale.setScalar(restScale + (.88 * 10 / 12.18 - restScale) * enter)
+      hinge.position.z = .22 + .28 * (1 - deskMotion.folder)
       hinge.rotation.y = -deskMotion.folder * Math.PI
       papers.position.z = .12
       turn(caseLeaves, deskMotion.folderTurn, mobile, enter)
-      faq.position.set((mobile ? 1.7 : 5) * (1 - faqEnter) + (mobile ? 0 : 2.675 * .88) * faqEnter, -1.1, 2.2 * (1 - faqEnter))
-      faq.scale.setScalar((mobile ? .26 : .36) + faqEnter * (mobile ? .62 : .52))
+      faq.position.set((mobile ? 1.85 : 3.0) * (1 - faqEnter) + (mobile ? 0 : 2.675 * (.88 * 10 / 12.18)) * faqEnter, -1.73 + faqEnter * 2.83, 0)
+      faq.scale.setScalar((mobile ? .30 : .43) + faqEnter * (.88 * 10 / 12.18 - (mobile ? .30 : .43)))
+      faqHinge.rotation.y = -Math.PI * faqEnter
       faq.rotation.z = .08 * (1 - faqEnter)
-      turn(faqLeaves, deskMotion.faq, mobile)
+      turn(faqLeaves, deskMotion.faq, mobile, faqEnter)
     },
     dispose() { resources.forEach(r => r.dispose()); group.removeFromParent() },
   }

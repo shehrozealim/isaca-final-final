@@ -5,9 +5,7 @@ import { siteContent } from '../../data/content'
 import type { ReactNode } from 'react'
 import { event } from '../../data/event'
 import { bunkerChapters } from './bunkerChapters'
-import { BunkerSeal } from './BunkerFinale'
 import DeskBroadcast from './DeskBroadcast'
-import { registrationDestination } from '../../data/registration'
 function FactList({ entries, pending }: { entries: readonly unknown[]; pending: string }) {
   if (!entries.length) return pending ? <p className="bunker-pending">{pending}</p> : null
   return <ul className="bunker-facts">{entries.map((entry, i) => <li key={i}>{typeof entry === 'object' && entry !== null ? Object.entries(entry).map(([key, value]) => <p key={key}><span>{key}</span> {String(value)}</p>) : String(entry)}</li>)}</ul>
@@ -39,7 +37,6 @@ function FAQPages() {
 }
 function Panel({ name, id, kicker, title, children, side = 'right' }: { name: string; id?: string; kicker: string; title: string; children: ReactNode; side?: string }) {
   return <article className={`bunker-panel bunker-panel--${side}`} data-panel={name} id={id} aria-labelledby={`bunker-${name}-title`}>
-    {name === 'finale' && <div className="bunker-mobile-seal" aria-hidden="true"><BunkerSeal /></div>}
     <p className="bunker-eyebrow">{kicker}</p><h3 id={`bunker-${name}-title`} className={name === 'rules' || name === 'faq' ? 'bunker-accessible-title' : undefined}>{title}</h3>{children}
     <span className="bunker-panel-number" aria-hidden="true">{copy("DJS / ISACA / CASE 03")}</span>
   </article>
@@ -72,11 +69,7 @@ export default function BunkerOverlays({ navigate }: { navigate: (id: string) =>
         <PrizePlacements />
       </Panel>
       <Panel name="faq" id="bunker-faq" kicker={copy("FROM THE ARCHIVE / FILE 06")} title={copy("FAQ")} side="left"><FAQPages /></Panel>
-      <Panel name="finale" id="S10" kicker={copy("06 / YOUR NEXT CASE")} title={copy("JOIN THE HUNT.")} side="center">
-        <p className="bunker-lede">{copy("The evidence brought you here.")}<br />{copy("The next move is yours.")}</p>
-        <a className="bunker-join" href={registrationDestination}>{copy("REGISTER FOR THE HUNT")}</a>
-        <p className="bunker-margin-note">{event.title}</p><a className="bunker-revisit" href="#bunker-about" onClick={e => { e.preventDefault(); navigate('bunker-about') }}>{copy("Revisit the case files")}</a>
-      </Panel>
+
     </div><DeskBroadcast /><div className="bunker-progress" aria-hidden="true"><span /></div>
   </>
 }
