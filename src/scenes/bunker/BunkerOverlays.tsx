@@ -6,6 +6,7 @@ import type { ReactNode } from 'react'
 import { event } from '../../data/event'
 import { bunkerChapters } from './bunkerChapters'
 import DeskBroadcast from './DeskBroadcast'
+import { usePreferences } from '../../architecture/preferences'
 function FactList({ entries, pending }: { entries: readonly unknown[]; pending: string }) {
   if (!entries.length) return pending ? <p className="bunker-pending">{pending}</p> : null
   return <ul className="bunker-facts">{entries.map((entry, i) => <li key={i}>{typeof entry === 'object' && entry !== null ? Object.entries(entry).map(([key, value]) => <p key={key}><span>{key}</span> {String(value)}</p>) : String(entry)}</li>)}</ul>
@@ -43,6 +44,7 @@ function Panel({ name, id, kicker, title, children, side = 'right' }: { name: st
 }
 export default function BunkerOverlays({ navigate }: { navigate: (id: string) => void }) {
   useBunkerAssets()
+  const { mobile } = usePreferences()
   return <>
     <div className="bunker-room-shade" aria-hidden="true" /><div className="bunker-chapter-wash" aria-hidden="true" />
     <div className="bunker-journal-shade" aria-hidden="true" /><div className="bunker-map-shade" aria-hidden="true" /><div id="bunker-canvas-slot" />
@@ -53,8 +55,8 @@ export default function BunkerOverlays({ navigate }: { navigate: (id: string) =>
     <nav className="bunker-chapters" aria-label={copy("Bunker chapters")}>{bunkerChapters.map((chapter, i) => <a key={chapter.id} href={`#${chapter.id}`} data-chapter={i} onClick={e => { e.preventDefault(); navigate(chapter.id) }}><span>{copy("0")}{i + 1}</span>{chapter.title}</a>)}</nav>
     <div className="bunker-panels">
       <Panel name="board" id="bunker-about" kicker={siteContent.sponsors.eyebrow} title={siteContent.sponsors.heading}>
-        <img className="bunker-static-map" src={getMapSource() || undefined} alt={siteContent.sponsors.heading} />
-        <div className="sponsor-transcript"><p>{siteContent.sponsors.tagline}</p><dl>{siteContent.sponsors.partners.map(partner => <div key={partner.name}><dt>{partner.category}</dt><dd>{partner.name}</dd></div>)}</dl><p>{siteContent.sponsors.note}</p></div>
+        <img className="bunker-static-map" src={getMapSource(mobile) || undefined} alt="" aria-hidden="true" />
+        <div className="sponsor-transcript"><p>{siteContent.sponsors.tagline}</p><ul>{siteContent.sponsors.partners.map(partner => <li key={partner.name}>{partner.name}</li>)}</ul></div>
       </Panel>
       <Panel name="journal" id="bunker-details" kicker={copy("02 / EVENT DETAILS")} title={copy("Your field briefing.")}>
         <p className="bunker-lede">{copy("Keep the essentials close.")}</p>

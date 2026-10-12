@@ -373,7 +373,7 @@ body:has(.registration-shortcut) .s02-sound { right:14rem; }
 
 /* Sponsor ink is printed into the physical paper; HTML preserves the transcript. */
 .bunker-experience:not(.bunker-experience--simple) .bunker-panel[data-panel='board'] { inset:0; width:1px; height:1px; padding:0; overflow:clip; clip-path:inset(50%); }
-.sponsor-transcript dt { color:#7f302a; } .sponsor-transcript dd { margin:0 0 1rem; font-family:'Page Serif',Georgia,serif; }
+.sponsor-transcript { position:absolute; width:1px; height:1px; padding:0; overflow:clip; clip-path:inset(50%); }
 .bunker-panel .bunker-ink-stamp { font-family:'Event Blood',Georgia,serif; font-size:.52rem; letter-spacing:0; }
 .bunker-experience:not(.bunker-experience--reduced) .crt-message .crt-register { top:548px; }
 .bunker-experience:not(.bunker-experience--reduced) .crt-message .crt-email { left:190px; top:403px; width:644px; height:55px; }

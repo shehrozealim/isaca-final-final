@@ -14,8 +14,8 @@ export function createEvidenceMap(redraw: () => void) {
     const loaded = await new TextureLoader().loadAsync(getMapSource(portrait))
     paper.image = loaded.image; paper.needsUpdate = true; loaded.dispose(); redraw()
   })
-  paper.colorSpace = SRGBColorSpace; paper.anisotropy = 4
-  const material = new MeshStandardMaterial({ map: paper, roughness: .97, side: DoubleSide, bumpMap: paper, bumpScale: .004 })
+  paper.colorSpace = SRGBColorSpace; paper.anisotropy = 8
+  const material = new MeshStandardMaterial({ map: paper, roughness: .97, side: DoubleSide })
   const sheet = new Mesh(geometry, material); sheet.castShadow = sheet.receiveShadow = true
   group.add(sheet)
   return { group, ready,

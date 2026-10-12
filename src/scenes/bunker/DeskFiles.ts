@@ -35,7 +35,7 @@ export function createDeskFiles(redraw: () => void) {
       const paper = createAncientPaper((x, w, h) => drawArtifactInk(x, w, h, kind, index), redraw, false, index + offset, kind === 'cases' || kind === 'faq')
       const study = createAncientPaper((x, w, h) => drawArtifactInk(x, w, h, 'study', index), redraw, true, index + offset)
       study.texture.repeat.x = -1; study.texture.offset.x = 1
-      const front = new MeshStandardMaterial({ map: paper.texture, bumpMap: paper.texture, bumpScale: .008, roughness: .98, side: FrontSide })
+      const front = new MeshStandardMaterial({ map: paper.texture, roughness: .98, side: FrontSide })
       const reverse = new MeshStandardMaterial({ map: study.texture, bumpMap: study.texture, bumpScale: .008, roughness: .98, side: BackSide })
       resources.push(paper, study, front, reverse); ready.push(paper.ready, study.ready)
       return { front, reverse }

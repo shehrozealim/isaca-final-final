@@ -24,26 +24,22 @@ export async function createSponsorSource(portrait: boolean) {
 
   const cellW = w * .40, cellH = h * .29
   siteContent.sponsors.partners.forEach((partner, i) => {
-    const cx = w * (i % 2 ? .72 : .28), cy = h * (.365 + Math.floor(i / 2) * .34)
+    const lastCentered = i === siteContent.sponsors.partners.length - 1 && siteContent.sponsors.partners.length % 2 === 1
+    const cx = w * (lastCentered ? .5 : i % 2 ? .72 : .28), cy = h * (.365 + Math.floor(i / 2) * .34)
     x.save(); x.translate(cx, cy); x.rotate(i % 2 ? .012 : -.015)
-    x.globalCompositeOperation = 'multiply'; x.globalAlpha = .86
-    const radius = Math.min(cellW * .16, cellH * .22)
-    x.drawImage(logos[i], -radius, -cellH * .12-radius, radius*2, radius*2)
+    x.globalCompositeOperation = 'multiply'; x.globalAlpha = .96
+    const logo = logos[i]
+    const scale = Math.min(cellW * .8 / logo.naturalWidth, cellH * .64 / logo.naturalHeight)
+    const logoW = logo.naturalWidth * scale, logoH = logo.naturalHeight * scale
+    // The supplied TryHackMe mark is white; print it as dark ink on the paper.
+    x.filter = partner.name === 'TryHackMe' ? 'brightness(0.18)' : 'none'
+    x.drawImage(logo, -logoW / 2, -cellH * .12 - logoH / 2, logoW, logoH)
+    x.filter = 'none'
     let size = portrait ? 45 : 52
     do { x.font = `700 ${size--}px "Page Serif"` } while (x.measureText(partner.name).width > cellW * .94 && size > 24)
-    x.fillText(partner.name, 0, cellH * .30)
-    x.font = `${portrait ? 32 : 30}px "Page Antique"`; x.fillText(partner.category, 0, cellH * .46)
-    x.font = `italic ${portrait ? 28 : 26}px "Page Antique"`; x.fillText(partner.motto, 0, cellH * .62)
-    // Tiny pigment losses give the logos a printed, worn surface rather than a sticker edge.
-    x.globalCompositeOperation = 'source-over'; x.fillStyle = '#dec697'; x.globalAlpha = .28
-    for (let n = 0; n < 100; n++) {
-      const px = Math.sin(n * 37 + i) * radius, py = Math.cos(n * 19 + i) * radius - cellH * .12
-      x.fillRect(px, py, 1.5, 1)
-    }
+    x.fillText(partner.name, 0, cellH * .42)
     x.restore()
   })
-  x.fillStyle = '#743d2b'; x.font = `${portrait ? 28 : 26}px "Page Antique"`
-  x.fillText(siteContent.sponsors.note, w / 2, h * .925)
-  const blob = await new Promise<Blob>((resolve, reject) => canvas.toBlob(value => value ? resolve(value) : reject(new Error('Sponsor artwork unavailable')), 'image/webp', .92))
+  const blob = await new Promise<Blob>((resolve, reject) => canvas.toBlob(value => value ? resolve(value) : reject(new Error('Sponsor artwork unavailable')), 'image/webp', .99))
   return URL.createObjectURL(blob)
 }

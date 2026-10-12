@@ -462,37 +462,11 @@
   "sponsors": {
     "heading": "Our sponsors",
     "eyebrow": "THE PATRONS / PARTNER ARCHIVE",
-    "note": "Fictional partners / for preview only",
     "tagline": "Keeping the investigation alive.",
     "partners": [
-      {
-        "name": "Crimson Cola",
-        "category": "Drink sponsor",
-        "mark": "bottle",
-        "motto": "Fuel for the long night.",
-        "logo": "/sponsors/bottle.svg"
-      },
-      {
-        "name": "Midnight Bites",
-        "category": "Food sponsor",
-        "mark": "moon",
-        "motto": "A feast after dark.",
-        "logo": "/sponsors/moon.svg"
-      },
-      {
-        "name": "Raven Roast",
-        "category": "Coffee sponsor",
-        "mark": "cup",
-        "motto": "Stay awake. Stay curious.",
-        "logo": "/sponsors/cup.svg"
-      },
-      {
-        "name": "Lantern Labs",
-        "category": "Technology sponsor",
-        "mark": "lantern",
-        "motto": "Illuminate the unknown.",
-        "logo": "/sponsors/lantern.svg"
-      }
+      { "name": "CDAC", "logo": "/sponsors/cdac.png" },
+      { "name": "CFT", "logo": "/sponsors/cft.jpg" },
+      { "name": "TryHackMe", "logo": "/sponsors/tryhackme.svg" }
     ]
   }
 }

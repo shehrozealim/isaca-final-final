@@ -1,0 +1,7 @@
+Sponsor logo sources
+
+CDAC: https://cdac.gov.in/img/cdac-logo-sm.png (official C-DAC website)
+CFT / Crypto Forensic Technology: embedded JPEG logo in https://cryptoforensic.in/ (official website; logo reads CIFIT)
+TryHackMe: https://assets.tryhackme.com/img/logo/tryhackme_logo_full.svg (official asset host)
+
+Downloaded 2026-10-12. Original files stored locally. The white TryHackMe mark is rendered as dark ink on the sponsor paper for contrast.

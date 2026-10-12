@@ -51,7 +51,7 @@ export function createOverheadDesk(redraw: () => void) {
   const leaves = Array.from({ length: 2 }, (_, i) => {
     const texture = paperTexture(i + 1)
     const geometry = new PlaneGeometry(5.35, 7.0, 32, 40)
-    const mesh = add(geometry, new MeshStandardMaterial({ map: texture, bumpMap: texture, bumpScale: .008, roughness: .98, side: DoubleSide }), packet)
+    const mesh = add(geometry, new MeshStandardMaterial({ map: texture, roughness: .98, side: DoubleSide }), packet)
     return { mesh, geometry, rest: geometry.attributes.position.array.slice(), last: -1 }
   })
 
