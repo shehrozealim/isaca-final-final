@@ -370,3 +370,28 @@ body:has(.registration-shortcut) .s02-sound { right:14rem; }
 .registration-shortcut { color:#f0d49b; border-color:#b78b44; background:#351013ed; }
 .registration-shortcut:hover { background:#6d1b23; }
 .rotate-prompt { background:#1b090af5; }
+
+/* Sponsor ink is printed into the physical paper; HTML preserves the transcript. */
+.bunker-experience:not(.bunker-experience--simple) .bunker-panel[data-panel='board'] { inset:0; width:1px; height:1px; padding:0; overflow:clip; clip-path:inset(50%); }
+.sponsor-transcript dt { color:#7f302a; } .sponsor-transcript dd { margin:0 0 1rem; font-family:'Page Serif',Georgia,serif; }
+.bunker-panel .bunker-ink-stamp { font-family:'Event Blood',Georgia,serif; font-size:.52rem; letter-spacing:0; }
+.bunker-experience:not(.bunker-experience--reduced) .crt-message .crt-register { top:548px; }
+.bunker-experience:not(.bunker-experience--reduced) .crt-message .crt-email { left:190px; top:403px; width:644px; height:55px; }
+.bunker-experience:not(.bunker-experience--reduced) .crt-contact { opacity:1; color:transparent; }
+.bunker-experience:not(.bunker-experience--reduced) .crt-contact :not(a) { visibility:hidden; }
+.crt-contact { font-style:normal; } .crt-contact h4 { margin:.5rem 0; font-family:'Event Horror',Georgia,serif; }
+.crt-contact span,.crt-contact small { display:block; }
+@media(max-width:767px) {
+ .bunker-experience--simple:not(.bunker-experience--reduced) .bunker-chapters { bottom:max(.5rem,env(safe-area-inset-bottom)); }
+ .bunker-mobile-document .case-brief h4 { font-size:clamp(.85rem,3.7vw,1.15rem); }
+ .bunker-mobile-document .case-brief p,.bunker-mobile-document .case-brief ul { font-size:clamp(.67rem,2.8vw,.8rem); }
+}
+
+/* The ink now travels with the real leaf; retain the DOM transcript for assistive technology. */
+.bunker-experience:not(.bunker-experience--reduced) .bunker-panel:is([data-panel='rules'],[data-panel='faq']),
+.bunker-experience:not(.bunker-experience--reduced) .bunker-mobile-document:is([data-readout='rules'],[data-readout='faq']) {
+ clip-path:inset(50%); width:1px; height:1px; max-height:1px; padding:0; margin:0; overflow:clip; pointer-events:none;
+}
+
+/* Mobile ends on the real television; no duplicate paper transcript follows. */
+.bunker-experience--simple:not(.bunker-experience--reduced) .bunker-panels {position:absolute!important;width:1px!important;height:1px!important;overflow:clip!important;clip-path:inset(50%);margin:0!important;padding:0!important;}

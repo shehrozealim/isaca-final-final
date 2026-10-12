@@ -48,25 +48,22 @@ export default function AssetLoader() {
     }
   }, [lockScroll, reducedMotion])
 
-  if (ready) return null
   const progress = Math.min(92, Math.round(assets.loaded / assets.total * 92))
+  useEffect(() => {
+    const controller = (window as Window & { D3COYLoader?: { setProgress: (value: number) => void } }).D3COYLoader
+    controller?.setProgress(ready ? 100 : progress)
+    if (ready) document.getElementById('loader')?.remove()
+  }, [ready, progress])
   const lighter = () => {
     const url = new URL(location.href)
     url.searchParams.set('effects', 'reduce')
     location.replace(url)
   }
-  return <div className="asset-loader" role="status" aria-live="polite" aria-busy={!failed}>
-    <div className="asset-loader-card">
-      <p>{text.preparing}</p><h1>{text.title}</h1>
-      <div className="asset-loader-track" role="progressbar" aria-label={text.preparing} aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress}>
-        <span style={{ width: `${progress}%` }} />
-      </div>
-      <p>{failed ? text.failed : assets.ready ? text.render : text.assets}</p>
-      {(failed || slow) && <div className="asset-loader-actions">
-        {slow && !failed && <p>{text.slow}</p>}
-        {failed && <button onClick={() => location.reload()}>{text.retry}</button>}
-        <button onClick={lighter}>{text.simple}</button>
-      </div>}
+  if (ready || (!failed && !slow)) return null
+  return <div className="asset-loader" role="status" aria-live="polite">
+    <div className="asset-loader-card"><p>{failed ? text.failed : text.slow}</p>
+      {failed && <button onClick={() => location.reload()}>{text.retry}</button>}
+      <button onClick={lighter}>{text.simple}</button>
     </div>
   </div>
 }

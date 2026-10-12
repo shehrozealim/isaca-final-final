@@ -129,7 +129,7 @@
     },
     {
       "id": "bunker-about",
-      "title": "Location"
+      "title": "Sponsors"
     },
     {
       "id": "bunker-archive",
@@ -145,7 +145,7 @@
     },
     {
       "id": "bunker-broadcast",
-      "title": "TV broadcast"
+      "title": "Register"
     }
   ],
   "scenes": [
@@ -385,7 +385,7 @@
     "Rotate your phone for the best experience": "Rotate your phone for the best experience",
     "Use landscape mode to explore the full table.": "Use landscape mode to explore the full table.",
     "Continue in portrait": "Continue in portrait",
-    "Event broadcast": "Event broadcast",
+    "Event broadcast": "Register",
     "EVENT TRANSMISSION": "EVENT TRANSMISSION",
     "Rotate device": "Rotate device",
     "Prize Pool": "Prize Pool",
@@ -393,7 +393,9 @@
     "REGISTER": "REGISTER",
     "Your next case.": "Your next case.",
     "Build with the curious. Investigate together.": "Build with the curious. Investigate together.",
-    "Return to the investigation": "Return to the investigation"
+    "Return to the investigation": "Return to the investigation",
+    "Start scrolling to enter the investigation": "Start scrolling to enter the investigation",
+    "Scroll to continue": "Scroll to continue"
   },
   "map": {
     "landscape_0": "DJS ISACA / INVESTIGATION NO. 03",
@@ -441,6 +443,56 @@
     "failed": "An asset could not be prepared.",
     "retry": "Try again",
     "simple": "Continue with the lighter experience",
-    "slow": "Loading is taking longer than usual. You can keep waiting or use the lighter experience."
+    "slow": "Loading is taking longer than usual. You can keep waiting or use the lighter experience.",
+    "ritual": "D3COY / RITUAL IN PROGRESS",
+    "edition": "EST. IN THE DARK",
+    "eyebrow": "SOMETHING IS WAKING",
+    "subline": "BEYOND THE VEIL",
+    "caption": "Do not look behind you.",
+    "footer": "WHEN THE SEAL BREAKS, ENTER.",
+    "status": "BREAKING THE SEAL"
+  },
+  "contact": {
+    "heading": "Contact us",
+    "email": "hello@d3coy.example",
+    "instagram": "@d3coy_demo",
+    "instagramUrl": "",
+    "note": "Demo contact details / replace before launch"
+  },
+  "sponsors": {
+    "heading": "Our sponsors",
+    "eyebrow": "THE PATRONS / PARTNER ARCHIVE",
+    "note": "Fictional partners / for preview only",
+    "tagline": "Keeping the investigation alive.",
+    "partners": [
+      {
+        "name": "Crimson Cola",
+        "category": "Drink sponsor",
+        "mark": "bottle",
+        "motto": "Fuel for the long night.",
+        "logo": "/sponsors/bottle.svg"
+      },
+      {
+        "name": "Midnight Bites",
+        "category": "Food sponsor",
+        "mark": "moon",
+        "motto": "A feast after dark.",
+        "logo": "/sponsors/moon.svg"
+      },
+      {
+        "name": "Raven Roast",
+        "category": "Coffee sponsor",
+        "mark": "cup",
+        "motto": "Stay awake. Stay curious.",
+        "logo": "/sponsors/cup.svg"
+      },
+      {
+        "name": "Lantern Labs",
+        "category": "Technology sponsor",
+        "mark": "lantern",
+        "motto": "Illuminate the unknown.",
+        "logo": "/sponsors/lantern.svg"
+      }
+    ]
   }
 }

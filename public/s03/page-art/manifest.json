@@ -1,0 +1,184 @@
+{
+  "pic-1": {
+    "src": "/s03/page-art/pic-1.webp",
+    "ink": false
+  },
+  "pic-2": {
+    "src": "/s03/page-art/pic-2.webp",
+    "ink": true
+  },
+  "pic-3": {
+    "src": "/s03/page-art/pic-3.webp",
+    "ink": true
+  },
+  "pic-4": {
+    "src": "/s03/page-art/pic-4.webp",
+    "ink": true
+  },
+  "pic-5": {
+    "src": "/s03/page-art/pic-5.webp",
+    "ink": true
+  },
+  "house-1": {
+    "src": "/s03/page-art/house-1.webp",
+    "ink": false
+  },
+  "house-2": {
+    "src": "/s03/page-art/house-2.webp",
+    "ink": false
+  },
+  "car-1": {
+    "src": "/s03/page-art/car-1.webp",
+    "ink": false
+  },
+  "ghosts-1": {
+    "src": "/s03/page-art/ghosts-1.webp",
+    "ink": false
+  },
+  "ghosts-2": {
+    "src": "/s03/page-art/ghosts-2.webp",
+    "ink": false
+  },
+  "ghosts-3": {
+    "src": "/s03/page-art/ghosts-3.webp",
+    "ink": false
+  },
+  "symbols-1-0": {
+    "src": "/s03/page-art/symbols-1-0.webp",
+    "ink": true,
+    "invert": true
+  },
+  "symbols-1-1": {
+    "src": "/s03/page-art/symbols-1-1.webp",
+    "ink": true,
+    "invert": true
+  },
+  "symbols-1-2": {
+    "src": "/s03/page-art/symbols-1-2.webp",
+    "ink": true,
+    "invert": true
+  },
+  "symbols-1-3": {
+    "src": "/s03/page-art/symbols-1-3.webp",
+    "ink": true,
+    "invert": true
+  },
+  "symbols-1-4": {
+    "src": "/s03/page-art/symbols-1-4.webp",
+    "ink": true,
+    "invert": true
+  },
+  "symbols-2-0": {
+    "src": "/s03/page-art/symbols-2-0.webp",
+    "ink": true,
+    "invert": false
+  },
+  "symbols-2-1": {
+    "src": "/s03/page-art/symbols-2-1.webp",
+    "ink": true,
+    "invert": false
+  },
+  "symbols-2-2": {
+    "src": "/s03/page-art/symbols-2-2.webp",
+    "ink": true,
+    "invert": false
+  },
+  "symbols-2-3": {
+    "src": "/s03/page-art/symbols-2-3.webp",
+    "ink": true,
+    "invert": false
+  },
+  "symbols-2-4": {
+    "src": "/s03/page-art/symbols-2-4.webp",
+    "ink": true,
+    "invert": false
+  },
+  "symbols-2-5": {
+    "src": "/s03/page-art/symbols-2-5.webp",
+    "ink": true,
+    "invert": false
+  },
+  "symbols-2-6": {
+    "src": "/s03/page-art/symbols-2-6.webp",
+    "ink": true,
+    "invert": false
+  },
+  "symbols-2-7": {
+    "src": "/s03/page-art/symbols-2-7.webp",
+    "ink": true,
+    "invert": false
+  },
+  "symbols-2-8": {
+    "src": "/s03/page-art/symbols-2-8.webp",
+    "ink": true,
+    "invert": false
+  },
+  "symbols-3-0": {
+    "src": "/s03/page-art/symbols-3-0.webp",
+    "ink": true,
+    "invert": false
+  },
+  "symbols-3-1": {
+    "src": "/s03/page-art/symbols-3-1.webp",
+    "ink": true,
+    "invert": false
+  },
+  "symbols-3-2": {
+    "src": "/s03/page-art/symbols-3-2.webp",
+    "ink": true,
+    "invert": false
+  },
+  "symbols-3-3": {
+    "src": "/s03/page-art/symbols-3-3.webp",
+    "ink": true,
+    "invert": false
+  },
+  "symbols-3-4": {
+    "src": "/s03/page-art/symbols-3-4.webp",
+    "ink": true,
+    "invert": false
+  },
+  "symbols-3-5": {
+    "src": "/s03/page-art/symbols-3-5.webp",
+    "ink": true,
+    "invert": false
+  },
+  "symbols-3-6": {
+    "src": "/s03/page-art/symbols-3-6.webp",
+    "ink": true,
+    "invert": false
+  },
+  "symbols-3-7": {
+    "src": "/s03/page-art/symbols-3-7.webp",
+    "ink": true,
+    "invert": false
+  },
+  "symbols-3-8": {
+    "src": "/s03/page-art/symbols-3-8.webp",
+    "ink": true,
+    "invert": false
+  },
+  "symbols-3-9": {
+    "src": "/s03/page-art/symbols-3-9.webp",
+    "ink": true,
+    "invert": false
+  },
+  "symbols-3-10": {
+    "src": "/s03/page-art/symbols-3-10.webp",
+    "ink": true,
+    "invert": false
+  },
+  "symbols-3-11": {
+    "src": "/s03/page-art/symbols-3-11.webp",
+    "ink": true,
+    "invert": false
+  },
+  "symbols-2": {
+    "src": "/s03/page-art/symbols-2.webp",
+    "ink": true
+  },
+  "symbols-3": {
+    "src": "/s03/page-art/symbols-3.webp",
+    "ink": true
+  }
+}

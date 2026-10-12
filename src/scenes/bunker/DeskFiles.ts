@@ -23,16 +23,16 @@ export function createDeskFiles(redraw: () => void) {
   const label = (parent: Group, title: string, x = 0, z = .3) => {
     const canvas=document.createElement('canvas');canvas.width=1024;canvas.height=512
     const ctx=canvas.getContext('2d')!;preparePageInk(ctx);const paintLabel=()=>{ctx.fillStyle='#241a12';ctx.fillRect(0,0,1024,512);ctx.strokeStyle='#b8a177';ctx.lineWidth=3;ctx.strokeRect(30,30,964,452)
-    ctx.textAlign='center';ctx.fillStyle='#e9c77f';ctx.font='700 76px "Page Serif"';ctx.fillText(title,512,250);ctx.font='26px "Page Antique"';ctx.fillText(copy('DJS ISACA / THE HUNT'),512,335)};paintLabel()
+    ctx.textAlign='center';ctx.fillStyle='#e9c77f';let size=76;do{ctx.font=`700 ${size--}px "Page Serif"`}while(ctx.measureText(title).width>900&&size>30);ctx.fillText(title,512,250);ctx.font='26px "Page Antique"';ctx.fillText(copy('DJS ISACA / THE HUNT'),512,335)};paintLabel()
     const texture=new CanvasTexture(canvas);texture.colorSpace=SRGBColorSpace;texture.anisotropy=8
     ready.push(ensurePageFonts().then(()=>{paintLabel();texture.needsUpdate=true;redraw()}))
     const material=new MeshStandardMaterial({map:texture,roughness:.94});const tag=add(parent,new PlaneGeometry(4.6,2.3),material);tag.position.set(x,0,z);resources.push(texture,material)
   }
   label(hinge, copy('Problem statements.'),2.9,.055)
   const stack = (parent: Group, kind: 'cases' | 'faq', count: number) => {
-    const offset = kind === 'faq' ? 3 : 0
+    const offset = kind === 'faq' ? 12 : 0
     const makeLeaf = (index: number) => {
-      const paper = createAncientPaper((x, w, h) => drawArtifactInk(x, w, h, kind, index), redraw, false, index + offset, kind === 'cases' || index === 0)
+      const paper = createAncientPaper((x, w, h) => drawArtifactInk(x, w, h, kind, index), redraw, false, index + offset, kind === 'cases' || kind === 'faq')
       const study = createAncientPaper((x, w, h) => drawArtifactInk(x, w, h, 'study', index), redraw, true, index + offset)
       study.texture.repeat.x = -1; study.texture.offset.x = 1
       const front = new MeshStandardMaterial({ map: paper.texture, bumpMap: paper.texture, bumpScale: .008, roughness: .98, side: FrontSide })
@@ -47,7 +47,7 @@ export function createDeskFiles(redraw: () => void) {
       const pivot = new Group(); pivot.position.set(-2.675, 0, .14 + (count - i) * .018); parent.add(pivot)
       const geometry = new PlaneGeometry(5.35, 7, 32, 40)
       const page = add(pivot, geometry, front); page.position.x = 2.675
-      const back = new Mesh(geometry, reverse); back.position.x = 2.675; back.castShadow = back.receiveShadow = true; pivot.add(back)
+      const back = new Mesh(geometry, reverse); back.position.x = 2.675; back.castShadow = false; back.receiveShadow = true; pivot.add(back)
       return { pivot, geometry, rest: geometry.attributes.position.array.slice(), last: -1 }
     })
   }
@@ -56,17 +56,17 @@ export function createDeskFiles(redraw: () => void) {
   const faqLid=add(faqHinge,new BoxGeometry(5.8,7.5,.09),board);faqLid.position.x=2.9
   label(faqHinge,copy('FAQ'),2.9,.055)
   const caseLeaves = stack(papers, 'cases', casePageCount), faqLeaves = stack(faq, 'faq', faqPageCount)
-  const insideCover = createAncientPaper((x, w, h) => drawArtifactInk(x, w, h, 'study'), redraw, true, 3)
+  const insideCover = createAncientPaper((x, w, h) => drawArtifactInk(x, w, h, 'study'), redraw, true, 25)
   insideCover.texture.repeat.x = -1; insideCover.texture.offset.x = 1
   const insideMaterial = new MeshStandardMaterial({ map: insideCover.texture, bumpMap: insideCover.texture, bumpScale: .008, roughness: .98, side: BackSide })
   const lining = add(hinge, new PlaneGeometry(5.6, 7.3), insideMaterial); lining.position.set(2.9, 0, -.051)
   resources.push(insideCover, insideMaterial); ready.push(insideCover.ready)
-  const turn = (leaves: typeof caseLeaves, progress: number, mobile: boolean, opening = 1) => {
+  const turn = (leaves: typeof caseLeaves, progress: number, opening = 1) => {
     leaves.forEach(({ pivot, geometry, rest, last }, i) => {
       const t = Math.max(0, Math.min(1, progress - i)) * opening
       pivot.rotation.y = -Math.PI * t
-      pivot.position.x = -2.675 + (mobile ? Math.max(0, (t - .8) / .2) * 5.35 : 0)
-      pivot.position.z = mobile && t > .8 ? .14 - (t - .8) * .5 : .18 + (leaves.length - i) * .04 + t * (i + 1) * .09
+      pivot.position.x = -2.675
+      pivot.position.z = .18 + (leaves.length - i) * .04 + t * (i + 1) * .09
       if (Math.abs(t - last) < .0001) return
       const pos = geometry.attributes.position, curl = Math.sin(t * Math.PI)
       for (let j = 0; j < pos.count; j++) {
@@ -89,13 +89,14 @@ export function createDeskFiles(redraw: () => void) {
       hinge.position.z = .22 + .28 * (1 - deskMotion.folder)
       hinge.rotation.y = -deskMotion.folder * Math.PI
       papers.position.z = .12
-      turn(caseLeaves, deskMotion.folderTurn, mobile, enter)
+      turn(caseLeaves, deskMotion.folderTurn, enter)
       faq.position.set((mobile ? 1.85 : 3.0) * (1 - faqEnter) + (mobile ? 0 : 2.675 * (.88 * 10 / 12.18)) * faqEnter, -1.73 + faqEnter * 2.83, 0)
       faq.scale.setScalar((mobile ? .30 : .43) + faqEnter * (.88 * 10 / 12.18 - (mobile ? .30 : .43)))
       faqHinge.rotation.y = -Math.PI * faqEnter
       faq.rotation.z = .08 * (1 - faqEnter)
-      turn(faqLeaves, deskMotion.faq, mobile, faqEnter)
+      turn(faqLeaves, deskMotion.faq, faqEnter)
     },
     dispose() { resources.forEach(r => r.dispose()); group.removeFromParent() },
   }
 }
+

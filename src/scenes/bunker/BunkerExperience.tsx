@@ -27,6 +27,28 @@ export default function BunkerExperience() {
   const active = state.active.id === 'S03'
 
   useEffect(() => {
+    let savedProgress: number | undefined
+    let timer: ReturnType<typeof setTimeout> | undefined
+    const capture = () => {
+      const trigger = master.current?.timeline.scrollTrigger ?? mobileMaster.current?.scrollTrigger
+      if (savedProgress === undefined && trigger && section.current && section.current.getBoundingClientRect().top <= 0) savedProgress = trigger.progress
+    }
+    const resize = () => {
+      capture(); clearTimeout(timer)
+      timer = setTimeout(() => {
+        if (savedProgress === undefined) return
+        const retained = savedProgress; savedProgress = undefined
+        ScrollTrigger.refresh()
+        const trigger = master.current?.timeline.scrollTrigger ?? mobileMaster.current?.scrollTrigger
+        if (trigger) scrollTo(trigger.start + (trigger.end - trigger.start) * retained)
+      }, 300)
+    }
+    window.addEventListener('orientationchange', capture)
+    window.addEventListener('resize', resize)
+    return () => { clearTimeout(timer); window.removeEventListener('orientationchange', capture); window.removeEventListener('resize', resize) }
+  }, [scrollTo])
+
+  useEffect(() => {
     if (!background.room) return
     let cancelled = false
     // Decode the real mounted sprites during S02, before opacity reveals can

@@ -2,6 +2,9 @@ let fonts: Promise<unknown> | undefined
 export function ensurePageFonts() {
   return fonts ??= Promise.all([
     document.fonts.load('700 48px "Page Serif"'),
+    document.fonts.load('400 48px "Event Display"'),
+    document.fonts.load('400 48px "Event Horror"'),
+    document.fonts.load('400 48px "Event Blood"'),
     document.fonts.load('400 32px "Page Antique"'),
     document.fonts.load('italic 32px "Page Antique"'),
   ])

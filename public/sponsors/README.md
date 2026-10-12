@@ -1,0 +1,1 @@
+Replace bottle.svg, moon.svg, cup.svg or lantern.svg with your own logo. Edit each partner logo path, name, category and motto in src/data/site-content.json. SVG, PNG and WebP are supported. Keep a transparent background; the parchment renderer applies the aged ink treatment. Reload after replacing assets. These four logos are fictional preview marks.

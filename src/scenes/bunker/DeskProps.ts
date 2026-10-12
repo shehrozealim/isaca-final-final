@@ -27,7 +27,7 @@ export function createDeskProps(redraw: () => void) {
   }
   // Twine rests at the near edge.
   for (let i = 0; i < 5; i++) { const loop = add(new TorusGeometry(.32 + i * .025, .018, 8, 40), stock, .8, -1.82 + i * .016, 3.9); loop.rotation.x = Math.PI / 2; loop.scale.y = .72 }
-  const paper = createAncientPaper((x, w, h) => drawArtifactInk(x, w, h, 'study'), redraw, true)
+  const paper = createAncientPaper((x, w, h) => drawArtifactInk(x, w, h, 'study'), redraw, true, 100)
   resources.push(paper)
   const note = new MeshStandardMaterial({ map: paper.texture, bumpMap: paper.texture, bumpScale: .008, roughness: .98, side: DoubleSide }); resources.push(note)
   for (const [x, z, angle] of [[.35, .25, .12]]) {

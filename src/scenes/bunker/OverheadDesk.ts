@@ -1,4 +1,4 @@
-import { BoxGeometry, CanvasTexture, CylinderGeometry, DoubleSide, Group, Mesh, MeshStandardMaterial, PlaneGeometry, RepeatWrapping, SRGBColorSpace, TextureLoader, TorusGeometry } from 'three'
+import { BackSide, FrontSide, BoxGeometry, CanvasTexture, CylinderGeometry, DoubleSide, Group, Mesh, MeshStandardMaterial, PlaneGeometry, RepeatWrapping, SRGBColorSpace, TextureLoader, TorusGeometry } from 'three'
 import { createEvidenceMap } from './EvidenceMap'
 import { deskMotion } from './journalMotion'
 import { createPrizePaper } from './PrizePaper'
@@ -41,9 +41,13 @@ export function createOverheadDesk(redraw: () => void) {
   const base = add(new PlaneGeometry(5.35, 7.0), new MeshStandardMaterial({ map: baseTexture, bumpMap: baseTexture, bumpScale: .008, roughness: .97, side: DoubleSide }), packet)
   base.position.z = .01
   const prizeTitleTexture = paperTexture(-1)
+  const prizeReverseTexture = paperTexture(-2)
+  prizeReverseTexture.repeat.x=-1;prizeReverseTexture.offset.x=1
   const prizeTitleHinge = new Group();prizeTitleHinge.position.set(-2.675,0,.20);packet.add(prizeTitleHinge)
-  const prizeTitle = add(new PlaneGeometry(5.35,7,32,40),new MeshStandardMaterial({map:prizeTitleTexture,bumpMap:prizeTitleTexture,bumpScale:.008,roughness:.98,side:DoubleSide}),prizeTitleHinge)
+  const prizeTitle = add(new PlaneGeometry(5.35,7,32,40),new MeshStandardMaterial({map:prizeTitleTexture,bumpMap:prizeTitleTexture,bumpScale:.008,roughness:.98,side:FrontSide}),prizeTitleHinge)
   prizeTitle.position.x=2.675
+  const prizeReverse = add(prizeTitle.geometry.clone(),new MeshStandardMaterial({map:prizeReverseTexture,bumpMap:prizeReverseTexture,bumpScale:.008,roughness:.98,side:BackSide}),prizeTitleHinge)
+  prizeReverse.position.x=2.675;prizeReverse.castShadow=false
   const leaves = Array.from({ length: 2 }, (_, i) => {
     const texture = paperTexture(i + 1)
     const geometry = new PlaneGeometry(5.35, 7.0, 32, 40)
@@ -66,7 +70,7 @@ export function createOverheadDesk(redraw: () => void) {
   return {
     group,
     screen: heroProps.screen,
-    ready: Promise.all([heroProps.ready, files.ready, props.ready, ...paperAssets.map(asset => asset.ready)]),
+    ready: Promise.all([heroProps.ready, map.ready, files.ready, props.ready, ...paperAssets.map(asset => asset.ready)]),
     update(mobile: boolean, aspect: number, dt: number) {
       group.visible = deskMotion.opacity > .001
       heroProps.update(mobile, dt, deskMotion.broadcast)
@@ -76,7 +80,7 @@ export function createOverheadDesk(redraw: () => void) {
 
       // Fit the entire sheet, including borders, instead of enlarging past the viewport.
       const viewHeight = 2 * Math.tan((mobile ? 48 : 38) * Math.PI / 360) * (12.94 - focus * 2.94)
-      const mapHeight = mobile ? 15.2 : 5
+      const mapHeight = mobile ? 11.2 : 5
       const fitted = Math.min(viewHeight * aspect * .9 / 8, viewHeight * .83 / mapHeight)
       const restScale = mobile ? .12 : .30
       map.group.scale.setScalar(restScale + (fitted - restScale) * focus)
@@ -92,7 +96,10 @@ export function createOverheadDesk(redraw: () => void) {
       const rawProgress = deskMotion.prize
       const titleTurn = ease((rawProgress-.30)/.28)
       prizeTitleHinge.rotation.y=-Math.PI*titleTurn
-      prizeTitleHinge.visible=titleTurn<.995
+      prizeTitleHinge.visible=true
+      const landedTitle = ease((titleTurn-.55)/.45)
+      prizeTitleHinge.scale.setScalar(1-landedTitle*(mobile?.68:.42))
+      prizeTitleHinge.position.set(-2.675+landedTitle*(mobile?2.025:.375),mobile?-landedTitle*1.2:0,.20-landedTitle*.24)
       const progress = ease((rawProgress-.58)/.42)
       base.position.y = mobile ? progress * 1.7 : 0
       for (let i = 0; i < leaves.length; i++) {

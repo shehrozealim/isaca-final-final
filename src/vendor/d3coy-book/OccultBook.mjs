@@ -1,13 +1,14 @@
+import { paintSuppliedArt, prepareSuppliedArt } from '../../scenes/bunker/SuppliedPageArt';
 import { copy } from '../../data/content'
 import * as THREE from 'three';
-import { EVIDENCE_ATLAS, SKETCH_ATLAS, paintEvidencePhoto, paintFieldSketch } from '../../scenes/bunker/EvidencePhotos.mjs';
 import { ensurePageFonts, preparePageInk } from '../../scenes/bunker/PageTypography';
 import { paintTimelineSticker } from '../../scenes/bunker/TimelineSticker';
 import { hackathon } from './hackathon-data.mjs';
 
 /** Supplied bundle geometry, with local journal reference textures. */
-export function createOccultBook({pageCount=3, approach=3.5, event=hackathon, onTextureReady=()=>{}}={}) {
+export function createOccultBook({pageCount=3, approach=3.5, event=hackathon, onTextureReady=()=>{}, mobile=false}={}) {
   pageCount=Math.max(2,Math.min(16,Math.floor(pageCount)||6));
+  let disposed=false;
   const group=new THREE.Group(), pages=[], springs=[];
   // Keep textures owned by the factory so the shared canvas can dispose them.
   const referenceCover=new Image();referenceCover.src='/s03/textures/gothic-cover.webp';
@@ -19,28 +20,26 @@ export function createOccultBook({pageCount=3, approach=3.5, event=hackathon, on
     cover.traverse(o=>{if(['CylinderGeometry','TorusGeometry','TubeGeometry'].includes(o.geometry?.type))o.visible=false});
     onTextureReady();
   };
-  const referencePages=new Image();referencePages.src='/s03/textures/supplied-aged-pages.jpg';
-  referencePages.onload=()=>onTextureReady();
-  group.addEventListener('removed',()=>{referenceCover.onload=null;referencePages.onload=null});
-  const gothicReference=new Image();gothicReference.src=EVIDENCE_ATLAS;
-  const sketchReference=new Image();sketchReference.src=SKETCH_ATLAS;
+  group.addEventListener('removed',()=>{referenceCover.onload=null});
   const stickerReference=new Image();stickerReference.src='/s03/textures/timeline-sticker.avif';
   const paperReference=new Image(), paperRecipes=[];
-  stickerReference.onload=()=>paperReference.onload?.();
-  paperReference.onload=()=>{for(const {map,kind,index} of paperRecipes){const replacement=texture(kind,index,false);map.image=replacement.image;map.needsUpdate=true;replacement.dispose()}onTextureReady()};paperReference.src='/s03/textures/ancient-paper.webp';
-  gothicReference.onload=()=>paperReference.onload?.();
-  sketchReference.onload=()=>paperReference.onload?.();
-  group.addEventListener('removed',()=>{paperReference.onload=null;gothicReference.onload=null});
+
+  paperReference.onload=()=>{for(const {map,kind,index} of paperRecipes){const replacement=texture(kind,index,false);map.image=replacement.image;map.needsUpdate=true;replacement.dispose()}onTextureReady()};const paintCompletedPages=paperReference.onload;paperReference.onload=null;paperReference.src='/s03/textures/ancient-paper.webp';
+
+
+  group.addEventListener('removed',()=>{paperReference.onload=null});
   let seed=13;const random=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296};
   const restCenter=new THREE.Vector3(0,.16,0);let tableScale=1,mobileView=false;
   function texture(kind,index=0,record=true){
     const c=document.createElement('canvas');c.width=1536;c.height=2048;const x=c.getContext('2d');preparePageInk(x);x.scale(2,2);let freeInk=0;
     x.fillStyle=kind==='cover'?'#71482f':'#ddcba3';x.fillRect(0,0,768,1024);
     // Fine fibers rather than large uniform grain; darker aging at the margins.
-    for(let i=0;i<48000;i++){const p=random();x.fillStyle=p>.5?'rgba(255,239,195,.045)':'rgba(45,23,8,.035)';x.fillRect(random()*768,random()*1024,random()*2+.3,random()*2+.3)}
-    for(let i=0;i<9000;i++){const px=random()*768,py=random()*1024;x.strokeStyle=kind==='cover'?'rgba(20,10,3,.10)':'rgba(95,67,29,.045)';x.lineWidth=.4;x.beginPath();x.moveTo(px,py);x.lineTo(px+random()*3,py+random()*7);x.stroke()}
+    if(kind==='cover'||!paperReference.naturalWidth){
+    for(let i=0;i<6000;i++){const p=random();x.fillStyle=p>.5?'rgba(255,239,195,.045)':'rgba(45,23,8,.035)';x.fillRect(random()*768,random()*1024,random()*2+.3,random()*2+.3)}
+    for(let i=0;i<1200;i++){const px=random()*768,py=random()*1024;x.strokeStyle=kind==='cover'?'rgba(20,10,3,.10)':'rgba(95,67,29,.045)';x.lineWidth=.4;x.beginPath();x.moveTo(px,py);x.lineTo(px+random()*3,py+random()*7);x.stroke()}
     const g=x.createRadialGradient(390,490,220,390,490,680);g.addColorStop(0,'#0000');g.addColorStop(.72,kind==='cover'?'#27100415':'#855b1b08');g.addColorStop(1,kind==='cover'?'#180a04b0':'#6c3b1280');x.fillStyle=g;x.fillRect(0,0,768,1024);
     for(let i=0;i<24;i++){const px=random()<.5?random()*75:693+random()*75,py=random()*1024,r=20+random()*65;const stain=x.createRadialGradient(px,py,0,px,py,r);stain.addColorStop(0,'#6b3b1218');stain.addColorStop(1,'#6b3b1200');x.fillStyle=stain;x.fillRect(px-r,py-r,2*r,2*r)}
+    }
     if(kind!=='cover' && paperReference.complete && paperReference.naturalWidth)x.drawImage(paperReference,0,0,768,1024);
     // Binding shadow sits outside the readable text column.
     const binding=x.createLinearGradient(0,0,68,0);binding.addColorStop(0,'#211206a0');binding.addColorStop(.35,'#21120640');binding.addColorStop(1,'#21120600');x.fillStyle=binding;x.fillRect(0,0,68,1024);
@@ -63,12 +62,8 @@ export function createOccultBook({pageCount=3, approach=3.5, event=hackathon, on
       x.save();x.translate(384,899);x.rotate(-.045);x.strokeStyle='#3d2118';x.strokeRect(-170,-38,340,64);x.font='23px "Page Antique"';x.fillText(copy("BUILD / CREATE / SHIP"),0,4);x.restore();
       for(let i=0;i<45;i++){x.strokeStyle='rgba(218,178,125,.09)';x.lineWidth=.6;x.beginPath();const px=random()*768,py=random()*1024;x.moveTo(px,py);x.lineTo(px+random()*100-50,py+random()*28);x.stroke()}
     }else if(kind==='sigil'){
-      if(index%2===0){
-        paintEvidencePhoto(x,gothicReference,index,106,160,556,704,-.018);
-      }else{
-        paintFieldSketch(x,sketchReference,index,100,165,565,565);
-        paintEvidencePhoto(x,gothicReference,index+1,450,740,190,180,.025);
-      }
+      paintSuppliedArt(x,['pic-2','pic-3','pic-4'][index],90,155,588,450,-.015);
+      paintSuppliedArt(x,['house-1','car-1','house-2'][index],140,630,488,270,.018);
       evidenceStamp(copy('EVIDENCE / 0')+(index+1),390,105);
       x.textAlign='center';x.fillStyle='#5a3a29';x.font='italic 24px "Page Antique"';x.fillText(copy('Every symbol leaves a trace.'),384,956);
     }else if(kind==='paper'||kind==='timelineLeft'){
@@ -79,8 +74,17 @@ export function createOccultBook({pageCount=3, approach=3.5, event=hackathon, on
       x.save();x.fillStyle='rgba(172,142,91,.3)';x.translate(721,182);x.rotate(.12);x.fillRect(-6,-14,34,83);x.strokeStyle='#77694e';x.lineWidth=1;x.beginPath();x.moveTo(4,-5);x.lineTo(4,52);x.stroke();x.restore();
       function foot(text,number){x.fillStyle='#64503a';x.font='18px "Page Antique"';x.fillText(text,82,966);x.textAlign='right';x.fillText(number,686,966);x.textAlign='left'}
       if(kind==='timelineLeft'||index===1){
-        heading(kind==='timelineLeft'?copy("The timeline"):copy("The final stretch"));
+        heading(mobile||kind==='timelineLeft'?copy("The timeline"):copy("The final stretch"));
         x.fillStyle='#7b4930';wrap(event.timelineStatus,'20px "Page Antique", Georgia, serif',290,25);
+        if(mobile){
+          event.timeline.slice(0,6).forEach((entry,i)=>{
+            const y=340+i*96;
+            x.strokeStyle='#784a3044';x.lineWidth=1;x.beginPath();x.moveTo(82,y+65);x.lineTo(686,y+65);x.stroke();
+            x.fillStyle='#783d29';x.font='bold 27px "Page Antique"';x.fillText(entry.time,120,y+8);
+            x.fillStyle='#302116';x.font='bold 28px "Page Antique"';x.fillText(entry.title,320,y+8,326);
+            x.font='22px "Page Antique"';x.fillText(entry.detail,120,y+43,526);
+          });foot(copy("FOLLOW THE EVIDENCE"),'02 / 03');
+        }else{
         const left=kind==='timelineLeft',start=left?0:3,lineY=525;
         function column(text,cx,y,font,size,width=198){x.font=font;x.textAlign='center';let line='';for(const word of String(text).split(' ')){const next=line?line+' '+word:word;if(x.measureText(next).width>width&&line){x.fillText(line,cx,y);y+=size;line=word}else line=next}if(line)x.fillText(line,cx,y);x.textAlign='left';return y+size}
         const positions=[125,381,637],pinYs=left?[515,538,511]:[533,510,528];
@@ -92,12 +96,13 @@ export function createOccultBook({pageCount=3, approach=3.5, event=hackathon, on
           x.strokeStyle='#8d322b';x.lineWidth=2;x.beginPath();x.moveTo(cx,pinYs[i]);x.lineTo(cx+2,upper?cardY+169:cardY+7);x.stroke();x.fillStyle='#6c3b24';x.beginPath();x.arc(cx,pinYs[i],8,0,Math.PI*2);x.fill();x.fillStyle='#d7b783';x.beginPath();x.arc(cx-2,pinYs[i]-2,3,0,Math.PI*2);x.fill();
           x.fillStyle='#4b3927';column(entry.detail,cx,upper?822:806,'24px "Page Antique", Georgia, serif',31,218);
         });foot(copy("FOLLOW THE EVIDENCE"),left?'02':'03');
+        }
       }else if(index===0){
         x.save();x.strokeStyle='#8e4734';x.lineWidth=2;x.beginPath();x.ellipse(663,210,33,36,-.2,0,Math.PI*2);x.stroke();x.font='17px "Page Antique", Georgia, serif';x.fillStyle='#754834';x.fillText(copy("start"),638,210);x.fillText(copy("here"),642,230);x.restore();let y=heading(copy("About us"));x.fillStyle='#7b4930';x.font='bold 30px "Page Antique", Georgia, serif';x.fillText(copy("FOLLOW THE EVIDENCE"),82,y);y+=73;
         x.fillStyle='#281e15';for(const paragraph of event.about)y=wrap(paragraph,'32px "Page Antique", Georgia, serif',y,48)+30;
         x.fillStyle='#6c4930';y=wrap(copy("Hosted by: ")+event.organizer,'25px "Page Antique", Georgia, serif',Math.min(y+16,870),36);freeInk=y;foot(copy("IDEAS BECOME PROTOTYPES"),'01');
       }else if(index===2){
-        x.save();x.fillStyle='#b4bd9b';x.translate(634,173);x.rotate(.1);x.fillRect(0,0,79,65);x.font='16px "Page Antique", Georgia, serif';x.fillStyle='#374635';x.fillText(copy("choose"),7,26);x.fillText(copy("a path"),9,49);x.restore();heading(copy("Domains"));x.fillStyle='#7b4930';wrap(event.domainsStatus,'18px "Page Antique"',295,25);
+heading(copy("Domains"));x.fillStyle='#7b4930';wrap(event.domainsStatus,'18px "Page Antique"',295,25);
         event.domains.slice(0,4).forEach((entry,i)=>{const y=365+i*133;x.fillStyle='#281e15';wrap(String(i+1).padStart(2,'0')+'  '+entry.title,'bold 30px "Page Antique", Georgia, serif',y,41);x.fillStyle='#4b3927';wrap(entry.detail,'28px "Page Antique", Georgia, serif',y+57,36)});freeInk=340+event.domains.length*133;foot(copy("CHOOSE YOUR CHALLENGE"),'04');
       }else{
         x.save();x.strokeStyle='#79613d';x.lineWidth=2;x.beginPath();x.arc(668,195,20,0,Math.PI*2);x.moveTo(668,215);x.lineTo(668,254);x.lineTo(684,254);x.stroke();x.restore();heading(copy("The essentials"));const rows=[[copy("PRIZE POOL"),event.prizePool],[copy("VENUE"),event.venue],[copy("DATE"),event.date],[copy("DURATION"),event.duration]];
@@ -107,17 +112,17 @@ export function createOccultBook({pageCount=3, approach=3.5, event=hackathon, on
     }
 
 
-    if(kind!=='cover' && kind!=='sigil' && gothicReference.complete && gothicReference.naturalWidth){
+    if(kind!=='cover' && kind!=='sigil'){
       if(freeInk>0&&freeInk<800){
         const h=Math.min(190,920-freeInk-20);
-        paintEvidencePhoto(x,gothicReference,index,90,freeInk+18,220,h,-.035);
-        paintEvidencePhoto(x,gothicReference,index+3,425,freeInk+18,220,h,.04);
+        paintSuppliedArt(x,'symbols-2-'+index,100,freeInk+18,540,h);
       }
-      paintEvidencePhoto(x,gothicReference,index+2,656,20,72,63,.045);
+
     }
+    if(kind==='blank')paintSuppliedArt(x,'symbols-2-3',110,190,550,630);
     const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=8;if(record && kind!=='cover')paperRecipes.push({map:t,kind,index});return t;
   }
-  function relief(kind){const c=document.createElement('canvas');c.width=c.height=512;const x=c.getContext('2d');x.fillStyle='#888';x.fillRect(0,0,512,512);for(let i=0;i<42000;i++){const v=90+Math.floor(random()*85);x.fillStyle='rgb('+v+','+v+','+v+')';const px=random()*512,py=random()*512;x.beginPath();x.ellipse(px,py,kind==='leather'?random()*1.6+.4:random()*3+.5,random()*.8+.3,random()*3,0,Math.PI*2);x.fill()}const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(kind==='leather'?3:2,4);return t}
+  function relief(kind){const c=document.createElement('canvas');c.width=c.height=512;const x=c.getContext('2d');x.fillStyle='#888';x.fillRect(0,0,512,512);for(let i=0;i<16000;i++){const v=90+Math.floor(random()*85);x.fillStyle='rgb('+v+','+v+','+v+')';const px=random()*512,py=random()*512;x.beginPath();x.ellipse(px,py,kind==='leather'?random()*1.6+.4:random()*3+.5,random()*.8+.3,random()*3,0,Math.PI*2);x.fill()}const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(kind==='leather'?3:2,4);return t}
   const leatherMap=texture('cover'),blankMap=texture('blank'),sigilMaps=[texture('sigil',0),texture('sigil',1),texture('sigil',2)],timelineLeftMap=texture('timelineLeft'),finalMap=texture('paper',3),paperMaps=Array.from({length:pageCount},(_,i)=>texture('paper',i)),leatherRelief=relief('leather'),paperRelief=relief('paper');
   const leather=new THREE.MeshStandardMaterial({map:leatherMap,bumpMap:leatherMap,bumpScale:.028,roughnessMap:leatherRelief,roughness:.88,color:0xffffff});
   const ec=document.createElement('canvas');ec.width=512;ec.height=256;const ex=ec.getContext('2d');ex.fillStyle='#bca375';ex.fillRect(0,0,512,256);for(let i=0;i<128;i++){ex.fillStyle=i%3?'rgba(57,34,11,.25)':'rgba(242,216,163,.3)';ex.fillRect(0,i*2,512,.6+random()*.7)}const edgeMap=new THREE.CanvasTexture(ec);edgeMap.colorSpace=THREE.SRGBColorSpace;const edge=new THREE.MeshStandardMaterial({map:edgeMap,bumpMap:edgeMap,bumpScale:.006,roughness:1});
@@ -179,8 +184,8 @@ export function createOccultBook({pageCount=3, approach=3.5, event=hackathon, on
     // Fly along the fixed camera's viewing direction. No camera animation.
     const vTan=Math.tan(THREE.MathUtils.degToRad(view.fov/2));
     // Spread fits inside 92% of viewport width and 86% of height.
-    const distance=Math.max(4.05/(2*vTan*(mobileView ? .70 : .83)),(mobileView?3.05:6.05)/(2*vTan*view.aspect*.91));
-    center.set(mobileView?-1.32*clamp(lid.x):0,mobileView?distance*vTan*.20:distance*vTan*.03,-distance).applyQuaternion(view.quaternion).add(view.position);
+    const distance=Math.max(4.05/(2*vTan*(mobileView ? .70 : .83)),(mobileView?3.35:6.05)/(2*vTan*view.aspect*.91));
+    center.set(mobileView?-1.27*clamp(lid.x):0,mobileView?distance*vTan*.20:distance*vTan*.03,-distance).applyQuaternion(view.quaternion).add(view.position);
     readingPose.copy(view.quaternion).multiply(new THREE.Quaternion().slerp(readingTilt,clamp(lid.x)));pose.copy(resting).slerp(readingPose,ease((progress-.20)/.16));
     const localCenter=W/2*(1-clamp(lid.x));offset.set(localCenter,0,0).applyQuaternion(pose);
     const amount=clamp(lift.x);
@@ -194,6 +199,8 @@ export function createOccultBook({pageCount=3, approach=3.5, event=hackathon, on
     let turned=0,landed=0;
     pages.forEach(({pivot,sheet,reverse,rest,rim,perimeter},i)=>{
       const s=springs[i],t=clamp(s.x)*(1-closing);turned+=t;landed+=ease((t-.94)/.06);const wave=Math.sin(t*Math.PI),width=W-.07;
+      if(Math.abs((pages[i].lastTurn??-1)-t)<.00001 && Math.abs((pages[i].lastWing??-1)-wingAngle)<.00001)return;
+      pages[i].lastTurn=t;pages[i].lastWing=wingAngle;
       // Integrate tangent angles across each row: preserves strip arc length.
       // The leading corner peels first; curvature travels toward the binding.
       const a=sheet.geometry.attributes.position,b=reverse.geometry.attributes.position;
@@ -221,5 +228,6 @@ export function createOccultBook({pageCount=3, approach=3.5, event=hackathon, on
     if(showTimeline){const y=(.5-525/1024)*(H-.11),bp=bridgeGeo.attributes.position;const zl=pages[0].pivot.position.z,zr=pages[1].pivot.position.z;const points=[[-.055,zl+.055*Math.sin(wingAngle)+.002],[0,(zl+zr)/2],[.055,zr+.055*Math.sin(wingAngle)+.002]];points.forEach(([x,z],i)=>{bp.setXYZ(i*2,x,y-.009,z);bp.setXYZ(i*2+1,x,y+.009,z)});bp.needsUpdate=true;bridgeGeo.computeVertexNormals();bridgeGeo.computeBoundingSphere();timelineBridge.material.opacity=1;}
   }
   update(0);
-  return {group,ready:Promise.all([ensurePageFonts(),stickerReference.decode(),sketchReference.decode(),referenceCover.decode(),referencePages.decode(),paperReference.decode(),gothicReference.decode()]).then(()=>{referenceCover.onload?.();referencePages.onload?.();paperReference.onload?.()}),setView(camera){view.position.copy(camera.position);view.quaternion.copy(camera.quaternion);view.fov=camera.fov;view.aspect=camera.aspect},setRestPose(point,scale,mobile){restCenter.copy(point);tableScale=scale;mobileView=mobile;resting.setFromEuler(new THREE.Euler(-1.0,.25,.28,'ZYX'))},setProgress(value){progress=clamp(Number(value)||0)},setClosing(value){closing=ease(value)},update,dispose(){const gs=new Set(),ms=new Set(),ts=new Set();group.traverse(o=>{if(o.geometry)gs.add(o.geometry);if(o.material)(Array.isArray(o.material)?o.material:[o.material]).forEach(m=>{ms.add(m);for(const key of ['map','bumpMap','roughnessMap'])if(m[key])ts.add(m[key])})});gs.forEach(g=>g.dispose());ms.forEach(m=>m.dispose());ts.forEach(t=>t.dispose());group.removeFromParent()}};
+  return {group,ready:Promise.all([ensurePageFonts(),prepareSuppliedArt(),stickerReference.decode(),referenceCover.decode(),paperReference.decode()]).then(()=>{if(disposed)return;referenceCover.onload?.();paintCompletedPages?.()}),setView(camera){view.position.copy(camera.position);view.quaternion.copy(camera.quaternion);view.fov=camera.fov;view.aspect=camera.aspect},setRestPose(point,scale,mobile){restCenter.copy(point);tableScale=scale;mobileView=mobile;resting.setFromEuler(new THREE.Euler(-1.0,.25,.28,'ZYX'))},setProgress(value){progress=clamp(Number(value)||0)},setClosing(value){closing=ease(value)},update,dispose(){disposed=true;const gs=new Set(),ms=new Set(),ts=new Set();group.traverse(o=>{if(o.geometry)gs.add(o.geometry);if(o.material)(Array.isArray(o.material)?o.material:[o.material]).forEach(m=>{ms.add(m);for(const key of ['map','bumpMap','roughnessMap'])if(m[key])ts.add(m[key])})});gs.forEach(g=>g.dispose());ms.forEach(m=>m.dispose());ts.forEach(t=>t.dispose());group.removeFromParent()}};
 }
+

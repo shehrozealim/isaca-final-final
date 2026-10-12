@@ -36,3 +36,9 @@ button,input,select,textarea { font-family:inherit; }
 
 :root { --event-red:#9f202b; --event-gold:#edbf59; }
 ::selection { background:#9f202b; color:#fff0bf; }
+
+@font-face { font-family:'Event Display'; src:url('/fonts/serif-heading.woff2') format('woff2'); font-weight:400 900; font-display:swap; }
+@font-face { font-family:'Event Horror'; src:url('/fonts/serif-heading.woff2') format('woff2'); font-weight:400; font-display:swap; }
+@font-face { font-family:'Event Blood'; src:url('/fonts/serif-heading.woff2') format('woff2'); font-weight:400; font-display:swap; }
+
+h1,h2,h3,h4 { letter-spacing:0; }

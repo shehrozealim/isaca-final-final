@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { copy } from '../../data/content';
 import { useScrollState } from '../../architecture/scrollContext';
 import { usePreferences } from '../../architecture/preferences';
@@ -13,6 +13,12 @@ const FPS = 30;
 export default function ScrollIntro() {
   const { reducedMotion } = usePreferences();
   const { state } = useScrollState();
+  const [hasScrolled, setHasScrolled] = useState(window.scrollY > 24);
+  useEffect(() => {
+    const dismiss = () => { if (window.scrollY > 24) setHasScrolled(true); };
+    window.addEventListener('scroll', dismiss, { passive: true });
+    return () => window.removeEventListener('scroll', dismiss);
+  }, []);
   const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -110,6 +116,7 @@ export default function ScrollIntro() {
       <div className={styles.stage} style={{ visibility: state.active.id === 'S00' ? 'visible' : 'hidden' }}>
         <video ref={videoRef} className={styles.video} poster="/media/intro-poster.webp" preload="auto" muted playsInline disablePictureInPicture data-intro-video aria-hidden="true">
         </video>
+        {!hasScrolled && <p className={styles.scrollCue}><span aria-hidden="true">↓</span>{copy("Start scrolling to enter the investigation")}</p>}
       </div>
     </section>
   );

@@ -52,12 +52,9 @@ export default function BunkerOverlays({ navigate }: { navigate: (id: string) =>
     <div className="bunker-mobile-document" data-readout="faq" aria-hidden="true"><FAQPages /></div>
     <nav className="bunker-chapters" aria-label={copy("Bunker chapters")}>{bunkerChapters.map((chapter, i) => <a key={chapter.id} href={`#${chapter.id}`} data-chapter={i} onClick={e => { e.preventDefault(); navigate(chapter.id) }}><span>{copy("0")}{i + 1}</span>{chapter.title}</a>)}</nav>
     <div className="bunker-panels">
-      <Panel name="board" id="bunker-about" kicker={copy("01 / THE DESTINATION")} title={copy("Follow the evidence.")}>
-        <img className="bunker-static-map" src={getMapSource() || undefined} alt={copy("Investigation map marking Dwarkadas J. Sanghvi College of Engineering in Vile Parle West")} />
-        <p className="bunker-lede">{copy("An investigation in ideas. A hackathon for the curious.")}</p>
-        <p>{copy("Enter THE HUNT with DJS ISACA. Bring your questions, work together, and turn an idea into something you can put to the test.")}</p>
-        <h4>{copy("Choose your trail")}</h4><FactList entries={event.tracks} pending={copy("Tracks will be revealed in the next briefing.")} />
-        <div className="bunker-destination"><span>{copy("THE DESTINATION / LOCATION CONFIRMED")}</span><strong>{copy("Dwarkadas J. Sanghvi")}<br />{copy("College of Engineering")}</strong><p>{copy("U-15, JVPD Scheme, Bhaktivedanta Swami Marg,")}<br />{copy("Vile Parle West, Mumbai 400056.")}</p><a href="https://www.google.com/maps/search/?api=1&amp;query=Dwarkadas+J.+Sanghvi+College+of+Engineering+Mumbai" target="_blank" rel="noreferrer">{copy("OPEN DIRECTIONS")}</a></div>
+      <Panel name="board" id="bunker-about" kicker={siteContent.sponsors.eyebrow} title={siteContent.sponsors.heading}>
+        <img className="bunker-static-map" src={getMapSource() || undefined} alt={siteContent.sponsors.heading} />
+        <div className="sponsor-transcript"><p>{siteContent.sponsors.tagline}</p><dl>{siteContent.sponsors.partners.map(partner => <div key={partner.name}><dt>{partner.category}</dt><dd>{partner.name}</dd></div>)}</dl><p>{siteContent.sponsors.note}</p></div>
       </Panel>
       <Panel name="journal" id="bunker-details" kicker={copy("02 / EVENT DETAILS")} title={copy("Your field briefing.")}>
         <p className="bunker-lede">{copy("Keep the essentials close.")}</p>

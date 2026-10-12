@@ -27,12 +27,12 @@ export default function JournalScene({ mobile }: { mobile: boolean }) {
   const settling = useRef(0)
   const crtFrame = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   useLayoutEffect(() => {
-    journalMotion.draw = () => { settling.current = 36; invalidate() }
+    journalMotion.draw = () => { settling.current = mobile ? 54 : 36; invalidate() }
     journalMotion.draw()
     return () => { journalMotion.draw = undefined; clearTimeout(crtFrame.current) }
-  }, [invalidate])
+  }, [invalidate, mobile])
   useLayoutEffect(() => {
-    const instance = createOccultBook({ pageCount: 3, event: journalEvent, onTextureReady: () => journalMotion.draw?.() })
+    const instance = createOccultBook({ pageCount: 3, mobile, event: journalEvent, onTextureReady: () => journalMotion.draw?.() })
     bookRef.current = instance
     get().scene.add(instance.group)
     const desk = createOverheadDesk(() => journalMotion.draw?.())

@@ -1,13 +1,138 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title></title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
+<head>
+<meta charset="UTF-8" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#050506" />
+<title>D3COY</title>
+<style>
+#loader{color-scheme:dark;background:#050506;color:#d9d2cd;font-family:Arial,sans-serif}
+#loader *{box-sizing:border-box}
+#loader{margin:0}
+#loader button{font:inherit}
+#loader{min-height:100vh;min-height:100svh;position:relative;isolation:isolate;overflow:hidden;display:grid;grid-template-rows:auto 1fr auto;background:radial-gradient(ellipse at 50% 46%,#20090f 0%,#0b070a 35%,#050506 75%)}
+#loader:before{content:"";pointer-events:none;position:absolute;inset:0;z-index:-1;opacity:.14;background:repeating-linear-gradient(0deg,transparent 0 3px,#7d74740c 3px 4px)}
+#loader header{position:static;display:flex;justify-content:space-between;gap:16px;padding:calc(26px + env(safe-area-inset-top)) max(24px,env(safe-area-inset-right)) 0 max(24px,env(safe-area-inset-left));font-size:9px;letter-spacing:.24em;color:#8d7b7c}
+#loader .signal{display:inline-block;width:4px;height:4px;border-radius:50%;background:#b42339;margin:0 9px 2px 0;box-shadow:0 0 8px #a8192b}
+#loader .edition{color:#695a5d}
+#loader main{width:100%;align-self:center;text-align:center;padding:36px 0 28px}
+#loader .hero{position:relative;width:min(100%,1100px);height:clamp(240px,32vw,390px);margin:0 auto;display:flex;flex-direction:column;justify-content:center;align-items:center;isolation:isolate}
+#loader .wings{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;z-index:-2;opacity:0;pointer-events:none}
+#loader .wings.ready{opacity:.66}
+#loader .hero:after{content:"";position:absolute;inset:20% 18%;z-index:-1;background:radial-gradient(ellipse,#050506c9,transparent 72%)}
+#loader .eyebrow{margin:20px 0 21px;color:#a44a55;font-size:9px;letter-spacing:.45em}
+#loader h1{font-family:Georgia,'Times New Roman',serif;font-size:clamp(48px,8vw,102px);font-weight:400;line-height:1;margin:0;letter-spacing:.045em;color:#c5bcb8;background:linear-gradient(#e1d9d2 12%,#bfb0aa 48%,#755a5b 50%,#b9a7a3 60%,#735454);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+#loader .subline{font-family:Georgia,serif;margin:20px 0 0;color:#9c7176;letter-spacing:.22em;font-size:11px}
+#loader .loading{width:min(calc(100% - 64px),400px);margin:10px auto 0}
+#loader .track-wrap{position:relative;padding-top:44px}
+#loader .track{height:12px;background:#0a0608;border:1px solid #452027;border-radius:2px;overflow:hidden;box-shadow:0 0 12px #610b1912,inset 0 2px 4px #000}
+#loader .blood{position:relative;height:100%;width:100%;transform:scaleX(0);transform-origin:left;background:linear-gradient(0deg,#200007 0%,#490512 32%,#710a1c 65%,#942435 82%,#430812 100%);box-shadow:inset 0 1px 1px #b3454f55}
+#loader .blood:after{content:"";position:absolute;right:0;top:0;width:5px;height:100%;border-radius:50% 15% 15% 50%;background:#8e2335;box-shadow:-4px 0 6px #600b1b}
+#loader .marker{position:absolute;bottom:-12px;left:0;width:36px;height:36px;margin-left:-18px;z-index:2;pointer-events:none;will-change:transform}
+#loader .marker svg{display:block;width:100%;height:100%;stroke:#ac3045;stroke-width:1.5;fill:#12060bbf;filter:drop-shadow(0 0 4px #9e182a35)}
+#loader .drips{position:absolute;top:56px;left:0;right:0;height:15px;opacity:.6;pointer-events:none}
+#loader .drips i{position:absolute;top:-1px;width:2px;border-radius:0 0 50% 50%;background:linear-gradient(#580b1b,#260007);height:9px;opacity:0}
+#loader .drips i:nth-child(1){left:18%;height:6px}
+#loader .drips i:nth-child(2){left:43%;height:11px}
+#loader .drips i:nth-child(3){left:72%;height:8px}
+#loader .meta{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:25px;font-size:9px;letter-spacing:.17em;color:#a3878b}
+#loader .percent{color:#d18f98;letter-spacing:.08em;font-variant-numeric:tabular-nums}
+#loader .caption{font:italic 13px Georgia,serif;color:#82656a;margin:30px 0 0;letter-spacing:.04em}
+#loader .replay{visibility:hidden;margin-top:24px;min-height:44px;padding:12px 20px;border:1px solid #55202b;background:#12090c;color:#b08b91;cursor:pointer;font-size:9px;letter-spacing:.22em}
+#loader .replay.visible{visibility:visible}
+#loader .replay:hover{background:#211016;border-color:#a33446}
+#loader .replay:focus-visible{outline:2px solid #d6566c;outline-offset:4px}
+#loader footer{text-align:center;padding:14px 24px calc(24px + env(safe-area-inset-bottom));font-size:8px;letter-spacing:.29em;color:#705a60}
+#loader footer:before{content:"";display:block;width:1px;height:24px;background:linear-gradient(transparent,#693039);margin:0 auto 15px}
+@media(max-width:600px){
+#loader header{font-size:8px;letter-spacing:.17em;padding-top:calc(22px + env(safe-area-inset-top))}
+#loader .edition{display:none}
+#loader main{padding:26px 0 20px}
+#loader .hero{height:260px;width:100%}
+#loader .wings{width:calc(100% - 12px);left:6px}
+#loader .wings.ready{opacity:.76}
+#loader .hero:after{inset:26% 10%}
+#loader .eyebrow{font-size:8px;letter-spacing:.32em;margin-bottom:22px}
+#loader h1{font-size:clamp(40px,11.6vw,68px);letter-spacing:.015em}
+#loader .subline{font-size:9px;letter-spacing:.17em;margin-top:16px}
+#loader .loading{width:68%;max-width:270px;margin-top:0}
+#loader .track{height:9px}
+#loader .marker{width:28px;height:28px;margin-left:-14px;bottom:-9.5px}
+#loader .drips{top:53px}
+#loader .meta{font-size:8px;letter-spacing:.05em;gap:8px;margin-top:22px}
+#loader .caption{font-size:12px;margin-top:30px}
+#loader footer{font-size:7px;letter-spacing:.2em}}
+@media(max-height:600px){
+#loader main{padding:12px 0}
+#loader .hero{height:190px}
+#loader .eyebrow{margin:0 0 12px}
+#loader h1{font-size:60px}
+#loader .subline{margin-top:12px}
+#loader .loading{margin-top:0}
+#loader .caption{margin-top:15px}
+#loader .replay{margin-top:12px}
+#loader footer:before{display:none}
+#loader header{padding-top:16px}}
+@media(max-height:450px){
+#loader main{padding:8px 0}
+#loader .hero{height:110px}
+#loader .eyebrow{display:none}
+#loader h1{font-size:44px}
+#loader .subline{margin-top:8px}
+#loader .caption{display:none}
+#loader .replay{margin-top:8px}
+#loader footer{padding-top:8px;padding-bottom:12px}}
+@media(prefers-reduced-motion:reduce){
+#loader .marker svg{transform:none!important}}
+
+body:has(#loader){overflow:hidden}#loader{position:fixed;inset:0;z-index:10000}#loader p{line-height:normal}#loader .replay{display:none}
+</style></head><body>
+<div class="screen" id="loader">
+<header><span><i class="signal"></i>D3COY / RITUAL IN PROGRESS</span><span class="edition">EST. IN THE DARK</span></header>
+<main>
+<div class="hero">
+<img class="wings" data-src="/loader/wings.webp" width="1200" height="405" alt="" decoding="async" fetchpriority="low">
+<p class="eyebrow">SOMETHING IS WAKING</p><h1>D3COY 1.0</h1><p class="subline">BEYOND THE VEIL</p>
+</div>
+<div class="loading"><div class="track-wrap">
+<div class="marker" aria-hidden="true"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="18"/><path d="M20 4 29.4 33 4.8 15.1 35.2 15.1 10.6 33Z" fill="none"/></svg></div>
+<div class="track" role="progressbar" aria-label="Loading D3COY" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="blood"></div></div>
+<div class="drips" aria-hidden="true"><i></i><i></i><i></i></div></div>
+<div class="meta"><span id="status">BREAKING THE SEAL</span><span class="percent">00%</span></div>
+<p class="caption">Do not look behind you.</p></div>
+</main><footer>WHEN THE SEAL BREAKS, ENTER.</footer>
+</div>
+<script>
+/* Critical controller is inline: no script or image request blocks the loader. */
+(()=>{
+const track=document.querySelector('.track'),fill=document.querySelector('.blood'),marker=document.querySelector('.marker'),symbol=marker.querySelector('svg'),percent=document.querySelector('.percent'),status=document.querySelector('#status'),drips=[...document.querySelectorAll('.drips i')];
+const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+let progress=0,frame=0,completed=false;
+function render(value){
+progress=Math.max(0,Math.min(100,Number(value)||0));
+const distance=track.clientWidth*progress/100,radius=marker.clientWidth*.45;
+fill.style.transform=`scaleX(${progress/100})`;
+marker.style.transform=`translateX(${distance}px)`;
+symbol.style.transform=`rotate(${reduced.matches?0:distance/radius*180/Math.PI}deg)`;
+const rounded=Math.floor(progress);percent.textContent=String(rounded).padStart(2,'0')+'%';track.setAttribute('aria-valuenow',rounded);
+status.textContent=progress>=100?'THE SEAL IS BROKEN':'BREAKING THE SEAL';
+drips.forEach((drip,index)=>{drip.style.opacity=progress>[18,43,72][index]?'1':'0';});
+
+if(progress>=100&&!completed){completed=true;window.dispatchEvent(new CustomEvent('d3coy:ready'));}if(progress<100)completed=false;
+}
+function setProgress(value){cancelAnimationFrame(frame);render(value);}
+window.D3COYLoader={setProgress};window.addEventListener('resize',()=>{if(track.isConnected)render(progress)});
+// Real loading is the default. Only index.html?demo=1 runs a simulated wait.
+render(0);
+// First render the loader, then start the decorative image request. Never await it.
+requestAnimationFrame(()=>requestAnimationFrame(()=>{
+const wings=document.querySelector('.wings');
+wings.addEventListener('load',()=>{wings.decode().catch(()=>{}).then(()=>wings.classList.add('ready'));},{once:true});
+wings.src=wings.dataset.src;
+}));
+})();
+</script>
+<div id="root"></div><script type="module" src="/src/main.tsx"></script>
+</body></html>
+

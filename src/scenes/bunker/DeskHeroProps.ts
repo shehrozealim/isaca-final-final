@@ -1,6 +1,7 @@
 import { ShaderMaterial, Material, Box3, BufferGeometry, CanvasTexture, CylinderGeometry, CatmullRomCurve3, OctahedronGeometry, TubeGeometry, Float32BufferAttribute, Group, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, PlaneGeometry, RepeatWrapping, SphereGeometry, SRGBColorSpace, TextureLoader, TorusGeometry, Vector3 } from 'three'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { event } from '../../data/event'
+import { siteContent } from '../../data/content'
 import { copy } from '../../data/content'
 
 /** Real geometry shares the desk light and casts its own contact shadows. */
@@ -103,13 +104,17 @@ export function createDeskHeroProps(redraw: () => void) {
     const wrap=(text:string,y:number,size:number,maxWidth=880)=>{x.font=`${size}px Georgia`;let row='';for(const word of text.split(' ')){const next=row?row+' '+word:word;if(x.measureText(next).width>maxWidth&&row){x.fillText(row,512,y);y+=size*1.3;row=word}else row=next}x.fillText(row,512,y);return y}
     if(!broadcast){line(event.title,330,'600 55px Georgia');wrap(event.venue,430,29)}
     else{
-      line(copy('CH 03 / INCOMING TRANSMISSION'),92,'20px Georgia')
-      line(event.title,260,'600 90px Georgia');line(copy('EVENT TRANSMISSION'),326,'24px Georgia')
-      line(event.title,382,'28px Georgia');wrap(event.venue,433,27)
-      line(event.dateTime,501,'25px Georgia');line(event.teamSize==='To be announced'?copy('Team details to be announced'):event.teamSize,540,'25px Georgia')
-      x.shadowBlur=0;x.fillStyle='#491617';x.fillRect(140,568,744,66);x.strokeStyle='#d8a74b9a';x.lineWidth=2;x.strokeRect(140,568,744,66);x.fillStyle='#ffdfa1'
-      line(copy('REGISTER FOR THE HUNT ↗'),610,'26px Georgia')
-      if(!event.registrationUrl)line(copy('REGISTRATION OPENS SOON'),691,'19px Georgia')
+      line(copy('CH 03 / INCOMING TRANSMISSION'),76,'20px Georgia')
+      line(event.title,190,'600 66px "Event Display", Georgia')
+      wrap(event.venue,255,25)
+      line(event.dateTime,310,'24px Georgia')
+      line(siteContent.contact.heading,390,'32px "Event Horror", Georgia')
+      line(siteContent.contact.email,438,'28px Georgia')
+      line(siteContent.contact.instagram,480,'28px Georgia')
+      x.shadowBlur=0;x.fillStyle='#491617';x.fillRect(140,548,744,66);x.strokeStyle='#d8a74b9a';x.lineWidth=2;x.strokeRect(140,548,744,66);x.fillStyle='#ffdfa1'
+      line(copy('REGISTER FOR THE HUNT ↗'),590,'26px Georgia')
+      line(siteContent.contact.note,660,'18px Georgia')
+      if(!event.registrationUrl)line(copy('REGISTRATION OPENS SOON'),708,'17px Georgia')
     }
     x.shadowBlur=0;for(let i=0;i<768;i+=4){x.fillStyle='#0003';x.fillRect(0,i,1024,1)}
     const reflection=x.createLinearGradient(80,0,580,768);reflection.addColorStop(0,'#ffe5a512');reflection.addColorStop(.42,'#ffe5a500');reflection.addColorStop(1,'#00000028');x.fillStyle=reflection;x.fillRect(0,0,1024,768)
