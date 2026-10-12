@@ -1,3 +1,4 @@
+import { ensurePageFonts, preparePageInk } from './PageTypography'
 import { copy, formatCopy } from '../../data/content'
 import { CanvasTexture, SRGBColorSpace } from 'three'
 import { EVIDENCE_ATLAS, SKETCH_ATLAS, paintEvidencePhoto, paintFieldSketch } from './EvidencePhotos.mjs'
@@ -6,6 +7,7 @@ import { EVIDENCE_ATLAS, SKETCH_ATLAS, paintEvidencePhoto, paintFieldSketch } fr
 export function createAncientPaper(draw: (x: CanvasRenderingContext2D, w: number, h: number) => void, redraw: () => void, study = false, variant = 0, plain = false) {
   const canvas = document.createElement('canvas'); canvas.width = 1536; canvas.height = 2048
   const x = canvas.getContext('2d')!, texture = new CanvasTexture(canvas)
+  preparePageInk(x)
   texture.colorSpace = SRGBColorSpace; texture.anisotropy = 8
   const image = new Image(), symbols = new Image(), sketches = new Image()
   const paint = () => {
@@ -15,8 +17,11 @@ export function createAncientPaper(draw: (x: CanvasRenderingContext2D, w: number
     draw(x, canvas.width, canvas.height)
     if (!plain && symbols.complete && symbols.naturalWidth) {
       if (study) {
-        paintFieldSketch(x, sketches, variant, canvas.width * .14, canvas.height * .17, canvas.width * .72, canvas.width * .72)
-        if (variant % 2 === 0) paintEvidencePhoto(x, symbols, variant + 1, canvas.width * .57, canvas.height * .68, canvas.width * .27, canvas.height * .18, .055)
+        if (variant % 2 === 0) paintEvidencePhoto(x, symbols, variant, canvas.width * .15, canvas.height * .18, canvas.width * .70, canvas.height * .64, -.018)
+        else {
+          paintFieldSketch(x, sketches, variant, canvas.width * .14, canvas.height * .17, canvas.width * .72, canvas.width * .72)
+          paintEvidencePhoto(x, symbols, variant + 1, canvas.width * .57, canvas.height * .68, canvas.width * .27, canvas.height * .16, .025)
+        }
       }
       else {
         paintEvidencePhoto(x, symbols, variant, canvas.width * .62, canvas.height * .77, canvas.width * .22, canvas.height * .14, -.035)
@@ -28,13 +33,13 @@ export function createAncientPaper(draw: (x: CanvasRenderingContext2D, w: number
   symbols.onload = paint; symbols.src = EVIDENCE_ATLAS
   sketches.onload = paint; sketches.src = SKETCH_ATLAS
   image.onload = paint; image.src = '/s03/textures/ancient-paper.webp'; paint()
-  const ready = Promise.all([image.decode(), symbols.decode(), sketches.decode()]).then(() => { paint() })
+  const ready = Promise.all([ensurePageFonts(), image.decode(), symbols.decode(), sketches.decode()]).then(() => { paint() })
   return { texture, ready, dispose: () => { image.onload = null; symbols.onload = null; sketches.onload = null; texture.dispose() } }
 }
 
 export function drawArtifactInk(x: CanvasRenderingContext2D, w: number, h: number, kind: 'cases' | 'bounty' | 'leaf' | 'faq' | 'study', index = 0) {
   x.strokeStyle = '#78553266'; x.lineWidth = 1.5; x.strokeRect(w * .065, h * .055, w * .87, h * .89)
-  x.fillStyle = '#60462e'; x.font = '18px monospace'; x.fillText(copy("DJS ISACA / THE HUNT"), w * .11, h * .095)
+  x.fillStyle = '#60462e'; x.font = '18px "Page Antique"'; x.fillText(copy("DJS ISACA / THE HUNT"), w * .11, h * .095)
   x.textAlign = 'right'; x.fillText(formatCopy('EXHIBIT / {number}', { number: String(index + 1).padStart(2, '0') }), w * .89, h * .095); x.textAlign = 'left'
   // Etched thorn borders and diagonal witness marks fill the perimeter, not the text.
   x.save(); x.strokeStyle = '#57362288'; x.lineWidth = 1.7
@@ -47,12 +52,12 @@ export function drawArtifactInk(x: CanvasRenderingContext2D, w: number, h: numbe
   for (let i = 0; i < 9; i++) { const px = w * (.17 + i * .081); x.beginPath(); x.moveTo(px - 7, h * .13); x.lineTo(px + 7, h * .145); x.moveTo(px + 7, h * .13); x.lineTo(px - 7, h * .145); x.stroke() }
   x.restore()
   // Ink motifs stay outside the semantic reading column.
-  x.save(); x.translate(w * .17, h * .78); x.rotate(-.09); x.fillStyle = '#75433499'; x.font = 'italic 21px Georgia'; x.fillText(copy("Leave nothing unexplained."), 0, 0); x.restore()
+  if (kind !== 'study') { x.save(); x.translate(w * .17, h * .78); x.rotate(-.09); x.fillStyle = '#75433499'; x.font = 'italic 21px "Page Antique"'; x.fillText(copy("Leave nothing unexplained."), 0, 0); x.restore() }
   if (kind === 'study') {
-    x.save(); x.textAlign = 'center'; x.fillStyle = '#473524'; x.font = 'italic 48px Georgia'
+    x.save(); x.textAlign = 'center'; x.fillStyle = '#473524'; x.font = 'italic 700 48px "Page Serif"'
     x.fillText(copy('FIELD OBSERVATIONS'), w * .5, h * .125)
-    x.font = 'italic 27px Georgia'; x.fillText(copy('No witness stands alone.'), w * .5, h * .89); x.restore()
+    x.font = 'italic 27px "Page Antique"'; x.fillText(copy('No witness stands alone.'), w * .5, h * .89); x.restore()
   }
-  x.font = '16px monospace'; x.textAlign = 'center'; x.fillStyle = '#76573c'; x.fillText(kind === 'faq' ? copy("THE UNANSWERED FILES / RESEARCH NOTES") : kind === 'cases' ? copy("CHALLENGE BRIEFING / KEEP THIS FILE CLOSE") : copy("REWARD DOSSIER / BREAK THE SEAL"), w * .5, h * .93)
+  x.font = '16px "Page Antique"'; x.textAlign = 'center'; x.fillStyle = '#76573c'; x.fillText(kind === 'faq' ? copy("THE UNANSWERED FILES / RESEARCH NOTES") : kind === 'cases' ? copy("CHALLENGE BRIEFING / KEEP THIS FILE CLOSE") : copy("REWARD DOSSIER / BREAK THE SEAL"), w * .5, h * .93)
   x.textAlign = 'left'
 }

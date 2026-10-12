@@ -1,19 +1,23 @@
 import { copy } from './data/content'
 import { lazy, Suspense, useState } from 'react'
+import { usePreferences } from './architecture/preferences'
 import { ScrollProvider } from './architecture/ScrollProvider'
 import Story from './components/Story'
 import DevelopmentHud from './components/DevelopmentHud'
-import ShutterTransition from './components/shutter-transition/ShutterTransition'
+import DeskStage from './components/bunker/DeskStage'
+import AssetLoader from './components/AssetLoader'
 import './App.css'
 import { RegistrationPage, RegistrationShortcut } from './components/Registration'
 const World = lazy(() => import('./components/World'))
 export default function App() {
+  const { reducedMotion } = usePreferences()
   const [rotationDismissed, setRotationDismissed] = useState(false)
   if (window.location.pathname.replace(/\/$/, '') === '/register') return <RegistrationPage />
   return <ScrollProvider>
     <a className="skip-link" href="#scroll-story">{copy("Skip to content")}</a>
-    <Suspense fallback={null}><World /></Suspense>
-    <ShutterTransition />
+    {!reducedMotion && <Suspense fallback={null}><World /></Suspense>}
+    <DeskStage />
+    <AssetLoader />
     <Story />
     <RegistrationShortcut />
     {!rotationDismissed && <aside className="rotate-prompt" aria-label={copy('Rotate device')}>

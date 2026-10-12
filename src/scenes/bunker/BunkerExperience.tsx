@@ -45,8 +45,7 @@ export default function BunkerExperience() {
     if (!chapter) return
     if (background.phase !== 'ready') {
       pendingChapter.current = id
-      const shutter = document.getElementById('S02')
-      if (shutter) scrollTo(shutter.offsetTop + 2)
+      // Initial chapter navigation is replayed after the desk has been prepared.
       return
     }
     const trigger = master.current?.timeline.scrollTrigger ?? mobileMaster.current?.scrollTrigger
@@ -62,12 +61,6 @@ export default function BunkerExperience() {
       if (element) { element.tabIndex = -1; element.focus({ preventScroll: true }) }
     })
   }, [background.phase, simple, mobile, reducedMotion, scrollTo])
-
-  useEffect(() => {
-    const handoff = () => { if (section.current) scrollTo(section.current.offsetTop) }
-    window.addEventListener('hunt:s02-complete', handoff)
-    return () => window.removeEventListener('hunt:s02-complete', handoff)
-  }, [scrollTo])
 
   useEffect(() => {
     // Preserve the intro broadcast link and chapter deep links. A cold
@@ -88,8 +81,8 @@ export default function BunkerExperience() {
       const id = location.hash.slice(1)
       if (bunkerChapters.some(chapter => chapter.id === id)) navigate(id, animate)
       else if (id === 'S03') {
-        const destination = background.phase === 'ready' ? section.current : document.getElementById('S02')
-        if (destination) scrollTo(destination.offsetTop + (background.phase === 'ready' ? 0 : 2))
+        const destination = section.current
+        if (destination) scrollTo(destination.offsetTop)
       }
     }
     document.addEventListener('click', intercept, true)
@@ -100,15 +93,6 @@ export default function BunkerExperience() {
     const initialHash = requestAnimationFrame(() => hash(false))
     return () => { cancelAnimationFrame(initialHash); document.removeEventListener('click', intercept, true); window.removeEventListener('hashchange', hashChanged) }
   }, [navigate, background.phase, scrollTo])
-
-  useEffect(() => {
-    if (active && background.phase === 'unavailable') {
-      const id = location.hash.slice(1)
-      if (bunkerChapters.some(chapter => chapter.id === id)) pendingChapter.current = id
-      const shutter = document.getElementById('S02')
-      if (shutter) scrollTo(shutter.offsetTop + 2)
-    }
-  }, [active, background.phase, scrollTo])
 
   useLayoutEffect(() => {
     const root = section.current
@@ -161,7 +145,7 @@ export default function BunkerExperience() {
         journalMotion.opacity = 0; resetDeskMotion(); journalMotion.draw?.()
       }
     }
-    const context = gsap.context(() => { master.current = createBunkerTimeline(root, screen, room, surface) }, root)
+    const context = gsap.context(() => { master.current = createBunkerTimeline(root, screen, room) }, root)
     if (pendingChapter.current) { const id = pendingChapter.current; pendingChapter.current = null; navigate(id) }
     return () => { master.current?.dispose(); context.revert(); master.current = null }
   }, [background, simple, mobile, reducedMotion, navigate, artReady])

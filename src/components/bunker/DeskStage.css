@@ -1,0 +1,6 @@
+.desk-stage { position:fixed; inset:0; z-index:0; overflow:hidden; pointer-events:none; background:#100907; }
+.s02-room { position:absolute; inset:0; transform-origin:50% 58%; }
+.s02-bunker { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:50% 58%; filter:sepia(.12) saturate(.9); }
+.s02-bunker-darkness { position:absolute; inset:0; background:#120305; opacity:.14; }
+.s02-dust-light,.s02-forward-spill { opacity:0; pointer-events:none; }
+.s02-anchors { display:none; }

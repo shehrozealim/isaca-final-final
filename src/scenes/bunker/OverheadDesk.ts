@@ -40,6 +40,10 @@ export function createOverheadDesk(redraw: () => void) {
   const baseTexture = paperTexture(0)
   const base = add(new PlaneGeometry(5.35, 7.0), new MeshStandardMaterial({ map: baseTexture, bumpMap: baseTexture, bumpScale: .008, roughness: .97, side: DoubleSide }), packet)
   base.position.z = .01
+  const prizeTitleTexture = paperTexture(-1)
+  const prizeTitleHinge = new Group();prizeTitleHinge.position.set(-2.675,0,.20);packet.add(prizeTitleHinge)
+  const prizeTitle = add(new PlaneGeometry(5.35,7,32,40),new MeshStandardMaterial({map:prizeTitleTexture,bumpMap:prizeTitleTexture,bumpScale:.008,roughness:.98,side:DoubleSide}),prizeTitleHinge)
+  prizeTitle.position.x=2.675
   const leaves = Array.from({ length: 2 }, (_, i) => {
     const texture = paperTexture(i + 1)
     const geometry = new PlaneGeometry(5.35, 7.0, 32, 40)
@@ -54,7 +58,7 @@ export function createOverheadDesk(redraw: () => void) {
     const geometry = new PlaneGeometry(.7, 1.4)
     const uv = geometry.attributes.uv
     for (let i = 0; i < uv.count; i++) uv.setX(i, uv.getX(i) * .5 + (sign > 0 ? .5 : 0))
-    const seal = add(geometry, waxMaterial, packet); seal.position.set(sign * .35, 0, .31)
+    const seal = add(geometry, waxMaterial, packet); seal.position.set(sign * .35, 1.75, .31)
     return { seal, sign }
   })
   const clamp = (v: number) => Math.max(0, Math.min(1, v))
@@ -85,7 +89,11 @@ export function createOverheadDesk(redraw: () => void) {
       packet.visible = true
       packet.position.set((mobile ? -1.75 : -1.0) * (1 - deskMotion.prizeOpacity), -1.84 + deskMotion.prizeOpacity * 2.94, (mobile ? 3.8 : 2.6) * (1 - deskMotion.prizeOpacity))
       packet.scale.setScalar(((mobile ? .24 : .36) + deskMotion.prizeOpacity * (mobile ? .50 : .64)) * (1 - deskMotion.prizeOpacity * (1 - 10 / 12.35)))
-      const progress = deskMotion.prize
+      const rawProgress = deskMotion.prize
+      const titleTurn = ease((rawProgress-.30)/.28)
+      prizeTitleHinge.rotation.y=-Math.PI*titleTurn
+      prizeTitleHinge.visible=titleTurn<.995
+      const progress = ease((rawProgress-.58)/.42)
       base.position.y = mobile ? progress * 1.7 : 0
       for (let i = 0; i < leaves.length; i++) {
         const { mesh, geometry, rest, last } = leaves[i]
@@ -99,7 +107,7 @@ export function createOverheadDesk(redraw: () => void) {
           p.needsUpdate = true; geometry.computeVertexNormals(); geometry.computeBoundingSphere(); leaves[i].last = t
         }
       }
-      for (const { seal, sign } of seals) { const t = ease(progress / .24); seal.position.set(sign * (.35 + t * 2.85), -t * 3.8, .27 * (1 - t) + .045 * t + .5 * Math.sin(t * Math.PI)); seal.rotation.z = sign * t * .6; seal.visible = progress < .4 }
+      for (const { seal, sign } of seals) { const t = ease(rawProgress / .22); seal.position.set(sign * (.35 + t * 2.85), 1.75 + t * 1.2, .27 * (1 - t) + .045 * t + .5 * Math.sin(t * Math.PI)); seal.rotation.z = sign * t * .6; seal.visible = rawProgress < .22 }
     },
     dispose() { heroProps.dispose(); props.dispose(); files.dispose(); paperAssets.forEach(asset => asset.dispose()); map.dispose(); geometries.forEach(g => g.dispose()); materials.forEach(m => m.dispose()); textures.forEach(t => t.dispose()); group.removeFromParent() },
   }

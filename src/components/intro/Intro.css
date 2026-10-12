@@ -87,7 +87,7 @@
   text-align: center; color: #e4ddce;
 }
 .intro-presenter, .intro-join, .intro-scroll {
-  font-family: 'IBM Plex Mono', monospace; font-weight: 400;
+  font-family: 'Page Antique',Georgia,serif; font-weight: 400;
 }
 .intro-presenter, .intro-title, .intro-join, .intro-scroll {
   opacity: 0; visibility: hidden;
@@ -144,7 +144,7 @@
 .intro-sound {
   position: absolute; z-index: 10; top: 1.25rem; right: 1.25rem;
   padding: .5rem; border: 0; background: transparent; color: #e4ddce;
-  font: 400 .6rem 'IBM Plex Mono', monospace; letter-spacing: .15em;
+  font: 400 .6rem 'Page Antique',Georgia,serif; letter-spacing: .15em;
   opacity: .6; cursor: pointer;
 }
 @keyframes intro-fog-drift {

@@ -1,3 +1,4 @@
+import { ensurePageFonts, preparePageInk } from './PageTypography'
 import { BackSide, BoxGeometry, DoubleSide, FrontSide, Group, Mesh, MeshStandardMaterial, PlaneGeometry, SRGBColorSpace, TextureLoader } from 'three'
 import { createAncientPaper, drawArtifactInk } from './AncientPaper'
 import { deskMotion } from './journalMotion'
@@ -21,9 +22,10 @@ export function createDeskFiles(redraw: () => void) {
   const cover = add(hinge, new BoxGeometry(5.8, 7.5, .09), board); cover.position.x = 2.9
   const label = (parent: Group, title: string, x = 0, z = .3) => {
     const canvas=document.createElement('canvas');canvas.width=1024;canvas.height=512
-    const ctx=canvas.getContext('2d')!;ctx.fillStyle='#241a12';ctx.fillRect(0,0,1024,512);ctx.strokeStyle='#b8a177';ctx.lineWidth=3;ctx.strokeRect(30,30,964,452)
-    ctx.textAlign='center';ctx.fillStyle='#d7c39b';ctx.font='600 76px Georgia';ctx.fillText(title,512,250);ctx.font='26px monospace';ctx.fillText(copy('DJS ISACA / THE HUNT'),512,335)
+    const ctx=canvas.getContext('2d')!;preparePageInk(ctx);const paintLabel=()=>{ctx.fillStyle='#241a12';ctx.fillRect(0,0,1024,512);ctx.strokeStyle='#b8a177';ctx.lineWidth=3;ctx.strokeRect(30,30,964,452)
+    ctx.textAlign='center';ctx.fillStyle='#e9c77f';ctx.font='700 76px "Page Serif"';ctx.fillText(title,512,250);ctx.font='26px "Page Antique"';ctx.fillText(copy('DJS ISACA / THE HUNT'),512,335)};paintLabel()
     const texture=new CanvasTexture(canvas);texture.colorSpace=SRGBColorSpace;texture.anisotropy=8
+    ready.push(ensurePageFonts().then(()=>{paintLabel();texture.needsUpdate=true;redraw()}))
     const material=new MeshStandardMaterial({map:texture,roughness:.94});const tag=add(parent,new PlaneGeometry(4.6,2.3),material);tag.position.set(x,0,z);resources.push(texture,material)
   }
   label(hinge, copy('Problem statements.'),2.9,.055)

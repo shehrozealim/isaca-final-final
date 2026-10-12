@@ -31,7 +31,7 @@ export function addDeskChoreography(t: gsap.core.Timeline) {
     .to(deskMotion, { folderTurn: 1, duration: 10, ease: 'power2.inOut' }, 174)
     .to(deskMotion, { folderPage: 0, folder: 0, folderOpacity: 0, duration: 12, ease: 'power2.inOut' }, schedule.caseEnd)
     .to(deskMotion, { prizeOpacity: 1, duration: 10, ease: 'power2.inOut' }, schedule.prizeStart)
-    .to(deskMotion, { prize: 1, duration: 22, ease: 'power1.inOut' }, schedule.prizeStart + 10)
+    .to(deskMotion, { prize: 1, duration: 40, ease: 'power1.inOut' }, schedule.prizeStart + 10)
     .to(deskMotion, { prizeOpacity: 0, prize: 0, duration: 8, ease: 'power2.inOut' }, schedule.prizeEnd)
     .to(deskMotion, { faqOpacity: 1, duration: 8, ease: 'power2.inOut' }, schedule.faqStart)
     .to(deskMotion, { faq: 1, duration: 12, ease: 'power2.inOut' }, schedule.faqStart + 18)
@@ -42,7 +42,7 @@ export function addDeskChoreography(t: gsap.core.Timeline) {
   for (let i = 1; i < faqPageCount; i++) t.to(deskMotion, { faq: i + 1, duration: 12, ease: 'power2.inOut' }, schedule.faqRead + 24 + (i - 1) * 34)
   return t
 }
-export function createBunkerTimeline(section: HTMLElement, viewport: HTMLElement, room: HTMLDivElement, stage: HTMLDivElement) {
+export function createBunkerTimeline(section: HTMLElement, viewport: HTMLElement, room: HTMLDivElement) {
   const select = gsap.utils.selector(viewport), world = gsap.utils.selector(room)
   const panels = Array.from(viewport.querySelectorAll<HTMLElement>('[data-panel]'))
   const links = Array.from(viewport.querySelectorAll<HTMLElement>('[data-chapter]'))
@@ -70,7 +70,6 @@ export function createBunkerTimeline(section: HTMLElement, viewport: HTMLElement
   timeline.fromTo(select('.desk-broadcast'), { opacity: 0 }, { opacity: 1, duration: 2, ease: 'power2.out' }, schedule.broadcastStart + 6)
   timeline.fromTo(world('.bunker-clean-plate'), { opacity: 0 }, { opacity: 1, duration: 2, immediateRender: false }, 1)
     .fromTo(select('.bunker-journal-shade'), { opacity: 0 }, { opacity: .96, duration: 12, immediateRender: false }, 2)
-    .fromTo(stage.querySelector('.s02-frame'), { opacity: 1 }, { opacity: 0, duration: 10, immediateRender: false }, 2)
     .fromTo(select('.bunker-progress span'), { scaleX: 0 }, { scaleX: 1, duration: BUNKER_DURATION, immediateRender: false }, 0)
   timeline.scrollTrigger?.refresh(); sync(timeline.scrollTrigger?.progress ?? 0, timeline.scrollTrigger?.isActive ?? false)
   return { timeline, dispose: () => { effects.dispose(); journalMotion.opacity = 0; journalMotion.progress = 0; resetDeskMotion(); journalMotion.draw?.() } }

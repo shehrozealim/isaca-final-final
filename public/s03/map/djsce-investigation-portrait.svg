@@ -4,7 +4,7 @@
 
 <path d="M40 45h920v1810H40zM52 57h896v1786H52z" fill="none" stroke="#795737" stroke-width="2"/>
 
-<g fill="#60482e" font-family="monospace"><text x="95" y="148" font-size="24" letter-spacing="3">{{portrait_0}}</text><text x="95" y="286" font-size="25">{{portrait_1}}</text></g>
+<g fill="#60482e" font-family="Georgia, serif"><text x="95" y="148" font-size="24" letter-spacing="3">{{portrait_0}}</text><text x="95" y="286" font-size="25">{{portrait_1}}</text></g>
 
 <text x="93" y="230" font-family="Georgia" font-size="66" fill="#37291d">{{portrait_2}}</text>
 
@@ -20,7 +20,7 @@
 
 <g font-family="Georgia" fill="#493123" font-size="45"><text x="125" y="420">{{portrait_4}}</text><text x="125" y="475">{{portrait_5}}</text></g>
 
-<text x="130" y="525" font-family="monospace" font-size="24" fill="#79583a">{{portrait_6}}</text>
+<text x="130" y="525" font-family="Georgia, serif" font-size="24" fill="#79583a">{{portrait_6}}</text>
 
 <path d="M450 600v-32H180" stroke="#8c452d" stroke-width="3" fill="none"/>
 
@@ -28,14 +28,14 @@
 
 <circle cx="450" cy="665" r="74" fill="none" stroke="#8c452d" stroke-width="3"/>
 
-<path d="M610 640h188v96H610z" fill="#b5a07766" stroke="#806c4e" stroke-width="2"/><g font-family="monospace" font-size="27" fill="#604e35"><text x="630" y="680">{{portrait_7}}</text><text x="623" y="715">{{portrait_8}}</text></g>
+<path d="M610 640h188v96H610z" fill="#b5a07766" stroke="#806c4e" stroke-width="2"/><g font-family="Georgia, serif" font-size="27" fill="#604e35"><text x="630" y="680">{{portrait_7}}</text><text x="623" y="715">{{portrait_8}}</text></g>
 
-<g font-family="monospace" font-size="25" fill="#705739"><text x="300" y="797">{{portrait_9}}</text><text x="340" y="1100">{{portrait_10}}</text><text x="530" y="1560">{{portrait_11}}</text><text x="545" y="1720">{{portrait_12}}</text></g>
+<g font-family="Georgia, serif" font-size="25" fill="#705739"><text x="300" y="797">{{portrait_9}}</text><text x="340" y="1100">{{portrait_10}}</text><text x="530" y="1560">{{portrait_11}}</text><text x="545" y="1720">{{portrait_12}}</text></g>
 
 <g transform="translate(840 410)" fill="none" stroke="#6e5536" stroke-width="2"><circle r="47"/><path d="M0-34L12 10 0 4-12 10z" fill="#6e5536"/><path d="M0-38v76M-38 0h76"/><text x="-10" y="-58" fill="#6e5536" font-family="Georgia" font-size="26">{{portrait_13}}</text></g>
 
 <path d="M800 800v840" stroke="#574a33" stroke-width="6"/><path d="M815 800v840" stroke="#574a33" stroke-width="2"/>
 
-<g font-family="monospace" font-size="19" fill="#785f42"><text x="100" y="1790">{{portrait_14}}</text><text x="100" y="1824">{{portrait_15}}</text></g>
+<g font-family="Georgia, serif" font-size="19" fill="#785f42"><text x="100" y="1790">{{portrait_14}}</text><text x="100" y="1824">{{portrait_15}}</text></g>
 
 </svg>

@@ -1,13 +1,20 @@
+@font-face {
+  font-family: 'Cormorant Garamond'; font-style: normal; font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/serif-heading.woff2') format('woff2');
+}
+/* S00 uses DOM layers; GSAP owns its time-driven entrance and title reveal. */
+
 :root {
-  font-family: system-ui, sans-serif;
+  font-family: 'Page Antique',Georgia,serif;
   color: #eee;
   background: #050505;
   --near-black: #050505;
   --charcoal: #181818;
-  --blood: #772222;
+  --blood: #9f202b;
   --paper: #d7c5a1;
-  --tungsten: #e8a94e;
-  --green: #899b84;
+  --tungsten: #edbf59;
+  --green: #edbf59;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 }
@@ -19,3 +26,13 @@ button, summary, a { touch-action: manipulation; }
 h1, h2 { font-size: clamp(1.8rem, 4vw, 3rem); line-height: 1.15; }
 p { line-height: 1.6; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; } }
+
+@font-face { font-family:'Page Serif'; src:url('/fonts/serif-heading.woff2') format('woff2'); font-style:normal; font-weight:700; font-display:swap; }
+@font-face { font-family:'Page Antique'; src:url('/fonts/antique.woff2') format('woff2'); font-style:normal; font-weight:400; font-display:swap; }
+@font-face { font-family:'Page Antique'; src:url('/fonts/antique-italic.woff2') format('woff2'); font-style:italic; font-weight:400; font-display:swap; }
+:root { font-family:'Page Antique',Georgia,serif; }
+h1,h2,h3,h4 { font-family:'Page Serif',Georgia,serif; }
+button,input,select,textarea { font-family:inherit; }
+
+:root { --event-red:#9f202b; --event-gold:#edbf59; }
+::selection { background:#9f202b; color:#fff0bf; }

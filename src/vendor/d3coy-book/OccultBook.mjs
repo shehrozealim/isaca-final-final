@@ -1,6 +1,8 @@
 import { copy } from '../../data/content'
 import * as THREE from 'three';
 import { EVIDENCE_ATLAS, SKETCH_ATLAS, paintEvidencePhoto, paintFieldSketch } from '../../scenes/bunker/EvidencePhotos.mjs';
+import { ensurePageFonts, preparePageInk } from '../../scenes/bunker/PageTypography';
+import { paintTimelineSticker } from '../../scenes/bunker/TimelineSticker';
 import { hackathon } from './hackathon-data.mjs';
 
 /** Supplied bundle geometry, with local journal reference textures. */
@@ -12,7 +14,7 @@ export function createOccultBook({pageCount=3, approach=3.5, event=hackathon, on
   referenceCover.onload=()=>{
     const c=leatherMap.image,x=c.getContext('2d');
     x.setTransform(1,0,0,1,0,0);
-    x.drawImage(referenceCover,0,0,referenceCover.width,referenceCover.height,0,0,c.width,c.height);x.fillStyle='#17130fe8';x.fillRect(110,1520,1316,330);x.textAlign='center';x.fillStyle='#d8c29c';x.font='600 90px Georgia';x.fillText(copy('FIELD JOURNAL'),768,1660);x.font='35px monospace';x.fillText(copy('DJS ISACA / THE HUNT'),768,1760);leatherMap.needsUpdate=true;
+    x.drawImage(referenceCover,0,0,referenceCover.width,referenceCover.height,0,0,c.width,c.height);x.fillStyle='#2c1013e8';x.fillRect(110,1520,1316,330);x.textAlign='center';x.fillStyle='#e9c77f';x.font='700 90px "Page Serif"';x.fillText(copy('FIELD JOURNAL'),768,1660);x.font='35px "Page Antique"';x.fillText(copy('DJS ISACA / THE HUNT'),768,1760);leatherMap.needsUpdate=true;
     // The supplied photograph already contains its metal badge.
     cover.traverse(o=>{if(['CylinderGeometry','TorusGeometry','TubeGeometry'].includes(o.geometry?.type))o.visible=false});
     onTextureReady();
@@ -22,7 +24,9 @@ export function createOccultBook({pageCount=3, approach=3.5, event=hackathon, on
   group.addEventListener('removed',()=>{referenceCover.onload=null;referencePages.onload=null});
   const gothicReference=new Image();gothicReference.src=EVIDENCE_ATLAS;
   const sketchReference=new Image();sketchReference.src=SKETCH_ATLAS;
+  const stickerReference=new Image();stickerReference.src='/s03/textures/timeline-sticker.avif';
   const paperReference=new Image(), paperRecipes=[];
+  stickerReference.onload=()=>paperReference.onload?.();
   paperReference.onload=()=>{for(const {map,kind,index} of paperRecipes){const replacement=texture(kind,index,false);map.image=replacement.image;map.needsUpdate=true;replacement.dispose()}onTextureReady()};paperReference.src='/s03/textures/ancient-paper.webp';
   gothicReference.onload=()=>paperReference.onload?.();
   sketchReference.onload=()=>paperReference.onload?.();
@@ -30,7 +34,7 @@ export function createOccultBook({pageCount=3, approach=3.5, event=hackathon, on
   let seed=13;const random=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296};
   const restCenter=new THREE.Vector3(0,.16,0);let tableScale=1,mobileView=false;
   function texture(kind,index=0,record=true){
-    const c=document.createElement('canvas');c.width=1536;c.height=2048;const x=c.getContext('2d');x.scale(2,2);let freeInk=0;
+    const c=document.createElement('canvas');c.width=1536;c.height=2048;const x=c.getContext('2d');preparePageInk(x);x.scale(2,2);let freeInk=0;
     x.fillStyle=kind==='cover'?'#71482f':'#ddcba3';x.fillRect(0,0,768,1024);
     // Fine fibers rather than large uniform grain; darker aging at the margins.
     for(let i=0;i<48000;i++){const p=random();x.fillStyle=p>.5?'rgba(255,239,195,.045)':'rgba(45,23,8,.035)';x.fillRect(random()*768,random()*1024,random()*2+.3,random()*2+.3)}
@@ -49,30 +53,34 @@ export function createOccultBook({pageCount=3, approach=3.5, event=hackathon, on
       x.strokeStyle='rgba(101,59,25,.065)';for(let r=0;r<4;r++){x.lineWidth=2+r;x.beginPath();x.arc(748,1000,72+r*3,.8,Math.PI*1.8);x.stroke()}
       x.restore();
     }
-    function evidenceStamp(label,cx,cy){x.save();x.translate(cx,cy);x.rotate(-.065);x.strokeStyle='rgba(119,41,29,.48)';x.fillStyle='rgba(119,41,29,.58)';x.lineWidth=1.7;x.strokeRect(-111,-22,222,39);x.font='bold 18px monospace';x.textAlign='center';x.fillText(label,0,4);x.restore()}
+    function evidenceStamp(label,cx,cy){x.save();x.translate(cx,cy);x.rotate(-.065);x.strokeStyle='rgba(119,41,29,.48)';x.fillStyle='rgba(119,41,29,.58)';x.lineWidth=1.7;x.strokeRect(-111,-22,222,39);x.font='bold 18px "Page Antique"';x.textAlign='center';x.fillText(label,0,4);x.restore()}
     if(kind==='cover'){
 
       x.strokeStyle='#302015';x.lineWidth=3;x.strokeRect(40,40,688,944);x.strokeRect(52,52,664,920);
-      x.textAlign='center';x.fillStyle='#d1aa77';x.font='19px monospace';x.fillText(copy("SUPERNATURAL INVESTIGATIONS"),384,115);
+      x.textAlign='center';x.fillStyle='#d1aa77';x.font='19px "Page Antique"';x.fillText(copy("SUPERNATURAL INVESTIGATIONS"),384,115);
       // Physical seal is separate geometry; avoid a second printed medallion.
-      x.fillStyle='#26190f';x.shadowColor='#bb916b';x.shadowOffsetY=1;x.font='bold 86px Georgia';x.fillText(event.name,384,750);x.font='28px monospace';x.fillText(copy("DJS ISACA / FIELD JOURNAL"),384,817);x.shadowOffsetY=0;
-      x.save();x.translate(384,899);x.rotate(-.045);x.strokeStyle='#3d2118';x.strokeRect(-170,-38,340,64);x.font='23px monospace';x.fillText(copy("BUILD / CREATE / SHIP"),0,4);x.restore();
+      x.fillStyle='#26190f';x.shadowColor='#bb916b';x.shadowOffsetY=1;x.font='700 86px "Page Serif"';x.fillText(event.name,384,750);x.font='28px "Page Antique"';x.fillText(copy("DJS ISACA / FIELD JOURNAL"),384,817);x.shadowOffsetY=0;
+      x.save();x.translate(384,899);x.rotate(-.045);x.strokeStyle='#3d2118';x.strokeRect(-170,-38,340,64);x.font='23px "Page Antique"';x.fillText(copy("BUILD / CREATE / SHIP"),0,4);x.restore();
       for(let i=0;i<45;i++){x.strokeStyle='rgba(218,178,125,.09)';x.lineWidth=.6;x.beginPath();const px=random()*768,py=random()*1024;x.moveTo(px,py);x.lineTo(px+random()*100-50,py+random()*28);x.stroke()}
     }else if(kind==='sigil'){
-      paintFieldSketch(x,sketchReference,index,100,165,565,565);
-      if(index%2===0)paintEvidencePhoto(x,gothicReference,index+1,450,740,190,220,.045);
+      if(index%2===0){
+        paintEvidencePhoto(x,gothicReference,index,106,160,556,704,-.018);
+      }else{
+        paintFieldSketch(x,sketchReference,index,100,165,565,565);
+        paintEvidencePhoto(x,gothicReference,index+1,450,740,190,180,.025);
+      }
       evidenceStamp(copy('EVIDENCE / 0')+(index+1),390,105);
-      x.textAlign='center';x.fillStyle='#5a3a29';x.font='italic 24px Georgia';x.fillText(copy('Every symbol leaves a trace.'),384,956);
+      x.textAlign='center';x.fillStyle='#5a3a29';x.font='italic 24px "Page Antique"';x.fillText(copy('Every symbol leaves a trace.'),384,956);
     }else if(kind==='paper'||kind==='timelineLeft'){
 
-      x.textAlign='left';x.fillStyle='#51402d';x.font='19px monospace';x.fillText(copy("THE HUNT / FIELD JOURNAL"),82,98);evidenceStamp(copy("CASE / THE HUNT"),571,96);x.strokeStyle='#8b7450';x.lineWidth=1;x.beginPath();x.moveTo(82,125);x.lineTo(686,125);x.stroke();
+      x.textAlign='left';x.fillStyle='#51402d';x.font='19px "Page Antique"';x.fillText(copy("THE HUNT / FIELD JOURNAL"),82,98);evidenceStamp(copy("CASE / THE HUNT"),571,96);x.strokeStyle='#8b7450';x.lineWidth=1;x.beginPath();x.moveTo(82,125);x.lineTo(686,125);x.stroke();
       function wrap(text,font,y,lineHeight,maxWidth=598){x.font=font;let line='';for(const word of String(text).split(' ')){const next=line?line+' '+word:word;if(x.measureText(next).width>maxWidth&&line){x.fillText(line,82,y);y+=lineHeight;line=word}else line=next}if(line)x.fillText(line,82,y);return y+lineHeight}
-      function heading(text){x.fillStyle='#25251f';const y=wrap(text,'bold 52px "Segoe Print", "Bradley Hand", cursive',210,66)+24;x.save();x.strokeStyle='#443a28';x.lineWidth=1.4;x.beginPath();x.moveTo(82,231);x.lineTo(346,234);x.stroke();x.restore();return y}
+      function heading(text){x.fillStyle='#25251f';const y=wrap(text,'700 52px "Page Serif", Georgia, serif',210,66)+24;x.save();x.strokeStyle='#443a28';x.lineWidth=1.4;x.beginPath();x.moveTo(82,231);x.lineTo(346,234);x.stroke();x.restore();return y}
       x.save();x.fillStyle='rgba(172,142,91,.3)';x.translate(721,182);x.rotate(.12);x.fillRect(-6,-14,34,83);x.strokeStyle='#77694e';x.lineWidth=1;x.beginPath();x.moveTo(4,-5);x.lineTo(4,52);x.stroke();x.restore();
-      function foot(text,number){x.fillStyle='#64503a';x.font='18px monospace';x.fillText(text,82,966);x.textAlign='right';x.fillText(number,686,966);x.textAlign='left'}
+      function foot(text,number){x.fillStyle='#64503a';x.font='18px "Page Antique"';x.fillText(text,82,966);x.textAlign='right';x.fillText(number,686,966);x.textAlign='left'}
       if(kind==='timelineLeft'||index===1){
         heading(kind==='timelineLeft'?copy("The timeline"):copy("The final stretch"));
-        x.fillStyle='#7b4930';wrap(event.timelineStatus,'20px "Segoe Print", cursive',290,25);
+        x.fillStyle='#7b4930';wrap(event.timelineStatus,'20px "Page Antique", Georgia, serif',290,25);
         const left=kind==='timelineLeft',start=left?0:3,lineY=525;
         function column(text,cx,y,font,size,width=198){x.font=font;x.textAlign='center';let line='';for(const word of String(text).split(' ')){const next=line?line+' '+word:word;if(x.measureText(next).width>width&&line){x.fillText(line,cx,y);y+=size;line=word}else line=next}if(line)x.fillText(line,cx,y);x.textAlign='left';return y+size}
         const positions=[125,381,637],pinYs=left?[515,538,511]:[533,510,528];
@@ -80,21 +88,21 @@ export function createOccultBook({pageCount=3, approach=3.5, event=hackathon, on
         const knots=[[left?45:0,lineY],...positions.map((px,i)=>[px,pinYs[i]]),[left?768:724,lineY]];
         for(const [color,width,dy] of [['rgba(40,20,12,.22)',5,4],['#8d322b',3.2,0],['#c06e53',.7,-1]]){x.strokeStyle=color;x.lineWidth=width;x.beginPath();x.moveTo(knots[0][0],knots[0][1]+dy);for(let j=1;j<knots.length;j++){const p=knots[j-1],q=knots[j];x.quadraticCurveTo((p[0]+q[0])/2,(p[1]+q[1])/2+12+dy,q[0],q[1]+dy)}x.stroke()}
         event.timeline.slice(start,start+3).forEach((entry,i)=>{const cx=positions[i],upper=(start+i)%2===0,cardY=upper?321:602,angle=(i%2?.025:-.027);
-          x.save();x.translate(cx,cardY);x.rotate(angle);x.fillStyle='rgba(30,20,10,.16)';x.fillRect(-106+4,6,212,177);x.fillStyle=upper?'#e5d9b7':'#d2c68d';x.fillRect(-106,0,212,177);x.fillStyle='rgba(176,151,94,.42)';x.fillRect(-33,-10,66,25);x.fillStyle='#783d29';column(entry.time,0,39,'bold 27px "Segoe Print", cursive',31,190);x.fillStyle='#25251e';column(entry.title,0,87,'bold 26px "Segoe Print", cursive',34,192);x.restore();
+          x.save();x.translate(cx,cardY);x.rotate(angle);paintTimelineSticker(x,stickerReference,-127,-27,254,228);x.fillStyle='#783d29';column(entry.time,0,46,'bold 27px "Page Antique", Georgia, serif',31,190);x.fillStyle='#25251e';column(entry.title,0,92,'bold 26px "Page Antique", Georgia, serif',34,192);x.restore();
           x.strokeStyle='#8d322b';x.lineWidth=2;x.beginPath();x.moveTo(cx,pinYs[i]);x.lineTo(cx+2,upper?cardY+169:cardY+7);x.stroke();x.fillStyle='#6c3b24';x.beginPath();x.arc(cx,pinYs[i],8,0,Math.PI*2);x.fill();x.fillStyle='#d7b783';x.beginPath();x.arc(cx-2,pinYs[i]-2,3,0,Math.PI*2);x.fill();
-          x.fillStyle='#4b3927';column(entry.detail,cx,upper?822:806,'24px "Segoe Print", cursive',31,218);
+          x.fillStyle='#4b3927';column(entry.detail,cx,upper?822:806,'24px "Page Antique", Georgia, serif',31,218);
         });foot(copy("FOLLOW THE EVIDENCE"),left?'02':'03');
       }else if(index===0){
-        x.save();x.strokeStyle='#8e4734';x.lineWidth=2;x.beginPath();x.ellipse(663,210,33,36,-.2,0,Math.PI*2);x.stroke();x.font='17px "Segoe Print", cursive';x.fillStyle='#754834';x.fillText(copy("start"),638,210);x.fillText(copy("here"),642,230);x.restore();let y=heading(copy("About us"));x.fillStyle='#7b4930';x.font='bold 30px "Segoe Print", cursive';x.fillText(copy("FOLLOW THE EVIDENCE"),82,y);y+=73;
-        x.fillStyle='#281e15';for(const paragraph of event.about)y=wrap(paragraph,'32px "Segoe Print", "Bradley Hand", cursive',y,48)+30;
-        x.fillStyle='#6c4930';y=wrap(copy("Hosted by: ")+event.organizer,'25px "Segoe Print", "Bradley Hand", cursive',Math.min(y+16,870),36);freeInk=y;foot(copy("IDEAS BECOME PROTOTYPES"),'01');
+        x.save();x.strokeStyle='#8e4734';x.lineWidth=2;x.beginPath();x.ellipse(663,210,33,36,-.2,0,Math.PI*2);x.stroke();x.font='17px "Page Antique", Georgia, serif';x.fillStyle='#754834';x.fillText(copy("start"),638,210);x.fillText(copy("here"),642,230);x.restore();let y=heading(copy("About us"));x.fillStyle='#7b4930';x.font='bold 30px "Page Antique", Georgia, serif';x.fillText(copy("FOLLOW THE EVIDENCE"),82,y);y+=73;
+        x.fillStyle='#281e15';for(const paragraph of event.about)y=wrap(paragraph,'32px "Page Antique", Georgia, serif',y,48)+30;
+        x.fillStyle='#6c4930';y=wrap(copy("Hosted by: ")+event.organizer,'25px "Page Antique", Georgia, serif',Math.min(y+16,870),36);freeInk=y;foot(copy("IDEAS BECOME PROTOTYPES"),'01');
       }else if(index===2){
-        x.save();x.fillStyle='#b4bd9b';x.translate(634,173);x.rotate(.1);x.fillRect(0,0,79,65);x.font='16px "Segoe Print", cursive';x.fillStyle='#374635';x.fillText(copy("choose"),7,26);x.fillText(copy("a path"),9,49);x.restore();heading(copy("Domains"));x.fillStyle='#7b4930';wrap(event.domainsStatus,'18px monospace',295,25);
-        event.domains.slice(0,4).forEach((entry,i)=>{const y=365+i*133;x.fillStyle='#281e15';wrap(String(i+1).padStart(2,'0')+'  '+entry.title,'bold 30px "Segoe Print", "Bradley Hand", cursive',y,41);x.fillStyle='#4b3927';wrap(entry.detail,'28px "Segoe Print", "Bradley Hand", cursive',y+57,36)});freeInk=340+event.domains.length*133;foot(copy("CHOOSE YOUR CHALLENGE"),'04');
+        x.save();x.fillStyle='#b4bd9b';x.translate(634,173);x.rotate(.1);x.fillRect(0,0,79,65);x.font='16px "Page Antique", Georgia, serif';x.fillStyle='#374635';x.fillText(copy("choose"),7,26);x.fillText(copy("a path"),9,49);x.restore();heading(copy("Domains"));x.fillStyle='#7b4930';wrap(event.domainsStatus,'18px "Page Antique"',295,25);
+        event.domains.slice(0,4).forEach((entry,i)=>{const y=365+i*133;x.fillStyle='#281e15';wrap(String(i+1).padStart(2,'0')+'  '+entry.title,'bold 30px "Page Antique", Georgia, serif',y,41);x.fillStyle='#4b3927';wrap(entry.detail,'28px "Page Antique", Georgia, serif',y+57,36)});freeInk=340+event.domains.length*133;foot(copy("CHOOSE YOUR CHALLENGE"),'04');
       }else{
         x.save();x.strokeStyle='#79613d';x.lineWidth=2;x.beginPath();x.arc(668,195,20,0,Math.PI*2);x.moveTo(668,215);x.lineTo(668,254);x.lineTo(684,254);x.stroke();x.restore();heading(copy("The essentials"));const rows=[[copy("PRIZE POOL"),event.prizePool],[copy("VENUE"),event.venue],[copy("DATE"),event.date],[copy("DURATION"),event.duration]];
-        rows.forEach(([label,value],i)=>{const y=330+i*132;x.fillStyle='#7b4930';x.font='23px "Segoe Print", cursive';x.fillText(label,82,y);x.fillStyle='#281e15';wrap(value,'bold 32px "Segoe Print", "Bradley Hand", cursive',y+52,43)});
-        x.fillStyle='#6c4930';wrap(event.registrationUrl?copy("Register using the link below."):event.registrationLabel,'26px "Segoe Print", "Bradley Hand", cursive',898,35);foot(copy("MAKE YOUR NEXT IDEA REAL"),'05');
+        rows.forEach(([label,value],i)=>{const y=330+i*132;x.fillStyle='#7b4930';x.font='23px "Page Antique", Georgia, serif';x.fillText(label,82,y);x.fillStyle='#281e15';wrap(value,'bold 32px "Page Antique", Georgia, serif',y+52,43)});
+        x.fillStyle='#6c4930';wrap(event.registrationUrl?copy("Register using the link below."):event.registrationLabel,'26px "Page Antique", Georgia, serif',898,35);foot(copy("MAKE YOUR NEXT IDEA REAL"),'05');
       }
     }
 
@@ -213,5 +221,5 @@ export function createOccultBook({pageCount=3, approach=3.5, event=hackathon, on
     if(showTimeline){const y=(.5-525/1024)*(H-.11),bp=bridgeGeo.attributes.position;const zl=pages[0].pivot.position.z,zr=pages[1].pivot.position.z;const points=[[-.055,zl+.055*Math.sin(wingAngle)+.002],[0,(zl+zr)/2],[.055,zr+.055*Math.sin(wingAngle)+.002]];points.forEach(([x,z],i)=>{bp.setXYZ(i*2,x,y-.009,z);bp.setXYZ(i*2+1,x,y+.009,z)});bp.needsUpdate=true;bridgeGeo.computeVertexNormals();bridgeGeo.computeBoundingSphere();timelineBridge.material.opacity=1;}
   }
   update(0);
-  return {group,ready:Promise.all([referenceCover.decode(),referencePages.decode(),paperReference.decode(),gothicReference.decode()]).then(()=>{referenceCover.onload?.();referencePages.onload?.();paperReference.onload?.()}),setView(camera){view.position.copy(camera.position);view.quaternion.copy(camera.quaternion);view.fov=camera.fov;view.aspect=camera.aspect},setRestPose(point,scale,mobile){restCenter.copy(point);tableScale=scale;mobileView=mobile;resting.setFromEuler(new THREE.Euler(-1.0,.25,.28,'ZYX'))},setProgress(value){progress=clamp(Number(value)||0)},setClosing(value){closing=ease(value)},update,dispose(){const gs=new Set(),ms=new Set(),ts=new Set();group.traverse(o=>{if(o.geometry)gs.add(o.geometry);if(o.material)(Array.isArray(o.material)?o.material:[o.material]).forEach(m=>{ms.add(m);for(const key of ['map','bumpMap','roughnessMap'])if(m[key])ts.add(m[key])})});gs.forEach(g=>g.dispose());ms.forEach(m=>m.dispose());ts.forEach(t=>t.dispose());group.removeFromParent()}};
+  return {group,ready:Promise.all([ensurePageFonts(),stickerReference.decode(),sketchReference.decode(),referenceCover.decode(),referencePages.decode(),paperReference.decode(),gothicReference.decode()]).then(()=>{referenceCover.onload?.();referencePages.onload?.();paperReference.onload?.()}),setView(camera){view.position.copy(camera.position);view.quaternion.copy(camera.quaternion);view.fov=camera.fov;view.aspect=camera.aspect},setRestPose(point,scale,mobile){restCenter.copy(point);tableScale=scale;mobileView=mobile;resting.setFromEuler(new THREE.Euler(-1.0,.25,.28,'ZYX'))},setProgress(value){progress=clamp(Number(value)||0)},setClosing(value){closing=ease(value)},update,dispose(){const gs=new Set(),ms=new Set(),ts=new Set();group.traverse(o=>{if(o.geometry)gs.add(o.geometry);if(o.material)(Array.isArray(o.material)?o.material:[o.material]).forEach(m=>{ms.add(m);for(const key of ['map','bumpMap','roughnessMap'])if(m[key])ts.add(m[key])})});gs.forEach(g=>g.dispose());ms.forEach(m=>m.dispose());ts.forEach(t=>t.dispose());group.removeFromParent()}};
 }

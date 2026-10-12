@@ -1,0 +1,8 @@
+.asset-loader { position:fixed; inset:0; z-index:10000; display:grid; place-items:center; padding:1.5rem; background:radial-gradient(ellipse at 50% 40%,#4c1418,#160607 65%); color:#f0d095; }
+.asset-loader-card { width:min(26rem,100%); text-align:center; }
+.asset-loader h1 { margin:.2em 0 .6em; font:700 clamp(4rem,12vw,7rem)/1 'Page Serif',Georgia,serif; letter-spacing:.05em; color:#ffe2a0; text-shadow:0 2px #180808; }
+.asset-loader p { font-size:1rem; }
+.asset-loader-track { height:3px; background:#e8bc5730; overflow:hidden; }
+.asset-loader-track span { display:block; height:100%; background:#e8bc57; transition:width .25s ease; }
+.asset-loader button { margin:.5rem; padding:.65rem 1rem; border:1px solid #ca9a51; background:#6d1b23; color:#ffe2a0; cursor:pointer; }
+html[data-loading='true'] .rotate-prompt,html[data-loading='true'] .registration-shortcut { visibility:hidden; }

@@ -7,7 +7,7 @@ section { position: relative; border-top: 1px solid #333; }
 .scene-content { position: sticky; top: 0; min-height: 100svh; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: 5rem 7vw; width: 55%; }
 .scene-content p { max-width: 40rem; }
 .scroll-tail { height: 100vh; }
-.hud { position: fixed; right: 1rem; bottom: 1rem; z-index: 4; padding: .75rem; background: var(--charcoal); border: 1px solid #555; font: .75rem/1.7 monospace; pointer-events: none; }
+.hud { position: fixed; right: 1rem; bottom: 1rem; z-index: 4; padding: .75rem; background: var(--charcoal); border: 1px solid #555; font: .75rem/1.7 Georgia,serif; pointer-events: none; }
 .static-placeholder { position: absolute; right: 1rem; top: 5rem; border: 1px solid #555; padding: .75rem; color: #aaa; font-size: .8rem; }
 .fallback { position: absolute; right: 1rem; top: 5rem; }
 .skip-link { position: fixed; top: -5rem; left: 1rem; z-index: 5; background: var(--charcoal); padding: .5rem; }

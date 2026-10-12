@@ -64,7 +64,7 @@ export function createDeskHeroProps(redraw: () => void) {
         float grain=fract(sin(dot(floor(uv*vec2(1024.,768.)),vec2(12.9898,78.233))+floor(time*18.))*43758.5453);
         float opening=smoothstep(0.,.07,boot-abs(uv.y-.5)*.8);
         vec3 color=ink*lines*(.99+.01*sin(time*17.))+vec3(roll+grain*.012);
-        color=mix(vec3(.55,.72,.60)*exp(-pow((uv.y-.5)*150.,2.)),color,opening);
+        color=mix(vec3(.95,.67,.28)*exp(-pow((uv.y-.5)*150.,2.)),color,opening);
         gl_FragColor=vec4(color,edge);
         #include <tonemapping_fragment>
         #include <colorspace_fragment>
@@ -96,23 +96,23 @@ export function createDeskHeroProps(redraw: () => void) {
   }
   const paintScreen=(broadcast:boolean)=>{
     const x=screenCanvas.getContext('2d')!;x.setTransform(1,0,0,1,0,0);x.clearRect(0,0,2048,1536);x.scale(2,2)
-    x.save();x.beginPath();x.roundRect(0,0,1024,768,65);x.clip();x.fillStyle='#07110f';x.fillRect(0,0,1024,768)
-    const phosphor=x.createRadialGradient(460,330,40,512,384,660);phosphor.addColorStop(0,'#204036');phosphor.addColorStop(1,'#030806');x.fillStyle=phosphor;x.fillRect(0,0,1024,768)
-    x.fillStyle='#c3ddc5';x.textAlign='center';x.shadowColor='#98dba8';x.shadowBlur=2
+    x.save();x.beginPath();x.roundRect(0,0,1024,768,65);x.clip();x.fillStyle='#160806';x.fillRect(0,0,1024,768)
+    const phosphor=x.createRadialGradient(460,330,40,512,384,660);phosphor.addColorStop(0,'#542211');phosphor.addColorStop(1,'#0b0302');x.fillStyle=phosphor;x.fillRect(0,0,1024,768)
+    x.fillStyle='#f3d594';x.textAlign='center';x.shadowColor='#eab95b';x.shadowBlur=2
     const line=(text:string,y:number,font:string)=>{x.font=font; let size=Number(font.match(/(\d+)px/)?.[1] ?? 24); while(x.measureText(text).width>860 && size>16){size--;x.font=font.replace(/\d+px/,`${size}px`)} x.fillText(text,512,y)}
     const wrap=(text:string,y:number,size:number,maxWidth=880)=>{x.font=`${size}px Georgia`;let row='';for(const word of text.split(' ')){const next=row?row+' '+word:word;if(x.measureText(next).width>maxWidth&&row){x.fillText(row,512,y);y+=size*1.3;row=word}else row=next}x.fillText(row,512,y);return y}
     if(!broadcast){line(event.title,330,'600 55px Georgia');wrap(event.venue,430,29)}
     else{
-      line(copy('CH 03 / INCOMING TRANSMISSION'),92,'20px monospace')
-      line(event.title,260,'600 90px Georgia');line(copy('EVENT TRANSMISSION'),326,'24px monospace')
-      line(event.title,382,'28px monospace');wrap(event.venue,433,27)
-      line(event.dateTime,501,'25px monospace');line(event.teamSize==='To be announced'?copy('Team details to be announced'):event.teamSize,540,'25px monospace')
-      x.shadowBlur=0;x.fillStyle='#19362d';x.fillRect(140,568,744,66);x.strokeStyle='#9abca37a';x.lineWidth=2;x.strokeRect(140,568,744,66);x.fillStyle='#d9ead8'
-      line(copy('REGISTER FOR THE HUNT ↗'),610,'26px monospace')
-      if(!event.registrationUrl)line(copy('REGISTRATION OPENS SOON'),691,'19px monospace')
+      line(copy('CH 03 / INCOMING TRANSMISSION'),92,'20px Georgia')
+      line(event.title,260,'600 90px Georgia');line(copy('EVENT TRANSMISSION'),326,'24px Georgia')
+      line(event.title,382,'28px Georgia');wrap(event.venue,433,27)
+      line(event.dateTime,501,'25px Georgia');line(event.teamSize==='To be announced'?copy('Team details to be announced'):event.teamSize,540,'25px Georgia')
+      x.shadowBlur=0;x.fillStyle='#491617';x.fillRect(140,568,744,66);x.strokeStyle='#d8a74b9a';x.lineWidth=2;x.strokeRect(140,568,744,66);x.fillStyle='#ffdfa1'
+      line(copy('REGISTER FOR THE HUNT ↗'),610,'26px Georgia')
+      if(!event.registrationUrl)line(copy('REGISTRATION OPENS SOON'),691,'19px Georgia')
     }
     x.shadowBlur=0;for(let i=0;i<768;i+=4){x.fillStyle='#0003';x.fillRect(0,i,1024,1)}
-    const reflection=x.createLinearGradient(80,0,580,768);reflection.addColorStop(0,'#e8ffed12');reflection.addColorStop(.42,'#e8ffed00');reflection.addColorStop(1,'#00000028');x.fillStyle=reflection;x.fillRect(0,0,1024,768)
+    const reflection=x.createLinearGradient(80,0,580,768);reflection.addColorStop(0,'#ffe5a512');reflection.addColorStop(.42,'#ffe5a500');reflection.addColorStop(1,'#00000028');x.fillStyle=reflection;x.fillRect(0,0,1024,768)
     x.restore();screenTexture.needsUpdate=true
   }
   paintScreen(false); let showingBroadcast=false

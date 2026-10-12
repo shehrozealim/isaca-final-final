@@ -5,7 +5,7 @@ import { useFrame, useThree } from '@react-three/fiber'
 import { Euler, PerspectiveCamera, Quaternion, Vector3 } from 'three'
 import { createOccultBook } from '../../vendor/d3coy-book/OccultBook.mjs'
 import { event } from '../../data/event'
-import { getBunkerBackgroundState } from '../../components/bunker/bunkerBackgroundState'
+import { useBunkerBackground } from '../../components/bunker/bunkerBackgroundState'
 import { journalMotion, deskMotion } from './journalMotion'
 import { createOverheadDesk } from './OverheadDesk'
 import { waitForThreeTextures } from './textureReadiness'
@@ -14,6 +14,7 @@ const journalEvent = { ...siteContent.journal, date: event.dateTime, duration: e
 
 export default function JournalScene({ mobile }: { mobile: boolean }) {
   const { get, size, invalidate } = useThree()
+  const background = useBunkerBackground()
   const corners = useRef([new Vector3(),new Vector3(),new Vector3(),new Vector3()])
   const bookRef = useRef<ReturnType<typeof createOccultBook> | null>(null)
   const deskRef = useRef<ReturnType<typeof createOverheadDesk> | null>(null)
@@ -55,7 +56,7 @@ export default function JournalScene({ mobile }: { mobile: boolean }) {
     camera.fov = mobile ? 48 : 38
     camera.updateProjectionMatrix()
     book.setView(camera)
-    const { image, room, finalVisual } = getBunkerBackgroundState()
+    const { image, room, finalVisual } = background
     if (!image?.naturalWidth || !room || !finalVisual) return
     // Reconstruct the settled shutter pose instead of measuring a later camera
     // pose. Resizing in another chapter must preserve the return-to-table path.
@@ -74,7 +75,7 @@ export default function JournalScene({ mobile }: { mobile: boolean }) {
     const scale = w * .085 / size.width * (halfH * camera.aspect * 2) / 2.8
     book.setRestPose(center.current, scale, mobile)
     journalMotion.draw?.()
-  }, [get, mobile, size])
+  }, [get, mobile, size, background])
   useFrame(({ gl, camera }, dt) => {
     const book = bookRef.current
     if (!book) return
@@ -137,12 +138,12 @@ export default function JournalScene({ mobile }: { mobile: boolean }) {
     if (settling.current-- > 0 && (book.group.visible || deskMotion.opacity > .001)) invalidate()
   })
   return <>
-    <hemisphereLight args={['#e4d5b5', '#332619', .85]} />
-    <directionalLight position={[3, 6, 9]} color="#ffd3a0" intensity={2.4} castShadow={!mobile}
-      shadow-mapSize={[2048, 2048]} shadow-camera-left={-14} shadow-camera-right={14}
+    <hemisphereLight args={['#f1d49a', '#32120b', .85]} />
+    <directionalLight position={[3, 6, 9]} color="#ffda8a" intensity={2.4} castShadow={!mobile && navigator.hardwareConcurrency > 4}
+      shadow-mapSize={[1024, 1024]} shadow-camera-left={-14} shadow-camera-right={14}
       shadow-camera-top={12} shadow-camera-bottom={-12} shadow-normalBias={.015} shadow-bias={-.0001} />
-    <directionalLight position={[-2, 8, -5]} color="#c1c8c8" intensity={.55} />
-    <directionalLight position={[-5, 2, 5]} color="#d1d4cf" intensity={.7} />
+    <directionalLight position={[-2, 8, -5]} color="#bd2635" intensity={.65} />
+    <directionalLight position={[-5, 2, 5]} color="#f2d5a0" intensity={.7} />
   </>
 }
 

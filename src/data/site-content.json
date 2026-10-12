@@ -1,6 +1,6 @@
 {
   "event": {
-    "title": "DJS ISACA — THE HUNT",
+    "title": "DJS ISACA — D3COY",
     "dateTime": "To be announced",
     "duration": "To be announced",
     "venue": "Dwarkadas J. Sanghvi College of Engineering",
@@ -62,7 +62,7 @@
         "answer": "Dwarkadas J. Sanghvi College of Engineering, Vile Parle West, Mumbai."
       },
       {
-        "question": "When does the hunt begin?",
+        "question": "When does D3COY begin?",
         "answer": "The date and schedule will be announced by DJS ISACA."
       },
       {
@@ -72,7 +72,7 @@
     ]
   },
   "journal": {
-    "name": "THE HUNT",
+    "name": "D3COY",
     "organizer": "DJS ISACA",
     "about": [
       "An investigation in ideas. A hackathon for the curious.",
@@ -151,7 +151,7 @@
   "scenes": [
     {
       "title": "Intro / Darkness",
-      "description": "The invitation into THE HUNT."
+      "description": "The invitation into D3COY."
     },
     {
       "title": "Title Sting",
@@ -180,17 +180,17 @@
     "Local:": "Local:",
     "Mobile fallback": "Mobile fallback",
     " · Reduced motion": " · Reduced motion",
-    "The Hunt": "The Hunt",
+    "The Hunt": "D3COY",
     "DJS ISACA PRESENTS": "DJS ISACA PRESENTS",
-    "THE HUNT": "THE HUNT",
-    "JOIN THE HUNT": "JOIN THE HUNT",
+    "THE HUNT": "D3COY",
+    "JOIN THE HUNT": "JOIN D3COY",
     "SCROLL TO ENTER": "SCROLL TO ENTER",
     "Mute S00 sound": "Mute S00 sound",
     "Enable S00 sound": "Enable S00 sound",
     "SOUND": "SOUND",
     "ON": "ON",
     "OFF": "OFF",
-    "THE HUNT / ARCHIVE PREPARATION": "THE HUNT / ARCHIVE PREPARATION",
+    "THE HUNT / ARCHIVE PREPARATION": "D3COY / ARCHIVE PREPARATION",
     "The archive could not load.": "The archive could not load.",
     "Preparing the investigation.": "Preparing the investigation.",
     "Preparing the scene.": "Preparing the scene.",
@@ -213,7 +213,7 @@
     "Event introduction placeholder.": "Event introduction placeholder.",
     "The Bunker": "The Bunker",
     "Investigation, field briefing, schedule, archive, allies, and registration.": "Investigation, field briefing, schedule, archive, allies, and registration.",
-    "DJS ISACA / THE HUNT": "DJS ISACA / THE HUNT",
+    "DJS ISACA / THE HUNT": "DJS ISACA / D3COY",
     "Leave nothing unexplained.": "Leave nothing unexplained.",
     "The seal remembers.": "The seal remembers.",
     "Follow the markings.": "Follow the markings.",
@@ -222,8 +222,8 @@
     "CHALLENGE BRIEFING / KEEP THIS FILE CLOSE": "CHALLENGE BRIEFING / KEEP THIS FILE CLOSE",
     "REWARD DOSSIER / BREAK THE SEAL": "REWARD DOSSIER / BREAK THE SEAL",
     "Map template unavailable": "Map template unavailable",
-    "CASE 03 / THE HUNT": "CASE 03 / THE HUNT",
-    "The Bunker — DJS ISACA: The Hunt": "The Bunker — DJS ISACA: The Hunt",
+    "CASE 03 / THE HUNT": "CASE 03 / D3COY",
+    "The Bunker — DJS ISACA: The Hunt": "The Bunker — DJS ISACA: D3COY",
     "FIELD NOTES": "FIELD NOTES",
     "03 / HUNTER’S JOURNAL": "03 / HUNTER’S JOURNAL",
     "FIELD JOURNAL": "FIELD JOURNAL",
@@ -249,7 +249,7 @@
     "Follow the evidence.": "Follow the evidence.",
     "Investigation map marking Dwarkadas J. Sanghvi College of Engineering in Vile Parle West": "Investigation map marking Dwarkadas J. Sanghvi College of Engineering in Vile Parle West",
     "An investigation in ideas. A hackathon for the curious.": "An investigation in ideas. A hackathon for the curious.",
-    "Enter THE HUNT with DJS ISACA. Bring your questions, work together, and turn an idea into something you can put to the test.": "Enter THE HUNT with DJS ISACA. Bring your questions, work together, and turn an idea into something you can put to the test.",
+    "Enter THE HUNT with DJS ISACA. Bring your questions, work together, and turn an idea into something you can put to the test.": "Enter D3COY with DJS ISACA. Bring your questions, work together, and turn an idea into something you can put to the test.",
     "Choose your trail": "Choose your trail",
     "Tracks will be revealed in the next briefing.": "Tracks will be revealed in the next briefing.",
     "THE DESTINATION / LOCATION CONFIRMED": "THE DESTINATION / LOCATION CONFIRMED",
@@ -273,13 +273,13 @@
     "To be announced": "To be announced",
     "FROM THE ARCHIVE / FILE 06": "FROM THE ARCHIVE / FILE 06",
     "06 / YOUR NEXT CASE": "06 / YOUR NEXT CASE",
-    "JOIN THE HUNT.": "JOIN THE HUNT.",
+    "JOIN THE HUNT.": "JOIN D3COY.",
     "The evidence brought you here.": "The evidence brought you here.",
     "The next move is yours.": "The next move is yours.",
-    "REGISTER FOR THE HUNT": "REGISTER FOR THE HUNT",
+    "REGISTER FOR THE HUNT": "REGISTER FOR D3COY",
     "REGISTRATION OPENS SOON": "REGISTRATION OPENS SOON",
     "Revisit the case files": "Revisit the case files",
-    "ALLIES / THE HUNT": "ALLIES / THE HUNT",
+    "ALLIES / THE HUNT": "ALLIES / D3COY",
     "COUNCIL DOSSIERS": "COUNCIL DOSSIERS",
     "INVESTIGATION DIVISION": "INVESTIGATION DIVISION",
     "CLASSIFIED": "CLASSIFIED",
@@ -333,7 +333,7 @@
     "UNEXPLAINED INCIDENT": "UNEXPLAINED INCIDENT",
     "EXHIBIT B / UNKNOWN": "EXHIBIT B / UNKNOWN",
     "CHAIN OF EVIDENCE": "CHAIN OF EVIDENCE",
-    "THE HUNT / INVESTIGATOR’S NOTEBOOK": "THE HUNT / INVESTIGATOR’S NOTEBOOK",
+    "THE HUNT / INVESTIGATOR’S NOTEBOOK": "D3COY / INVESTIGATOR’S NOTEBOOK",
     "Every symbol leaves a trace.": "Every symbol leaves a trace.",
     "Check the markings. Keep the circle intact.": "Check the markings. Keep the circle intact.",
     "Follow the pattern": "Follow the pattern",
@@ -346,10 +346,10 @@
     "The clues are connected.": "The clues are connected.",
     "align the signs": "align the signs",
     "Admit one idea": "Admit one idea",
-    "SEALED / THE HUNT": "SEALED / THE HUNT",
+    "SEALED / THE HUNT": "SEALED / D3COY",
     "Keep this until the final hour.": "Keep this until the final hour.",
-    "THE HUNT / FIELD JOURNAL": "THE HUNT / FIELD JOURNAL",
-    "CASE / THE HUNT": "CASE / THE HUNT",
+    "THE HUNT / FIELD JOURNAL": "D3COY / FIELD JOURNAL",
+    "CASE / THE HUNT": "CASE / D3COY",
     "The timeline": "The timeline",
     "The final stretch": "The final stretch",
     "FOLLOW THE EVIDENCE": "FOLLOW THE EVIDENCE",
@@ -379,15 +379,21 @@
     "TRACE / RECORD / RETURN": "TRACE / RECORD / RETURN",
     "CH 03 / INCOMING TRANSMISSION": "CH 03 / INCOMING TRANSMISSION",
     "JOIN": "JOIN",
-    "THE HUNT.": "THE HUNT.",
+    "THE HUNT.": "D3COY.",
     "Team details to be announced": "Team details to be announced",
-    "REGISTER FOR THE HUNT ↗": "REGISTER FOR THE HUNT ↗",
+    "REGISTER FOR THE HUNT ↗": "REGISTER FOR D3COY ↗",
     "Rotate your phone for the best experience": "Rotate your phone for the best experience",
     "Use landscape mode to explore the full table.": "Use landscape mode to explore the full table.",
     "Continue in portrait": "Continue in portrait",
     "Event broadcast": "Event broadcast",
     "EVENT TRANSMISSION": "EVENT TRANSMISSION",
-    "Rotate device": "Rotate device"
+    "Rotate device": "Rotate device",
+    "Prize Pool": "Prize Pool",
+    "Break the seal. Turn the page.": "Break the seal. Turn the page.",
+    "REGISTER": "REGISTER",
+    "Your next case.": "Your next case.",
+    "Build with the curious. Investigate together.": "Build with the curious. Investigate together.",
+    "Return to the investigation": "Return to the investigation"
   },
   "map": {
     "landscape_0": "DJS ISACA / INVESTIGATION NO. 03",
@@ -425,5 +431,16 @@
     "portrait_13": "N",
     "portrait_14": "INVESTIGATION SKETCH / NOT TO SCALE",
     "portrait_15": "COLLEGE ADDRESS VERIFIED / DJSCE.AC.IN"
+  },
+  "loading": {
+    "title": "D3COY",
+    "preparing": "Preparing the investigation",
+    "assets": "Loading film, paper and textures",
+    "render": "Preparing the desk and its artifacts",
+    "ready": "Ready to enter",
+    "failed": "An asset could not be prepared.",
+    "retry": "Try again",
+    "simple": "Continue with the lighter experience",
+    "slow": "Loading is taking longer than usual. You can keep waiting or use the lighter experience."
   }
 }

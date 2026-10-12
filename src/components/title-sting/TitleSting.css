@@ -67,13 +67,13 @@
 .s01-presenter, .s01-presenter-copy {
   margin: 0 0 2.6svh;
   padding-left: .32em;
-  font: 400 clamp(.6rem, .75vw, .82rem)/1.2 'IBM Plex Mono', monospace;
+  font: 400 clamp(.6rem, .75vw, .82rem)/1.2 'Page Antique',Georgia,serif;
   letter-spacing: .32em;
   color: #aaa69d;
 }
 .s01-title, .s01-title-copy {
   margin: 0;
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: 'Page Serif', Georgia, serif;
   font-weight: 600;
   font-size: min(9.2vw, 20svh);
   line-height: .78;
@@ -121,7 +121,7 @@
 .s01-sound {
   position: absolute; z-index: 9; right: 1.25rem; top: 1.25rem;
   border: 0; padding: .5rem; background: transparent; color: #b6b0a5;
-  font: 400 .6rem/1.5 'IBM Plex Mono', monospace; letter-spacing: .15em;
+  font: 400 .6rem/1.5 'Page Antique',Georgia,serif; letter-spacing: .15em;
   opacity: 0; visibility: hidden; pointer-events: auto; cursor: pointer;
 }
 .s01-accessible-title {
